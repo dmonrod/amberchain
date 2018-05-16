@@ -796,6 +796,13 @@ Value validateaddress(const Array& params, bool fHelp)
 /* MCHN END */        
 }
 
+/* AMB START */
+Value createwalletaccount(const Array& params, bool fHelp) 
+{
+    return createkeypairs(params, fHelp);
+}
+/* AMB END */
+
 /* MCHN START */
 
 Value createkeypairs(const Array& params, bool fHelp)
