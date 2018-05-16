@@ -125,8 +125,8 @@ static const CRPCCommand vRPCCommands[] =
 
     /* Utility functions */
 /* AMB START */
+    { "util",               "createwalletaccount",    &createwalletaccount,    true,      true ,      false },
 /* AMB END */
-    { "util",               "createwalletaccount",         &createwalletaccount,         true,      true ,      false },
     { "util",               "createkeypairs",         &createkeypairs,         true,      true ,      false },
     { "util",               "createmultisig",         &createmultisig,         true,      true ,      false },
     { "util",               "validateaddress",        &validateaddress,        true,      false,      false }, /* uses wallet if enabled */
