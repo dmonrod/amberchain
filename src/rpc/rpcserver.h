@@ -1,8 +1,9 @@
-// Copyright (c) 2010 Satoshi Nakamoto
-// Copyright (c) 2014-2016 The Bitcoin Core developers
+// Copyright (c) 2009-2010 Satoshi Nakamoto
+// Copyright (c) 2009-2014 The Bitcoin developers
 // Original code was distributed under the MIT software license.
 // Copyright (c) 2014-2017 Coin Sciences Ltd
-// MultiChain code distributed under the GPLv3 license, see COPYING file.
+// Copyright (c) 2018 Apsaras Group Ltd
+// Amberchain code distributed under the GPLv3 license, see COPYING file.
 
 #ifndef BITCOIN_RPCSERVER_H
 #define BITCOIN_RPCSERVER_H
@@ -217,6 +218,7 @@ extern json_spirit::Value completerawexchange(const json_spirit::Array& params, 
 extern json_spirit::Value decoderawexchange(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value appendrawmetadata(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value approvefrom(const json_spirit::Array& params, bool fHelp);
+extern json_spirit::Value approveauthority(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value grantfromcmd(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value revokefromcmd(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value issuefromcmd(const json_spirit::Array& params, bool fHelp);

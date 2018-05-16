@@ -1,8 +1,9 @@
-// Copyright (c) 2010 Satoshi Nakamoto
-// Copyright (c) 2014-2016 The Bitcoin Core developers
+// Copyright (c) 2009-2010 Satoshi Nakamoto
+// Copyright (c) 2009-2014 The Bitcoin developers
 // Original code was distributed under the MIT software license.
 // Copyright (c) 2014-2017 Coin Sciences Ltd
-// MultiChain code distributed under the GPLv3 license, see COPYING file.
+// Copyright (c) 2018 Apsaras Group Ltd
+// Amberchain code distributed under the GPLv3 license, see COPYING file.
 
 
 #include "rpc/rpcwallet.h"
@@ -326,6 +327,8 @@ Value grantwithmetadata(const Array& params, bool fHelp)
     return grantoperation(ext_params);
 }
 
+
+
 Value grantfromcmd(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() < 3 || params.size() > 8)
@@ -345,6 +348,31 @@ Value grantfromcmd(const Array& params, bool fHelp)
     return grantoperation(ext_params);    
 }
 
+/* AMB START */
+Value approveauthority(const Array& params, bool fHelp) 
+{
+    if (fHelp || params.size() != 2)
+        throw runtime_error("Help message not found\n");
+
+    Array permission_params;
+    permission_params.push_back("admin");
+    permission_params.push_back(params[0]);
+    permission_params.push_back(false);
+    Array results = listpermissions(permission_params, fHelp).get_array();
+    if (results.size() == 1) 
+    {
+        Array pre_params;
+        pre_params.push_back(params[0]);
+        pre_params.push_back(params[1]);
+        pre_params.push_back("mine");
+        return grantfromcmd(pre_params, fHelp);
+    }
+    else
+    {
+        throw runtime_error("Unauthorized address\n");
+    }
+}
+/* AMB END */
 
 Value grantcmd(const Array& params, bool fHelp)
 {
@@ -432,7 +460,7 @@ Value revokecmd(const Array& params, bool fHelp)
     
 }
 
-Value listpermissions(const Array& params, bool fHelp)
+Value listpermissions(const Array& params, bool fHelp) 
 {
     if (fHelp || params.size() > 3)
         throw runtime_error("Help message not found\n");

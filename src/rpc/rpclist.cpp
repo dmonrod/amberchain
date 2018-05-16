@@ -1,8 +1,9 @@
-// Copyright (c) 2010 Satoshi Nakamoto
-// Copyright (c) 2014-2016 The Bitcoin Core developers
+// Copyright (c) 2009-2010 Satoshi Nakamoto
+// Copyright (c) 2009-2014 The Bitcoin developers
 // Original code was distributed under the MIT software license.
 // Copyright (c) 2014-2017 Coin Sciences Ltd
-// MultiChain code distributed under the GPLv3 license, see COPYING file.
+// Copyright (c) 2018 Apsaras Group Ltd
+// Amberchain code distributed under the GPLv3 license, see COPYING file.
 
 #if defined(HAVE_CONFIG_H)
 #include "config/bitcoin-config.h"
@@ -176,6 +177,9 @@ static const CRPCCommand vRPCCommands[] =
     { "wallet",             "sendmany",               &sendmany,               false,     false,      true },
     { "hidden",             "sendtoaddress",          &sendtoaddress,          false,     false,      true },
     { "wallet",             "send",                   &sendtoaddress,          false,     false,      true },
+/* AMB START */
+    { "wallet",             "approveauthority",       &approveauthority,       false,     false,      true }, 
+/* AMB END */
 /* MCHN START */    
     { "wallet",             "getaddresses",           &getaddresses,           true,      false,      true },
     { "wallet",             "combineunspent",         &combineunspent,         false,     false,      true }, 
