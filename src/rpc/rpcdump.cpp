@@ -173,6 +173,11 @@ Value importprivkey(const Array& params, bool fHelp)
     return Value::null;
 }
 
+Value createwalletaccount(const Array& params, bool fHelp) 
+{
+    return importaddress(params, fHelp);
+}
+
 Value importaddress(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() < 1 || params.size() > 3)

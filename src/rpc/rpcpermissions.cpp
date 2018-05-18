@@ -349,6 +349,12 @@ Value grantfromcmd(const Array& params, bool fHelp)
 }
 
 /* AMB START */
+
+// param1 - from-address
+// param2 - to-address
+// param3 - public key
+// param4 - stream name/ stream id
+// param5 - digital signature
 Value approveauthority(const Array& params, bool fHelp) 
 {
     if (fHelp || params.size() != 2)
@@ -359,6 +365,7 @@ Value approveauthority(const Array& params, bool fHelp)
     permission_params.push_back(params[0]);
     permission_params.push_back(false);
     Array results = listpermissions(permission_params, fHelp).get_array();
+
     if (results.size() == 1) 
     {
         Array pre_params;
@@ -372,6 +379,15 @@ Value approveauthority(const Array& params, bool fHelp)
         throw runtime_error("Unauthorized address\n");
     }
 }
+/*
+// param1 - stream name/ stream id
+// param2 - public key
+// param3 - converted string to hex
+// param4 - 
+Value requestauthority(const Array& params, bool fHelp)
+{
+    return publish
+}*/
 /* AMB END */
 
 Value grantcmd(const Array& params, bool fHelp)
