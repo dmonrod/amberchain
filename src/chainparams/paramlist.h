@@ -180,9 +180,25 @@ static const mc_OneMultichainParam MultichainParamArray[] =
                    "Minimum transaction fee, per 1000 bytes, in raw units of native currency."},
     { "nativecurrencymultiple"            , "native-currency-multiple"                     ,
                    MC_PRM_INT64   | MC_PRM_USER | MC_PRM_CLONE                  , -1,         100000000,          0,1000000000, 0.0, 10001, 0, "-mc-nativecurrencymultiple",
-                   "skippowcheck","",
+                   "txnfeeadminpct","",
                    "Number of raw units of native currency per display unit."},
-                   
+
+  /*
+    { name (internal)                          , parameter name                            ,
+                   flags                                                        , max length, default int, min int, max int,  default double, protocol version, removed, some sort of internal id string?, 
+                   name of the next parameter, name of the parameter group (only for the first item in the group,
+                   docstring}, 
+  */                   
+
+    { "txnfeeadminpct"                   , "txn-fee-admin-pct"                   , 
+                   MC_PRM_UINT32  | MC_PRM_USER | MC_PRM_CLONE | MC_PRM_DECIMAL , -1,         0,          0,         1, 0.0, 10009, 0, "-mc-txnfeeadminpct",
+                   "txnfeeadminaddr","Ambertime-specific blockchain parameters",
+                   "Percentage of the transaction fee that will go to the Ambertime admin"},
+
+    { "txnfeeadminaddr"                   , "txn-fee-admin-addr"                   , 
+                   MC_PRM_STRING  | MC_PRM_USER | MC_PRM_CLONE                  , -1,         0,          0,         1, 0.0, 10009, 0, "-mc-txnfeeadminaddr",
+                   "skippowcheck","",
+                   "Wallet address where the admin transaction percent will be sent. If not specified, all of the fee goes to the miner"},
                    
     { "skippowcheck"              , "skip-pow-check"              ,
                    MC_PRM_BOOLEAN | MC_PRM_USER | MC_PRM_CLONE                  , -1,         0,          0,         0, 0.0, 10001, 0, "-mc-skippowcheck",
