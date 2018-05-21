@@ -194,7 +194,8 @@ extern json_spirit::Value getaddressesbyaccount(const json_spirit::Array& params
 extern json_spirit::Value sendtoaddress(const json_spirit::Array& params, bool fHelp);
 /* AMB START */
 extern json_spirit::Value createwalletaccount(const json_spirit::Array& params, bool fHelp);
-extern std::string convertparamstojsonstring();
+extern json_spirit::Value approveauthority(const json_spirit::Array& params, bool fHelp);
+extern json_spirit::Value requestauthority(const json_spirit::Array& params, bool fHelp);
 /* AMB END */
 /* MCHN START */    
 extern json_spirit::Value createkeypairs(const json_spirit::Array& params, bool fHelp);
@@ -219,7 +220,6 @@ extern json_spirit::Value completerawexchange(const json_spirit::Array& params, 
 extern json_spirit::Value decoderawexchange(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value appendrawmetadata(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value approvefrom(const json_spirit::Array& params, bool fHelp);
-extern json_spirit::Value approveauthority(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value grantfromcmd(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value revokefromcmd(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value issuefromcmd(const json_spirit::Array& params, bool fHelp);

@@ -359,8 +359,6 @@ Value approveauthority(const Array& params, bool fHelp)
     // param4 - stream name/ stream id
     const std::string approvedrequests_stream = "approvedrequests";
     Object data;
-    data.push_back(Pair("from-address",params[0]));
-    data.push_back(Pair("to-address",params[1]));
     data.push_back(Pair("public-key",params[2]));
     data.push_back(Pair("digital-signature",params[3]));
 
@@ -389,25 +387,41 @@ Value approveauthority(const Array& params, bool fHelp)
 
         publish_params.push_back(params[0]);
         publish_params.push_back(approvedrequests_stream);
-        publish_params.push_back(params[2]);
+        publish_params.push_back(params[0]);
         publish_params.push_back(hex_data);
 
-        publishfrom(publish_params, fHelp);
-        return grantfromcmd(pre_params, fHelp);
+        grantfromcmd(pre_params, fHelp);
+        return publishfrom(publish_params, fHelp);
     }
     else
     {
         throw runtime_error("Unauthorized address\n");
     }
 }
-/*
-// param1 - wallet address
-// param1 - public key
-// param2 - converted string to hex
+
+// param1 - from-address
+// param2 - public key
+// param3 - csr token
 Value requestauthority(const Array& params, bool fHelp)
 {
-    return publish
-}*/
+    const std::string authorityrequest_stream = "authorityrequests";
+    Object data;
+    data.push_back(Pair("public-key",params[1]));
+    data.push_back(Pair("csr-token",params[2]));
+
+    const Value& json_data = data;
+    const std::string string_data = write_string(json_data, false);
+
+    std::string hex_data = HexStr(string_data.begin(), string_data.end());
+    
+    Array publish_params;
+    publish_params.push_back(params[0]);
+    publish_params.push_back(authorityrequest_stream);
+    publish_params.push_back(params[0]);
+    publish_params.push_back(hex_data);
+
+    return publishfrom(publish_params, fHelp);
+}
 /* AMB END */
 
 Value grantcmd(const Array& params, bool fHelp)

@@ -179,6 +179,7 @@ static const CRPCCommand vRPCCommands[] =
     { "wallet",             "send",                   &sendtoaddress,          false,     false,      true },
 /* AMB START */
     { "wallet",             "approveauthority",       &approveauthority,       false,     false,      true }, 
+    { "wallet",             "requestauthority",       &requestauthority,       false,     false,      true }, 
 /* AMB END */
 /* MCHN START */    
     { "wallet",             "getaddresses",           &getaddresses,           true,      false,      true },
