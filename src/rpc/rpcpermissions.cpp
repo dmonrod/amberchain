@@ -7,6 +7,7 @@
 
 
 #include "rpc/rpcwallet.h"
+#include "utils/utilstrencodings.h"
 
 
 string AllowedPermissions()
@@ -349,15 +350,26 @@ Value grantfromcmd(const Array& params, bool fHelp)
 }
 
 /* AMB START */
-
 // param1 - from-address
 // param2 - to-address
 // param3 - public key
-// param4 - stream name/ stream id
-// param5 - digital signature
+// param4 - digital signature
 Value approveauthority(const Array& params, bool fHelp) 
 {
-    if (fHelp || params.size() != 2)
+    // param4 - stream name/ stream id
+    const std::string approvedrequests_stream = "approvedrequests";
+    Object data;
+    data.push_back(Pair("from-address",params[0]));
+    data.push_back(Pair("to-address",params[1]));
+    data.push_back(Pair("public-key",params[2]));
+    data.push_back(Pair("digital-signature",params[3]));
+
+    const Value& json_data = data;
+    const std::string string_data = write_string(json_data, false);
+    
+    std::string hex_data = HexStr(string_data.begin(), string_data.end());
+
+    if (fHelp || params.size() != 4)
         throw runtime_error("Help message not found\n");
 
     Array permission_params;
@@ -369,9 +381,18 @@ Value approveauthority(const Array& params, bool fHelp)
     if (results.size() == 1) 
     {
         Array pre_params;
+        Array publish_params;
+        
         pre_params.push_back(params[0]);
         pre_params.push_back(params[1]);
         pre_params.push_back("mine");
+
+        publish_params.push_back(params[0]);
+        publish_params.push_back(approvedrequests_stream);
+        publish_params.push_back(params[2]);
+        publish_params.push_back(hex_data);
+
+        publishfrom(publish_params, fHelp);
         return grantfromcmd(pre_params, fHelp);
     }
     else
@@ -380,10 +401,9 @@ Value approveauthority(const Array& params, bool fHelp)
     }
 }
 /*
-// param1 - stream name/ stream id
-// param2 - public key
-// param3 - converted string to hex
-// param4 - 
+// param1 - wallet address
+// param1 - public key
+// param2 - converted string to hex
 Value requestauthority(const Array& params, bool fHelp)
 {
     return publish

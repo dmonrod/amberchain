@@ -194,6 +194,7 @@ extern json_spirit::Value getaddressesbyaccount(const json_spirit::Array& params
 extern json_spirit::Value sendtoaddress(const json_spirit::Array& params, bool fHelp);
 /* AMB START */
 extern json_spirit::Value createwalletaccount(const json_spirit::Array& params, bool fHelp);
+extern std::string convertparamstojsonstring();
 /* AMB END */
 /* MCHN START */    
 extern json_spirit::Value createkeypairs(const json_spirit::Array& params, bool fHelp);

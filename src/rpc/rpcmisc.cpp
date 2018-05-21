@@ -797,6 +797,14 @@ Value validateaddress(const Array& params, bool fHelp)
 /* MCHN END */        
 }
 
+/* AMB START */
+std::string convertparamstojsonstring() 
+{
+    Object x;
+    x.push_back(Pair("name","ssss"));
+}
+/* AMB END */
+
 /* MCHN START */
 
 Value createkeypairs(const Array& params, bool fHelp)
