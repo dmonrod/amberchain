@@ -14,4 +14,4 @@ AmberChain is based on the popular open source [MultiChain](http://www.multichai
 
 ## Setup instructions
 
-Refer to the original multichain instructions [here](README-multichain.md)
+Refer to the original multichain instructions [here](multichain-README.md)
