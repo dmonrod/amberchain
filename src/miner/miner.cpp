@@ -608,7 +608,39 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn,CWallet *pwallet,CP
 /* MCHN END */    
 
         // Compute final coinbase transaction.
-        txNew.vout[0].nValue = GetBlockValue(nHeight, nFees);
+        // Amber.TODO: Get this from param stream
+        // double adminFeeRatio = 0.5;
+        double adminFeeRatio = 0;
+        if (adminFeeRatio > 0)
+        {
+            // there is an adminFeeRatio defined, let's send part of the fee to the admin address!
+            // Amber.TODO: Get this from param stream
+            std::string adminAddrStr = "1L66vYDqekuQEkJgiNst6614kVY41VJGnNtMF5";
+
+            CBitcoinAddress adminAddr(adminAddrStr);
+            CKeyID keyID;
+            if (!adminAddr.GetKeyID(keyID)) 
+            {
+                throw std::runtime_error("CreateNewBlock() : Getting the keyId of the admin address failed");
+            }
+            CKey key;
+            if(!pwallet->GetKey(keyID, key))
+            {
+                throw std::runtime_error("CreateNewBlock() : Getting the key of the admin address failed");
+            }
+            CPubKey pubkey = key.GetPubKey();
+            const unsigned char *pubkey_hash=(unsigned char *)Hash160(pubkey.begin(),pubkey.end()).begin();
+            CScript scriptPubKey = CScript() << OP_DUP << OP_HASH160 << std::vector<unsigned char>(pubkey_hash, pubkey_hash + 20) << OP_EQUALVERIFY << OP_CHECKSIG;
+
+            // create a new transaction output to send the partial fee to the admin
+            CTxOut txOutAdmin;
+            txOutAdmin.scriptPubKey = scriptPubKey;
+            txOutAdmin.nValue = GetBlockValue(nHeight, nFees) * (adminFeeRatio);
+            txNew.vout.push_back(txOutAdmin);
+        }
+
+        txNew.vout[0].nValue = GetBlockValue(nHeight, nFees) * (1 - adminFeeRatio);
+
         txNew.vin[0].scriptSig = CScript() << nHeight << OP_0;
 
         pblock->vSigner[0]=ppubkey->size();
