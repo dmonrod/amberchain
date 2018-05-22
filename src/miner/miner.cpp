@@ -2,7 +2,8 @@
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Original code was distributed under the MIT software license.
 // Copyright (c) 2014-2017 Coin Sciences Ltd
-// MultiChain code distributed under the GPLv3 license, see COPYING file.
+// Copyright (c) 2018 Apsaras Group Ltd
+// Amberchain code distributed under the GPLv3 license, see COPYING file.
 
 #include "miner/miner.h"
 
@@ -608,6 +609,7 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn,CWallet *pwallet,CP
 /* MCHN END */    
 
         // Compute final coinbase transaction.
+        /* AMB START */
         // Amber.TODO: Get this from param stream
         // double adminFeeRatio = 0.5;
         double adminFeeRatio = 0;
@@ -640,6 +642,7 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn,CWallet *pwallet,CP
         }
 
         txNew.vout[0].nValue = GetBlockValue(nHeight, nFees) * (1 - adminFeeRatio);
+        /* AMB END */
 
         txNew.vin[0].scriptSig = CScript() << nHeight << OP_0;
 
