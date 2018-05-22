@@ -353,14 +353,13 @@ Value grantfromcmd(const Array& params, bool fHelp)
 // param1 - from-address
 // param2 - to-address
 // param3 - public key
-// param4 - digital signature
+// param4 - digital certificate
 Value approveauthority(const Array& params, bool fHelp) 
 {
-    // param4 - stream name/ stream id
     const std::string approvedrequests_stream = "approvedrequests";
     Object data;
     data.push_back(Pair("public-key",params[2]));
-    data.push_back(Pair("digital-signature",params[3]));
+    data.push_back(Pair("digital-certificate",params[3]));
 
     const Value& json_data = data;
     const std::string string_data = write_string(json_data, false);
