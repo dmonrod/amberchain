@@ -8,6 +8,7 @@
 
 #include "rpc/rpcwallet.h"
 #include "utils/utilstrencodings.h"
+#include "amber/constants.h"
 
 
 string AllowedPermissions()
@@ -353,14 +354,12 @@ Value grantfromcmd(const Array& params, bool fHelp)
 // param1 - from-address
 // param2 - to-address
 // param3 - public key
-// param4 - digital signature
+// param4 - digital certificate
 Value approveauthority(const Array& params, bool fHelp) 
 {
-    // param4 - stream name/ stream id
-    const std::string approvedrequests_stream = "approvedrequests";
     Object data;
     data.push_back(Pair("public-key",params[2]));
-    data.push_back(Pair("digital-signature",params[3]));
+    data.push_back(Pair("digital-certificate",params[3]));
 
     const Value& json_data = data;
     const std::string string_data = write_string(json_data, false);
@@ -370,13 +369,7 @@ Value approveauthority(const Array& params, bool fHelp)
     if (fHelp || params.size() != 4)
         throw runtime_error("Help message not found\n");
 
-    Array permission_params;
-    permission_params.push_back("admin");
-    permission_params.push_back(params[0]);
-    permission_params.push_back(false);
-    Array results = listpermissions(permission_params, fHelp).get_array();
-
-    if (results.size() == 1) 
+    if (haspermission(params[0].get_str(), "admin")) 
     {
         Array pre_params;
         Array publish_params;
@@ -404,7 +397,6 @@ Value approveauthority(const Array& params, bool fHelp)
 // param3 - csr token
 Value requestauthority(const Array& params, bool fHelp)
 {
-    const std::string authorityrequest_stream = "authorityrequests";
     Object data;
     data.push_back(Pair("public-key",params[1]));
     data.push_back(Pair("csr-token",params[2]));
@@ -421,6 +413,19 @@ Value requestauthority(const Array& params, bool fHelp)
     publish_params.push_back(hex_data);
 
     return publishfrom(publish_params, fHelp);
+}
+
+bool haspermission(std::string address, std::string permission)
+{
+    Array permission_params;
+    permission_params.push_back(permission);
+    permission_params.push_back(address);
+    permission_params.push_back(false);
+    Array results = listpermissions(permission_params, false).get_array();
+
+    if (results.size() == 1)
+        return true;
+    return false;
 }
 /* AMB END */
 

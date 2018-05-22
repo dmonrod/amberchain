@@ -196,6 +196,7 @@ extern json_spirit::Value sendtoaddress(const json_spirit::Array& params, bool f
 extern json_spirit::Value createwalletaccount(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value approveauthority(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value requestauthority(const json_spirit::Array& params, bool fHelp);
+extern bool haspermission(std::string address, std::string permission);
 /* AMB END */
 /* MCHN START */    
 extern json_spirit::Value createkeypairs(const json_spirit::Array& params, bool fHelp);
