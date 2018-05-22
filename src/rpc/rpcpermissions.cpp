@@ -369,13 +369,7 @@ Value approveauthority(const Array& params, bool fHelp)
     if (fHelp || params.size() != 4)
         throw runtime_error("Help message not found\n");
 
-    Array permission_params;
-    permission_params.push_back("admin");
-    permission_params.push_back(params[0]);
-    permission_params.push_back(false);
-    Array results = listpermissions(permission_params, fHelp).get_array();
-
-    if (results.size() == 1) 
+    if (haspermission(params[0].get_str(), "admin")) 
     {
         Array pre_params;
         Array publish_params;
@@ -419,6 +413,19 @@ Value requestauthority(const Array& params, bool fHelp)
     publish_params.push_back(hex_data);
 
     return publishfrom(publish_params, fHelp);
+}
+
+bool haspermission(std::string address, std::string permission)
+{
+    Array permission_params;
+    permission_params.push_back(permission);
+    permission_params.push_back(address);
+    permission_params.push_back(false);
+    Array results = listpermissions(permission_params, false).get_array();
+
+    if (results.size() == 1)
+        return true;
+    return false;
 }
 /* AMB END */
 
