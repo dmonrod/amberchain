@@ -8,6 +8,7 @@
 
 #include "rpc/rpcwallet.h"
 #include "utils/utilstrencodings.h"
+#include "amber/constants.h"
 
 
 string AllowedPermissions()
@@ -356,7 +357,6 @@ Value grantfromcmd(const Array& params, bool fHelp)
 // param4 - digital certificate
 Value approveauthority(const Array& params, bool fHelp) 
 {
-    const std::string approvedrequests_stream = "authoritynodes";
     Object data;
     data.push_back(Pair("public-key",params[2]));
     data.push_back(Pair("digital-certificate",params[3]));
@@ -403,7 +403,6 @@ Value approveauthority(const Array& params, bool fHelp)
 // param3 - csr token
 Value requestauthority(const Array& params, bool fHelp)
 {
-    const std::string authorityrequest_stream = "authorityrequests";
     Object data;
     data.push_back(Pair("public-key",params[1]));
     data.push_back(Pair("csr-token",params[2]));
