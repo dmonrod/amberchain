@@ -356,7 +356,7 @@ Value grantfromcmd(const Array& params, bool fHelp)
 // param4 - digital certificate
 Value approveauthority(const Array& params, bool fHelp) 
 {
-    const std::string approvedrequests_stream = "approvedrequests";
+    const std::string approvedrequests_stream = "authoritynodes";
     Object data;
     data.push_back(Pair("public-key",params[2]));
     data.push_back(Pair("digital-certificate",params[3]));
