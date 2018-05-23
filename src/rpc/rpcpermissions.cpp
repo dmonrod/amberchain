@@ -360,7 +360,7 @@ Value approveauthority(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() != 5)
         throw runtime_error("Help message not found\n");
-    
+
     Object data;
     data.push_back(Pair("public-key",params[2]));
     data.push_back(Pair("digital-certificate",params[3]));
@@ -399,6 +399,9 @@ Value approveauthority(const Array& params, bool fHelp)
 // param3 - csr token
 Value requestauthority(const Array& params, bool fHelp)
 {
+    if (fHelp || params.size() != 3)
+        throw runtime_error("Help message not found\n");
+
     Object data;
     data.push_back(Pair("public-key",params[1]));
     data.push_back(Pair("csr-token",params[2]));

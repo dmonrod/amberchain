@@ -3810,7 +3810,6 @@ void mc_InitRPCHelpMap17()
             "1. \"address(es)\"              (string or array, required) Full public key or an array of public keys.\n"
         ));
 
-
     mapHelpStrings.insert(std::make_pair("approveauthority",
             "approveauthority\n"
             "\nApproves a request for authority \n"
@@ -3822,6 +3821,17 @@ void mc_InitRPCHelpMap17()
             "5. \"certificate-details\"       (string, required) JSON string of the CSR contents\n"
             "\nExample:\n"
             + HelpExampleCli("approveauthority", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd, 1B72Smnbz123pXFH29m3CdqATR44Jvayff, 0xpublickey, 0xdigitalcertificate, \"{'country':'China'}\" ") 
+        ));
+
+    mapHelpStrings.insert(std::make_pair("requestauthority",
+            "requestauthority\n"
+            "\nRequests for authority permission \n"
+            "\nArguments:\n"
+            "1. \"from-address\"              (string, required) Address of the requestor\n"
+            "2. \"public-key\"                (string, required) Public key of the Certificate Signing Request\n"
+            "2. \"csr\"                       (string, required) Certificate Signing Request\n"
+            "\nExample:\n"
+            + HelpExampleCli("approveauthority", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd, 0xpublickey, 0xcertificatesigningrequest") 
         ));
 }
 
