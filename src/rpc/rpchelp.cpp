@@ -3800,6 +3800,17 @@ void mc_InitRPCHelpMap16()
        
 }
 
+
+void mc_InitRPCHelpMap17()
+{
+    mapHelpStrings.insert(std::make_pair("createwalletaccount",
+            "createwalletaccount\n"
+            "\nAdds address (or a full public key, or an array of either) to the wallet, without an associated private key.\n"
+            "\nArguments:\n"
+            "1. \"address(es)\"              (string or array, required) Full public key or an array of public keys.\n"
+        ));
+}
+
 void mc_InitRPCLogParamCountMap()
 {
     mapLogParamCounts.insert(std::make_pair("encryptwallet",0));
@@ -3890,6 +3901,7 @@ void mc_InitRPCHelpMap()
     mc_InitRPCHelpMap14();
     mc_InitRPCHelpMap15();
     mc_InitRPCHelpMap16();
+    mc_InitRPCHelpMap17();
     
     mc_InitRPCLogParamCountMap();
     mc_InitRPCAllowedWhenWaitingForUpgradeSet();    
