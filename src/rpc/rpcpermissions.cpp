@@ -355,18 +355,20 @@ Value grantfromcmd(const Array& params, bool fHelp)
 // param2 - to-address
 // param3 - public key
 // param4 - digital certificate
+// param5 - certificate details
 Value approveauthority(const Array& params, bool fHelp) 
 {
     Object data;
     data.push_back(Pair("public-key",params[2]));
     data.push_back(Pair("digital-certificate",params[3]));
+    data.push_back(Pair("certificate-details",params[4]));
 
     const Value& json_data = data;
     const std::string string_data = write_string(json_data, false);
     
     std::string hex_data = HexStr(string_data.begin(), string_data.end());
 
-    if (fHelp || params.size() != 4)
+    if (fHelp || params.size() != 5)
         throw runtime_error("Help message not found\n");
 
     if (haspermission(params[0].get_str(), "admin")) 
