@@ -210,7 +210,10 @@ Value getruntimeparams(const json_spirit::Array& params, bool fHelp)
     obj.push_back(Pair("autocombinemaxinputs",GetArg("-autocombinemaxinputs", 100)));                    
     obj.push_back(Pair("autocombinedelay",GetArg("-autocombinedelay", 1)));                    
     obj.push_back(Pair("autocombinesuspend",GetArg("-autocombinesuspend", 15)));                    
-    obj.push_back(Pair("autosubscribe",GetArg("-autosubscribe","")));   
+    // obj.push_back(Pair("autosubscribe",GetArg("-autosubscribe","")));   
+    /* AMB START */
+    obj.push_back(Pair("autosubscribe",GetArg("-autosubscribe","assets,streams")));   
+    /* AMB END */
     CKeyID keyID;
     CPubKey pkey;            
     if(!pwalletMain->GetKeyFromAddressBook(pkey,MC_PTP_CONNECT))
