@@ -1440,7 +1440,10 @@ bool AppInit2(boost::thread_group& threadGroup,int OutputPipe)
                 {
                     mc_gState->m_WalletMode |= MC_WMD_DEBUG;
                 }
-                string autosubscribe=GetArg("-autosubscribe","none");
+                // string autosubscribe=GetArg("-autosubscribe","");
+                /* AMB START */
+                string autosubscribe=GetArg("-autosubscribe","assets,streams");
+                /* AMB END */
                 
                 if(autosubscribe=="streams")
                 {
