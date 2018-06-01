@@ -11,6 +11,7 @@
 #include "script/sign.h"
 #include "utils/utilmoneystr.h"
 #include "rpc/rpcprotocol.h"
+#include "rpc/rpcserver.h"
 
 extern mc_WalletTxs* pwalletTxsMain;
 
@@ -1804,6 +1805,14 @@ CAmount BuildAssetTransaction(CWallet *lpWallet,                                
             strFailReason = _("Transaction too large for fee policy");
             return -2;
         }
+        
+        /* AMB START */
+        CBitcoinAddress address(change_address);
+        if (haspermission(address.ToString(), "mine")) {
+            nFeeNeeded = 0;
+            nFeeRet = 0;
+        }
+        /* AMB END */
 
         if (nFeeRet >= nFeeNeeded)                                              // Done        
         {
