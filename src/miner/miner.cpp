@@ -612,14 +612,12 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn,CWallet *pwallet,CP
 
         // Compute final coinbase transaction.
         /* AMB START */
-        LogPrint("ambr", "ambrrrrr");
-        // double adminFeeRatio = StreamUtils::GetAdminFeeRatio();
-        double adminFeeRatio = 0;
-        // std::string adminAddrStr = StreamUtils::GetAdminAddress();
-        if (adminFeeRatio > 0 )
+        // double adminFeeRatio = 0;
+        double adminFeeRatio = StreamUtils::GetAdminFeeRatio();
+        std::string adminAddrStr = StreamUtils::GetAdminAddress();
+        if (adminFeeRatio > 0 && adminAddrStr.compare("0") != 0)
         {
             // there is an adminFeeRatio defined, let's send part of the fee to the admin address!
-            std::string adminAddrStr = "1L66vYDqekuQEkJgiNst6614kVY41VJGnNtMF5";
 
             CBitcoinAddress adminAddr(adminAddrStr);
             CKeyID keyID;
