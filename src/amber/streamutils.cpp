@@ -35,7 +35,8 @@ namespace StreamUtils {
         Array adminAddressStreamItems = liststreamkeyitems(streamParams, false).get_array();
         
         if (adminAddressStreamItems.size() == 0) {
-            return PermissionUtils::GetFirstAdminAddressFromPermissions();
+            // return PermissionUtils::GetFirstAdminAddressFromPermissions();
+            return "0";
         }
         
         Object latestAdminAddressEntry = adminAddressStreamItems.back().get_obj();
@@ -48,6 +49,12 @@ namespace StreamUtils {
 
     double GetAdminFeeRatio() {
         double adminFeeRatioValue = 0;
+
+        LogPrint("ambr", "test1");
+        if (!IsStreamExisting(STREAM_TRANSACTIONPARAMS)) {
+            return adminFeeRatioValue;
+        }
+        LogPrint("ambr", "test4");
 
         Array streamParams;
         streamParams.push_back(STREAM_TRANSACTIONPARAMS);
@@ -67,6 +74,22 @@ namespace StreamUtils {
 
         return adminFeeRatioValue;
     }
+
+    bool IsStreamExisting(string streamName) {
+        try {
+            Array streamParams;
+            streamParams.push_back(streamName);
+            Array streamResults = liststreams(streamParams, false).get_array();
+            LogPrint("ambr", "test2");
+            return true;
+        }
+        catch (std::exception& e) {
+            LogPrint("ambr", "test3");
+            return false;
+        }
+
+    }
+
 }
 
 /* AMB END */
