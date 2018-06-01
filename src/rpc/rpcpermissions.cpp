@@ -441,6 +441,8 @@ Value grantcmd(const Array& params, bool fHelp)
     if (fHelp || params.size() < 2 || params.size() > 7)
         throw runtime_error("Help message not found\n");
 
+    throw runtime_error(itostr(params[1].get_str().find("x")));
+
     Array ext_params;
     ext_params.push_back("*");
     int param_count=1;
