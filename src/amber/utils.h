@@ -1,3 +1,7 @@
+/* AMB START */
+
+// Amberchain code distributed under the GPLv3 license, see COPYING file.
+
 #ifndef AMBER_CONSTANTS_H
 #define AMBER_CONSTANTS_H
 
@@ -44,3 +48,5 @@ struct StreamConsts
 string SampleFunction();
 
 #endif
+
+/* AMB END */
