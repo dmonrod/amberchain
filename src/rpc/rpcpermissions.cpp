@@ -8,7 +8,7 @@
 
 #include "rpc/rpcwallet.h"
 #include "utils/utilstrencodings.h"
-#include "amber/constants.h"
+#include "amber/utils.h"
 
 
 string AllowedPermissions()
@@ -361,6 +361,8 @@ Value approveauthority(const Array& params, bool fHelp)
     if (fHelp || params.size() != 5)
         throw runtime_error("Help message not found\n");
 
+    SampleFunction();
+
     Object data;
     data.push_back(Pair("public-key",params[2]));
     data.push_back(Pair("digital-certificate",params[3]));
@@ -381,7 +383,7 @@ Value approveauthority(const Array& params, bool fHelp)
         pre_params.push_back("mine");
 
         publish_params.push_back(params[0]);
-        publish_params.push_back(approvedrequests_stream);
+        publish_params.push_back(STREAM_AUTHNODES);
         publish_params.push_back(params[0]);
         publish_params.push_back(hex_data);
 
@@ -413,7 +415,7 @@ Value requestauthority(const Array& params, bool fHelp)
     
     Array publish_params;
     publish_params.push_back(params[0]);
-    publish_params.push_back(authorityrequest_stream);
+    publish_params.push_back(STREAM_AUTHREQUESTS);
     publish_params.push_back(params[0]);
     publish_params.push_back(hex_data);
 
