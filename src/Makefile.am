@@ -309,6 +309,7 @@ libbitcoin_util_a_SOURCES = \
   utils/utilstrencodings.cpp \
   utils/utilmoneystr.cpp \
   utils/utiltime.cpp \
+  amber/utils.cpp \
   $(BITCOIN_CORE_H)
 
 if GLIBC_BACK_COMPAT
