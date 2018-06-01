@@ -19,6 +19,7 @@ using namespace json_spirit;
 namespace StreamUtils {
     unsigned int GetMinimumRelayTxFee();
     string GetAdminAddress();
+    double GetAdminFeeRatio();
 }
 
 #endif //AMBER_STREAMUTILS_H

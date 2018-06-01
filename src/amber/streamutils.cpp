@@ -23,7 +23,7 @@ namespace StreamUtils {
         
         unsigned int latestMinRelayTxFeeValue = atoi(latestMinRelayTxFeeValueString.c_str());
 
-        LogPrint("ambr", "ambr-test: HEXTOSTR(%s) INT(%u)", latestMinRelayTxFeeValueString, latestMinRelayTxFeeValue); 
+        LogPrint("ambr", "ambr-test: min-relay-tx-fee HEXTOSTR(%s) INT(%u)\n", latestMinRelayTxFeeValueString, latestMinRelayTxFeeValue);
 
         return latestMinRelayTxFeeValue;
     }
@@ -41,9 +41,31 @@ namespace StreamUtils {
         Object latestAdminAddressEntry = adminAddressStreamItems.back().get_obj();
         string latestAdminAddressValueString = HexToStr(latestAdminAddressEntry[2].value_.get_str());
         
-        LogPrint("ambr", "ambr-test: HEXTOSTR(%s)", latestAdminAddressValueString); 
+        LogPrint("ambr", "ambr-test: admin-address HEXTOSTR(%s) \n", latestAdminAddressValueString);
 
         return latestAdminAddressValueString;
+    }
+
+    double GetAdminFeeRatio() {
+        double adminFeeRatio = 0;
+
+        Array streamParams;
+        streamParams.push_back(STREAM_TRANSACTIONPARAMS);
+        streamParams.push_back(KEY_ADMINFEERATIO);
+        Array adminFeeRatioStreamItems = liststreamkeyitems(streamParams, false).get_array();
+
+        if (adminFeeRatioStreamItems.size() == 0) {
+            return adminFeeRatio;
+        }
+
+        Object adminFeeRatioEntry = adminFeeRatioStreamItems.back().get_obj();
+        string adminFeeRatioValueString = HexToStr(adminFeeRatioEntry[2].value_.get_str());
+
+        double adminFeeRatioValue = atof(adminFeeRatioValueString.c_str());
+
+        LogPrint("ambr", "ambr-test: admin-fee-ratio HEXTOSTR(%s) DOUBLE(%f)", adminFeeRatioValueString, adminFeeRatioValue);
+
+        return adminFeeRatioValue;
     }
 }
 
