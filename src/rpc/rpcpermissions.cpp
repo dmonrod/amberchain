@@ -27,7 +27,13 @@ Value grantoperation(const Array& params)
     vector<CTxDestination> addresses;
     set<CBitcoinAddress> setAddress;
     
-    stringstream ss(params[1].get_str()); 
+    // stringstream ss(params[1].get_str()); 
+    /* AMB START */
+    if (params[1].find("admin"))
+    {
+        
+    }
+    /* AMB END */
     string tok;
 
     while(getline(ss, tok, ',')) 
