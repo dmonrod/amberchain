@@ -361,8 +361,6 @@ Value approveauthority(const Array& params, bool fHelp)
     if (fHelp || params.size() != 5)
         throw runtime_error("Help message not found\n");
 
-    SampleFunction();
-
     Object data;
     data.push_back(Pair("public-key",params[2]));
     data.push_back(Pair("digital-certificate",params[3]));
