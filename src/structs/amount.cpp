@@ -8,6 +8,8 @@
 
 #include "utils/tinyformat.h"
 
+#include "amber/streamutils.h"
+
 CFeeRate::CFeeRate(const CAmount& nFeePaid, size_t nSize)
 {
     if (nSize > 0)
@@ -18,10 +20,15 @@ CFeeRate::CFeeRate(const CAmount& nFeePaid, size_t nSize)
 
 CAmount CFeeRate::GetFee(size_t nSize) const
 {
-    CAmount nFee = nSatoshisPerK*nSize / 1000;
+    /* AMB START */
 
-    if (nFee == 0 && nSatoshisPerK > 0)
-        nFee = nSatoshisPerK;
+    unsigned int minRelayTxFee = StreamUtils::GetMinimumRelayTxFee();
+
+    /* AMB END */
+    CAmount nFee = minRelayTxFee*nSize / 1000;
+
+    if (nFee == 0 && minRelayTxFee > 0)
+        nFee = minRelayTxFee;
 
     return nFee;
 }

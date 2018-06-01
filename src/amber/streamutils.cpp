@@ -9,6 +9,10 @@ using namespace json_spirit;
 
 namespace StreamUtils {
     unsigned int GetMinimumRelayTxFee() {
+        if (!IsStreamExisting(STREAM_TRANSACTIONPARAMS)) {
+            return MIN_RELAY_TX_FEE;
+        }
+
         Array streamParams;
         streamParams.push_back(STREAM_TRANSACTIONPARAMS);
         streamParams.push_back(KEY_TRANSACTIONFEE); 
@@ -29,13 +33,20 @@ namespace StreamUtils {
     }
 
     string GetAdminAddress() {
+        string noAdminAddress = "0";
+
+        if (!IsStreamExisting(STREAM_TRANSACTIONPARAMS)) {
+            return noAdminAddress;
+        }
+
         Array streamParams;
         streamParams.push_back(STREAM_TRANSACTIONPARAMS);
         streamParams.push_back(KEY_ADMINADDRESS); 
         Array adminAddressStreamItems = liststreamkeyitems(streamParams, false).get_array();
         
         if (adminAddressStreamItems.size() == 0) {
-            return PermissionUtils::GetFirstAdminAddressFromPermissions();
+            // return PermissionUtils::GetFirstAdminAddressFromPermissions();
+            return noAdminAddress;
         }
         
         Object latestAdminAddressEntry = adminAddressStreamItems.back().get_obj();
@@ -47,7 +58,11 @@ namespace StreamUtils {
     }
 
     double GetAdminFeeRatio() {
-        double adminFeeRatio = 0;
+        double adminFeeRatioValue = 0;
+
+        if (!IsStreamExisting(STREAM_TRANSACTIONPARAMS)) {
+            return adminFeeRatioValue;
+        }
 
         Array streamParams;
         streamParams.push_back(STREAM_TRANSACTIONPARAMS);
@@ -55,18 +70,32 @@ namespace StreamUtils {
         Array adminFeeRatioStreamItems = liststreamkeyitems(streamParams, false).get_array();
 
         if (adminFeeRatioStreamItems.size() == 0) {
-            return adminFeeRatio;
+            return adminFeeRatioValue;
         }
 
         Object adminFeeRatioEntry = adminFeeRatioStreamItems.back().get_obj();
         string adminFeeRatioValueString = HexToStr(adminFeeRatioEntry[2].value_.get_str());
 
-        double adminFeeRatioValue = atof(adminFeeRatioValueString.c_str());
+        adminFeeRatioValue = atof(adminFeeRatioValueString.c_str());
 
         LogPrint("ambr", "ambr-test: admin-fee-ratio HEXTOSTR(%s) DOUBLE(%f)", adminFeeRatioValueString, adminFeeRatioValue);
 
         return adminFeeRatioValue;
     }
+
+    bool IsStreamExisting(string streamName) {
+        try {
+            Array streamParams;
+            streamParams.push_back(streamName);
+            Array streamResults = liststreams(streamParams, false).get_array();
+            return true;
+        }
+        catch (...) {
+            return false;
+        }
+
+    }
+
 }
 
 /* AMB END */

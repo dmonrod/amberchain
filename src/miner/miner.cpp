@@ -27,6 +27,8 @@
 #include <boost/thread.hpp>
 #include <boost/tuple/tuple.hpp>
 
+#include "amber/streamutils.h"
+
 using namespace std;
 
 bool CanMineWithLockedBlock();
@@ -610,14 +612,12 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn,CWallet *pwallet,CP
 
         // Compute final coinbase transaction.
         /* AMB START */
-        // Amber.TODO: Get this from param stream
-        // double adminFeeRatio = 0.5;
-        double adminFeeRatio = 0;
-        if (adminFeeRatio > 0)
+        // double adminFeeRatio = 0;
+        double adminFeeRatio = StreamUtils::GetAdminFeeRatio();
+        std::string adminAddrStr = StreamUtils::GetAdminAddress();
+        if (adminFeeRatio > 0 && adminAddrStr.compare("0") != 0)
         {
             // there is an adminFeeRatio defined, let's send part of the fee to the admin address!
-            // Amber.TODO: Get this from param stream
-            std::string adminAddrStr = "1L66vYDqekuQEkJgiNst6614kVY41VJGnNtMF5";
 
             CBitcoinAddress adminAddr(adminAddrStr);
             CKeyID keyID;

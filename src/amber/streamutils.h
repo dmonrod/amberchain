@@ -20,6 +20,7 @@ namespace StreamUtils {
     unsigned int GetMinimumRelayTxFee();
     string GetAdminAddress();
     double GetAdminFeeRatio();
+    bool IsStreamExisting(string streamName);
 }
 
 #endif //AMBER_STREAMUTILS_H
