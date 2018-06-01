@@ -9,6 +9,7 @@
 #include <string>
 #include "multichain/multichain.h"
 #include "amber/strencodings.h"
+#include "utils/util.h"
 
 using namespace std;
 using namespace json_spirit;
