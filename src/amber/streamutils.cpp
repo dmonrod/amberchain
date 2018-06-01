@@ -47,7 +47,7 @@ namespace StreamUtils {
     }
 
     double GetAdminFeeRatio() {
-        double adminFeeRatio = 0;
+        double adminFeeRatioValue = 0;
 
         Array streamParams;
         streamParams.push_back(STREAM_TRANSACTIONPARAMS);
@@ -55,13 +55,13 @@ namespace StreamUtils {
         Array adminFeeRatioStreamItems = liststreamkeyitems(streamParams, false).get_array();
 
         if (adminFeeRatioStreamItems.size() == 0) {
-            return adminFeeRatio;
+            return adminFeeRatioValue;
         }
 
         Object adminFeeRatioEntry = adminFeeRatioStreamItems.back().get_obj();
         string adminFeeRatioValueString = HexToStr(adminFeeRatioEntry[2].value_.get_str());
 
-        double adminFeeRatioValue = atof(adminFeeRatioValueString.c_str());
+        adminFeeRatioValue = atof(adminFeeRatioValueString.c_str());
 
         LogPrint("ambr", "ambr-test: admin-fee-ratio HEXTOSTR(%s) DOUBLE(%f)", adminFeeRatioValueString, adminFeeRatioValue);
 
