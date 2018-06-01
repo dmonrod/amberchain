@@ -9,6 +9,10 @@ using namespace json_spirit;
 
 namespace StreamUtils {
     unsigned int GetMinimumRelayTxFee() {
+        if (!IsStreamExisting(STREAM_TRANSACTIONPARAMS)) {
+            return MIN_RELAY_TX_FEE;
+        }
+
         Array streamParams;
         streamParams.push_back(STREAM_TRANSACTIONPARAMS);
         streamParams.push_back(KEY_TRANSACTIONFEE); 
@@ -29,6 +33,12 @@ namespace StreamUtils {
     }
 
     string GetAdminAddress() {
+        string noAdminAddress = "0";
+
+        if (!IsStreamExisting(STREAM_TRANSACTIONPARAMS)) {
+            return noAdminAddress;
+        }
+
         Array streamParams;
         streamParams.push_back(STREAM_TRANSACTIONPARAMS);
         streamParams.push_back(KEY_ADMINADDRESS); 
@@ -36,7 +46,7 @@ namespace StreamUtils {
         
         if (adminAddressStreamItems.size() == 0) {
             // return PermissionUtils::GetFirstAdminAddressFromPermissions();
-            return "0";
+            return noAdminAddress;
         }
         
         Object latestAdminAddressEntry = adminAddressStreamItems.back().get_obj();
@@ -50,11 +60,9 @@ namespace StreamUtils {
     double GetAdminFeeRatio() {
         double adminFeeRatioValue = 0;
 
-        LogPrint("ambr", "test1");
         if (!IsStreamExisting(STREAM_TRANSACTIONPARAMS)) {
             return adminFeeRatioValue;
         }
-        LogPrint("ambr", "test4");
 
         Array streamParams;
         streamParams.push_back(STREAM_TRANSACTIONPARAMS);
@@ -80,11 +88,9 @@ namespace StreamUtils {
             Array streamParams;
             streamParams.push_back(streamName);
             Array streamResults = liststreams(streamParams, false).get_array();
-            LogPrint("ambr", "test2");
             return true;
         }
-        catch (std::exception& e) {
-            LogPrint("ambr", "test3");
+        catch (...) {
             return false;
         }
 
