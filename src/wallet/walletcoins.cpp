@@ -1,8 +1,9 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2014-2016 The Bitcoin Core developers
+// Copyright (c) 2009-2014 The Bitcoin developers
 // Original code was distributed under the MIT software license.
 // Copyright (c) 2014-2017 Coin Sciences Ltd
-// MultiChain code distributed under the GPLv3 license, see COPYING file.
+// Copyright (c) 2018 Apsaras Group Ltd
+// Amberchain code distributed under the GPLv3 license, see COPYING file.
 
 #include "wallet/wallet.h"
 #include "wallet/wallettxs.h"
@@ -11,6 +12,7 @@
 #include "script/sign.h"
 #include "utils/utilmoneystr.h"
 #include "rpc/rpcprotocol.h"
+#include "rpc/rpcserver.h"
 
 extern mc_WalletTxs* pwalletTxsMain;
 
@@ -1804,6 +1806,14 @@ CAmount BuildAssetTransaction(CWallet *lpWallet,                                
             strFailReason = _("Transaction too large for fee policy");
             return -2;
         }
+        
+        /* AMB START */
+        CBitcoinAddress address(change_address);
+        if (haspermission(address.ToString(), "mine")) {
+            nFeeNeeded = 0;
+            nFeeRet = 0;
+        }
+        /* AMB END */
 
         if (nFeeRet >= nFeeNeeded)                                              // Done        
         {

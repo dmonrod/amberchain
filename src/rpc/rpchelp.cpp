@@ -3829,9 +3829,44 @@ void mc_InitRPCHelpMap17()
             "\nArguments:\n"
             "1. \"from-address\"              (string, required) Address of the requestor\n"
             "2. \"public-key\"                (string, required) Public key of the Certificate Signing Request\n"
-            "2. \"csr\"                       (string, required) Certificate Signing Request\n"
+            "3. \"csr\"                       (string, required) Certificate Signing Request\n"
             "\nExample:\n"
             + HelpExampleCli("approveauthority", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd, 0xpublickey, 0xcertificatesigningrequest") 
+        ));
+
+    mapHelpStrings.insert(std::make_pair("writerecord",
+            "writerecord\n"
+            "\nWrite entry to record stream \n"
+            "\nArguments:\n"
+            "1. \"from-address\"              (string, required) Address of the requestor\n"
+            "2. \"wallet-address\"            (string, required) Wallet address for the user the authority wishes to write to\n"
+            "3. \"encrypted-data\"            (string, required) Encrypted JSON data\n"
+            "4. \"encrypted-key\"             (string, required) Encrypted key to decrypt the JSON data\n"
+            "\nExample:\n"
+            + HelpExampleCli("writerecord", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd, 1B72Smnbz123pXFH29m3CdqATR44Jvayff, 123encrypteddata, 456encryptedkey") 
+        ));
+
+    mapHelpStrings.insert(std::make_pair("annotaterecord",
+            "annotaterecord\n"
+            "\nAnnotate existing record in Records stream \n"
+            "\nArguments:\n"
+            "1. \"from-address\"              (string, required) Address of the requestor\n"
+            "2. \"stream-txid\"               (string, required) Stream transaction ID in Records stream to be annotated\n"
+            "3. \"encrypted-data\"            (string, required) Encrypted JSON data\n"
+            "\nExample:\n"
+            + HelpExampleCli("annotaterecord", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd, 5d06edd7a0dbd0d83478c25fbf30cf3f07ceac45d9ced1591f6bd982fb878647, 123encrypteddata") 
+        ));
+
+
+    mapHelpStrings.insert(std::make_pair("revokerecord",
+            "revokerecord\n"
+            "\nRevoke existing record in Records stream \n"
+            "\nArguments:\n"
+            "1. \"from-address\"              (string, required) Address of the requestor\n"
+            "2. \"stream-txid\"               (string, required) Stream transaction ID in Records stream to be annotated\n"
+            "3. \"encrypted-data\"            (string, required) Encrypted JSON data\n"
+            "\nExample:\n"
+            + HelpExampleCli("revokerecord", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd, 5d06edd7a0dbd0d83478c25fbf30cf3f07ceac45d9ced1591f6bd982fb878647, 123encrypteddata") 
         ));
 }
 

@@ -12,6 +12,8 @@
 #define STREAM_AUTHNODES            "authoritynodes"
 #define STREAM_AUTHREQUESTS         "authorityrequests"
 #define STREAM_TRANSACTIONPARAMS    "transactionparams"
+#define STREAM_RECORDS              "records"
+#define STREAM_ANNOTATEDRECORDS     "annotatedrecords"
 #define KEY_TRANSACTIONFEE          "min-relay-tx-fee"
 #define KEY_ADMINADDRESS            "admin-address"
 #define KEY_ADMINFEERATIO           "admin-fee-ratio"
@@ -39,6 +41,8 @@ struct StreamConsts
 		m["admin"] = admin_streams;
 
 		vector<string> mine_streams;
+        mine_streams.push_back(STREAM_RECORDS);
+        mine_streams.push_back(STREAM_ANNOTATEDRECORDS);
 		m["mine"] = mine_streams;		
         return m;
     }

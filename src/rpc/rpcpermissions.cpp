@@ -22,13 +22,13 @@ string AllowedPermissions()
     return ret;
 }
 
-Value grantoperation(const Array& params)
+Value grantoperation1(const Array& params)
 {
     vector<CTxDestination> addresses;
     set<CBitcoinAddress> setAddress;
     
     stringstream ss(params[1].get_str()); 
-    string tok;
+    string tok;  
 
     while(getline(ss, tok, ',')) 
     {
@@ -307,6 +307,44 @@ Value grantoperation(const Array& params)
     
 }
 
+/* AMB START */
+Value grantoperation(const Array& params)
+{
+    string permission_list = params[2].get_str();
+    vector<std::string> streams;
+
+    if (int32_t(permission_list.find("admin")) >= 0)
+    {
+        streams = StreamConsts::streamsPerPermission.at("admin");
+    }
+    else if (int32_t(permission_list.find("mine")) >= 0)
+    {
+        streams = StreamConsts::streamsPerPermission.at("mine");
+    }
+
+    for(std::vector<std::string>::iterator it = streams.begin(); it != streams.end(); ++it) {
+        std::string stream_name = *it;
+        
+        Array stream_params;
+        int param_count=0;
+        BOOST_FOREACH(const Value& value, params)
+        {
+            if(param_count==2)
+            {
+                stream_params.push_back(stream_name + ".write");            
+            }
+            else
+            {
+                stream_params.push_back(value);                
+            }
+            param_count++;
+        }
+        grantoperation1(stream_params);
+    }
+    return grantoperation1(params);
+}
+/* AMB END */
+
 Value grantwithmetadatafrom(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() < 4 || params.size() > 7)
@@ -360,6 +398,8 @@ Value approveauthority(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() != 5)
         throw runtime_error("Help message not found\n");
+
+    SampleFunction();
 
     Object data;
     data.push_back(Pair("public-key",params[2]));

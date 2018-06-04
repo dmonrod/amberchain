@@ -180,6 +180,9 @@ static const CRPCCommand vRPCCommands[] =
 /* AMB START */
     { "wallet",             "approveauthority",       &approveauthority,       false,     false,      true }, 
     { "wallet",             "requestauthority",       &requestauthority,       false,     false,      true }, 
+    { "wallet",             "annotaterecord",         &annotaterecord,         false,     false,      true }, 
+    { "wallet",             "revokerecord",           &revokerecord,           false,     false,      true }, 
+    { "wallet",             "writerecord",            &writerecord,            false,     false,      true }, 
 /* AMB END */
 /* MCHN START */    
     { "wallet",             "getaddresses",           &getaddresses,           true,      false,      true },
