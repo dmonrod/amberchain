@@ -6,6 +6,7 @@
 
 
 #include "rpc/rpcwallet.h"
+#include "amber/utils.h"
 
 Value createupgradefromcmd(const Array& params, bool fHelp);
 
@@ -1563,3 +1564,130 @@ Value liststreampublishers(const Array& params, bool fHelp)
     return liststreamkeys_or_publishers(params,true);
 }
 
+/* AMB START */
+// param1 - from-address
+// param2 - wallet address
+// param3 - encrypted data
+// param4 - encrypted private key
+
+Value writerecord(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() != 4)
+        throw runtime_error("Help message not found\n");
+
+    if (haspermission(params[0].get_str(), "mine")) 
+    {
+        Array ext_params;
+        Object content;
+
+        content.push_back(Pair("data",params[2]));
+        content.push_back(Pair("encrypted-key",params[3]));
+
+        const Value& json_data = content;
+        const std::string string_data = write_string(json_data, false);
+        
+        std::string hex_data = HexStr(string_data.begin(), string_data.end());
+
+        ext_params.push_back(params[0]); // from-address
+        ext_params.push_back(STREAM_RECORDS); // stream for writing records
+        ext_params.push_back(params[1]); // wallet address of involved user
+        ext_params.push_back(hex_data);
+
+        return publishfrom(ext_params, fHelp);
+    }
+    else
+    {
+        throw runtime_error("Unauthorized address\n");
+    }
+}
+
+// param1 - from-address
+// param2 - previous stream id
+// param3 - encrypted data
+// param4 - type
+Value writeannotatedrecord(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() != 4)
+        throw runtime_error("Help message not found\n");
+
+    if (haspermission(params[0].get_str(), "mine")) 
+    {
+
+        Array ext_params;
+        Object content;
+
+        content.push_back(Pair("type",params[3]));
+        content.push_back(Pair("data",params[2]));
+
+        const Value& json_data = content;
+        const std::string string_data = write_string(json_data, false);
+        
+        std::string hex_data = HexStr(string_data.begin(), string_data.end());
+
+        ext_params.push_back(params[0]); // from-address
+        ext_params.push_back(STREAM_ANNOTATEDRECORDS); // stream for annotating/revoking records
+        ext_params.push_back(params[1]); // transaction id of annotated record
+        ext_params.push_back(hex_data);
+
+        return publishfrom(ext_params, fHelp);
+    }
+    else
+    {
+        throw runtime_error("Unauthorized address\n");
+    }
+}
+
+// param1 - from-address
+// param2 - previous stream id
+// param3 - encrypted data
+Value annotaterecord(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() != 3)
+        throw runtime_error("Help message not found\n");
+
+    Array ext_params;
+
+    if (haspermission(params[0].get_str(), "mine"))
+    {    
+        BOOST_FOREACH(const Value& value, params)
+        {
+            ext_params.push_back(value);
+        }
+        ext_params.push_back("annotate");
+    }
+    else
+    {
+        throw runtime_error("Unauthorized address\n");
+    }
+
+    return writeannotatedrecord(ext_params, fHelp);
+}
+
+// param1 - from-address
+// param2 - previous stream id
+// param3 - encrypted data
+Value revokerecord(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() != 3)
+        throw runtime_error("Help message not found\n");
+
+
+    Array ext_params;
+
+    if (haspermission(params[0].get_str(), "mine"))
+    {    
+        BOOST_FOREACH(const Value& value, params)
+        {
+            ext_params.push_back(value);
+        }
+        ext_params.push_back("revoke");
+    }
+    else
+    {
+        throw runtime_error("Unauthorized address\n");
+    }
+
+    return writeannotatedrecord(ext_params, fHelp);
+}
+
+/* AMB END */
