@@ -311,18 +311,37 @@ Value grantoperation1(const Array& params)
 Value grantoperation(const Array& params)
 {
     string permission_list = params[2].get_str();
-    vector<std::string> streams;
+    vector<std::string> streams;    
+    vector<string> permissions;
 
     if (int32_t(permission_list.find("admin")) >= 0)
     {
         streams = StreamConsts::streamsPerPermission.at("admin");
+
+        for(std::vector<std::string>::iterator it = streams.begin(); it != streams.end(); ++it) {
+            std::string stream_name = *it;
+            permissions.push_back(stream_name + ".write");            
+        }
+
+        streams = StreamConsts::streamsPerPermission.at("mine");
+        for(std::vector<std::string>::iterator it = streams.begin(); it != streams.end(); ++it) {
+            std::string stream_name = *it;
+            permissions.push_back(stream_name + ".admin");            
+        }
+
     }
-    else if (int32_t(permission_list.find("mine")) >= 0)
+    
+    if (int32_t(permission_list.find("mine")) >= 0)
     {
         streams = StreamConsts::streamsPerPermission.at("mine");
+   
+        for(std::vector<std::string>::iterator it = streams.begin(); it != streams.end(); ++it) {
+            std::string stream_name = *it;
+            permissions.push_back(stream_name + ".write");            
+        }
     }
 
-    for(std::vector<std::string>::iterator it = streams.begin(); it != streams.end(); ++it) {
+    for(std::vector<std::string>::iterator it = permissions.begin(); it != permissions.end(); ++it) {
         std::string stream_name = *it;
         
         Array stream_params;
@@ -331,7 +350,7 @@ Value grantoperation(const Array& params)
         {
             if(param_count==2)
             {
-                stream_params.push_back(stream_name + ".write");            
+                stream_params.push_back(stream_name);            
             }
             else
             {
@@ -341,6 +360,7 @@ Value grantoperation(const Array& params)
         }
         grantoperation1(stream_params);
     }
+
     return grantoperation1(params);
 }
 /* AMB END */
@@ -398,8 +418,6 @@ Value approveauthority(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() != 5)
         throw runtime_error("Help message not found\n");
-
-    SampleFunction();
 
     Object data;
     data.push_back(Pair("public-key",params[2]));
