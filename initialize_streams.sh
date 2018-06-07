@@ -1,5 +1,11 @@
 #!bin/bash
 
+if [ $# -eq 0 ]
+    then
+        echo "ERROR: Please provide the blockchain name to initialize its streams"
+        exit 1
+fi
+
 cd src
 chainName="$1"
 ./multichain-util create $chainName
