@@ -13,11 +13,13 @@ chainName="$1"
 
 sleep 3
 
-./multichain-cli $chainName create stream authorityrequests 	true
+./multichain-cli $chainName create stream authorityrequests     true
 
-./multichain-cli $chainName create stream authoritynodes 	false
-./multichain-cli $chainName create stream transactionparams 	false
-./multichain-cli $chainName create stream records 		false
-./multichain-cli $chainName create stream annotatedrecords 	false
+./multichain-cli $chainName create stream authoritynodes        false
+./multichain-cli $chainName create stream transactionparams     false
+./multichain-cli $chainName create stream records               false
+./multichain-cli $chainName create stream annotatedrecords      false
+./multichain-cli $chainName create stream badges                false
+./multichain-cli $chainName create stream annotatedbadges       false
 
 cd -
