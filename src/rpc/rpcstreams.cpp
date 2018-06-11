@@ -7,6 +7,7 @@
 
 #include "rpc/rpcwallet.h"
 #include "amber/utils.h"
+#include "amber/strencodings.h"
 
 Value createupgradefromcmd(const Array& params, bool fHelp);
 
@@ -1688,6 +1689,185 @@ Value revokerecord(const Array& params, bool fHelp)
     }
 
     return writeannotatedrecord(ext_params, fHelp);
+}
+
+// param1 - badge creator
+// param2 - badge identifier
+// param3 - badge data
+
+Value createbadge(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() != 3)
+        throw runtime_error("Help message not found\n");
+
+    if (haspermission(params[0].get_str(), "mine"))
+    {
+        Array ext_params;
+        Object data;
+
+        data.push_back(Pair("data",params[2]));
+
+        const Value& json_data = data;
+        const std::string string_data = write_string(json_data, false);
+
+        std::string hex_data = HexStr(string_data.begin(), string_data.end());
+
+        ext_params.push_back(params[0]); // badge creator
+        ext_params.push_back(STREAM_BADGES); // stream for creating badges
+        ext_params.push_back(params[1]); // badge identifier
+        ext_params.push_back(hex_data);
+
+        return publishfrom(ext_params, fHelp);
+    }
+    else
+    {
+        throw runtime_error("Unauthorized address\n");
+    }
+}
+
+bool isbadgecreator(std::string address, std::string badge_identifier)
+{
+    Array params;
+    params.push_back(STREAM_BADGES);
+    params.push_back(badge_identifier);
+    Array results = liststreamkeyitems(params, false).get_array();
+
+    if (results.size() > 0) {
+        Object firstBadgeEntry = results.front().get_obj();
+        std::string firstBadgePublisherString = firstBadgeEntry[0].value_.get_array().front().get_str();
+
+        if ( strcmp(firstBadgePublisherString.c_str(), address.c_str()) == 0) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+// param1 - address updating the badge
+// param2 - badge identifier
+// param3 - badge data
+
+Value updatebadge(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() != 3)
+        throw runtime_error("Help message not found\n");
+
+    if (haspermission(params[0].get_str(), "mine") && isbadgecreator(params[0].get_str(), params[1].get_str()))
+    {
+        Array ext_params;
+        Object data;
+
+        data.push_back(Pair("data",params[2]));
+
+        const Value& json_data = data;
+        const std::string string_data = write_string(json_data, false);
+
+        std::string hex_data = HexStr(string_data.begin(), string_data.end());
+
+        ext_params.push_back(params[0]); // badge creator
+        ext_params.push_back(STREAM_BADGES); // stream for creating badges
+        ext_params.push_back(params[1]); // badge identifier
+        ext_params.push_back(hex_data);
+
+        return publishfrom(ext_params, fHelp);
+    }
+    else
+    {
+        throw runtime_error("Unauthorized address\n");
+    }
+}
+
+// param1 - badge creator
+// param2 - previous stream id
+// param3 - badge annotations
+// param4 - type
+
+Value writeannotatedbadge(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() != 4)
+        throw runtime_error("Help message not found\n");
+
+    if (haspermission(params[0].get_str(), "mine") && isbadgecreator(params[0].get_str(), params[1].get_str())) 
+    {
+
+        Array ext_params;
+        Object content;
+
+        content.push_back(Pair("type",params[3]));
+        content.push_back(Pair("data",params[2]));
+
+        const Value& json_data = content;
+        const std::string string_data = write_string(json_data, false);
+
+        std::string hex_data = HexStr(string_data.begin(), string_data.end());
+
+        ext_params.push_back(params[0]); // badge creator
+        ext_params.push_back(STREAM_ANNOTATEDRECORDS); // stream for annotating/revoking badges
+        ext_params.push_back(params[1]); // transaction id of annotated badge
+        ext_params.push_back(hex_data);
+
+        return publishfrom(ext_params, fHelp);
+    }
+    else
+    {
+        throw runtime_error("Unauthorized address\n");
+    }
+}
+
+// param1 - badge creator
+// param2 - previous stream id
+// param3 - badge annotations
+
+Value annotatebadge(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() != 3)
+        throw runtime_error("Help message not found\n");
+
+    Array ext_params;
+
+    if (haspermission(params[0].get_str(), "mine")  && isbadgecreator(params[0].get_str(), params[1].get_str()))
+    {
+        BOOST_FOREACH(const Value& value, params)
+        {
+            ext_params.push_back(value);
+        }
+        ext_params.push_back("annotate");
+    }
+    else
+    {
+        throw runtime_error("Unauthorized address\n");
+    }
+
+    return writeannotatedbadge(ext_params, fHelp);
+}
+
+// param1 - badge creator
+// param2 - previous stream id
+// param3 - badge annotations
+
+Value revokebadge(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() != 3)
+        throw runtime_error("Help message not found\n");
+
+
+    Array ext_params;
+
+    if (haspermission(params[0].get_str(), "mine") && isbadgecreator(params[0].get_str(), params[1].get_str()))
+    {
+        BOOST_FOREACH(const Value& value, params)
+        {
+            ext_params.push_back(value);
+        }
+        ext_params.push_back("revoke");
+    }
+    else
+    {
+        throw runtime_error("Unauthorized address\n");
+    }
+
+    return writeannotatedbadge(ext_params, fHelp);
 }
 
 /* AMB END */
