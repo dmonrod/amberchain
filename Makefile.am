@@ -11,10 +11,10 @@ BITCOIN_WIN_INSTALLER=$(PACKAGE)-$(PACKAGE_VERSION)-win$(WINDOWS_BITS)-setup$(EX
 
 # MCHN START
 
-MULTICHAIND_BIN=$(top_builddir)/src/multichaind$(EXEEXT)
-MULTICHAIND_COLD_BIN=$(top_builddir)/src/multichaind-cold$(EXEEXT)
-MULTICHAIN_CLI_BIN=$(top_builddir)/src/multichain-cli$(EXEEXT)
-MULTICHAIN_UTIL_BIN=$(top_builddir)/src/multichain-util$(EXEEXT)
+MULTICHAIND_BIN=$(top_builddir)/src/amberchaind$(EXEEXT)
+MULTICHAIND_COLD_BIN=$(top_builddir)/src/amberchaind-cold$(EXEEXT)
+MULTICHAIN_CLI_BIN=$(top_builddir)/src/amberchain-cli$(EXEEXT)
+MULTICHAIN_UTIL_BIN=$(top_builddir)/src/amberchain-util$(EXEEXT)
 
 # MCHN END
 

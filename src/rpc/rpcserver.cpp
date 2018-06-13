@@ -334,7 +334,7 @@ Value stop(const Array& params, bool fHelp)
         throw runtime_error("Help message not found\n");
     // Shutdown will take long enough that the response should get back
     StartShutdown();
-    return "MultiChain server stopping";
+    return "AmberChain server stopping";
 }
 
 /* MCHN START */

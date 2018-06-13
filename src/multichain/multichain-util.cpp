@@ -24,7 +24,7 @@ int main(int argc, char* argv[])
     
     mc_ExpandDataDirParam();
     
-    printf("\nMultiChain %s Utilities (latest protocol %d)\n\n",mc_gState->GetVersion(),mc_gState->GetProtocolVersion());
+    printf("\nAmberChain %s Utilities (latest protocol %d)\n\n",mc_gState->GetVersion(),mc_gState->GetProtocolVersion());
              
     err=MC_ERR_OPERATION_NOT_SUPPORTED;
      
@@ -75,8 +75,8 @@ int main(int argc, char* argv[])
                 { 
                     printf("Blockchain parameter set was successfully generated.\n");
                     mc_GetFullFileName(mc_gState->m_Params->m_Arguments[1],"params", ".dat",MC_FOM_RELATIVE_TO_DATADIR,fileName);
-                    printf("You can edit it in %s before running multichaind for the first time.\n\n",fileName);
-                    printf("To generate blockchain please run \"multichaind %s -daemon\".\n",params->Name());
+                    printf("You can edit it in %s before running amberchaind for the first time.\n\n",fileName);
+                    printf("To generate blockchain please run \"amberchaind %s -daemon\".\n",params->Name());
                 }                
                 else
                 {
@@ -137,8 +137,8 @@ int main(int argc, char* argv[])
                     
                     printf("Blockchain parameter set was successfully cloned.\n");
                     mc_GetFullFileName(mc_gState->m_Params->m_Arguments[2],"params", ".dat",MC_FOM_RELATIVE_TO_DATADIR,fileName);
-                    printf("You can edit it in %s before running multichaind for the first time.\n\n",fileName);
-                    printf("To generate blockchain please run \"multichaind %s -daemon\".\n",params->Name());
+                    printf("You can edit it in %s before running amberchaind for the first time.\n\n",fileName);
+                    printf("To generate blockchain please run \"amberchaind %s -daemon\".\n",params->Name());
                 }                
                 else
                 {
