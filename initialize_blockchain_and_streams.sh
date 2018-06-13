@@ -8,18 +8,20 @@ fi
 
 cd src
 chainName="$1"
-./multichain-util create $chainName
-./multichaind $chainName -daemon
+./amberchain-util create $chainName
+./amberchaind $chainName -daemon
 
 sleep 3
 
-./multichain-cli $chainName create stream authorityrequests     true
+./amberchain-cli $chainName create stream authorityrequests     true
 
-./multichain-cli $chainName create stream authoritynodes        false
-./multichain-cli $chainName create stream transactionparams     false
-./multichain-cli $chainName create stream records               false
-./multichain-cli $chainName create stream annotatedrecords      false
-./multichain-cli $chainName create stream badges                false
-./multichain-cli $chainName create stream annotatedbadges       false
+./amberchain-cli $chainName create stream authoritynodes        false
+./amberchain-cli $chainName create stream transactionparams     false
+./amberchain-cli $chainName create stream records               false
+./amberchain-cli $chainName create stream annotatedrecords      false
+./amberchain-cli $chainName create stream badges                false
+./amberchain-cli $chainName create stream annotatedbadges       false
+./amberchain-cli $chainName create stream categories            false
+./amberchain-cli $chainName create stream recordtypes           false
 
 cd -
