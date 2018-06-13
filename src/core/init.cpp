@@ -1859,7 +1859,7 @@ bool AppInit2(boost::thread_group& threadGroup,int OutputPipe)
         {
             sprintf(bufOutput,"Other nodes can connect to this node using:\n");
             bytes_written=write(OutputPipe,bufOutput,strlen(bufOutput));
-            sprintf(bufOutput,"multichaind %s:%d\n\n",MultichainServerAddress().c_str(),GetListenPort());
+            sprintf(bufOutput,"amberchaind %s:%d\n\n",MultichainServerAddress().c_str(),GetListenPort());
             bytes_written=write(OutputPipe,bufOutput,strlen(bufOutput));
             if(found_ips > 1)
             {
@@ -1871,7 +1871,7 @@ bool AppInit2(boost::thread_group& threadGroup,int OutputPipe)
                     {
                         unsigned char *ptr;
                         ptr=(unsigned char *)(all_ips+i_ips);
-                        sprintf(bufOutput,"multichaind %s@%u.%u.%u.%u:%d\n",mc_gState->m_NetworkParams->Name(),ptr[3],ptr[2],ptr[1],ptr[0],GetListenPort());
+                        sprintf(bufOutput,"amberchaind %s@%u.%u.%u.%u:%d\n",mc_gState->m_NetworkParams->Name(),ptr[3],ptr[2],ptr[1],ptr[0],GetListenPort());
                         bytes_written=write(OutputPipe,bufOutput,strlen(bufOutput));
                         if(bytes_written != strlen(bufOutput))
                         {

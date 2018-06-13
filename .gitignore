@@ -9,6 +9,10 @@ src/multichain-cli
 src/multichain-util
 src/multichaind
 src/multichaind-cold
+src/amberchain-cli
+src/amberchain-util
+src/amberchaind
+src/amberchaind-cold
 src/test/test_bitcoin
 src/qt/test/test_bitcoin-qt
 
