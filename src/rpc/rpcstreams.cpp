@@ -1870,4 +1870,77 @@ Value revokebadge(const Array& params, bool fHelp)
     return writeannotatedbadge(ext_params, fHelp);
 }
 
+// param1 - category creator/modifier
+// param2 - category key
+// param3 - category data
+// Should include the following:
+// Parent Category: { parent: <parent_key> }
+// Corresponding Record Type: { record_type: <record_type_key> }
+
+Value writecategory(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() != 3)
+        throw runtime_error("Help message not found\n");
+
+    if (haspermission(params[0].get_str(), "admin"))
+    {
+        Array ext_params;
+        Object data;
+
+        data.push_back(Pair("data",params[2]));
+
+        const Value& json_data = data;
+        const std::string string_data = write_string(json_data, false);
+
+        std::string hex_data = HexStr(string_data.begin(), string_data.end());
+
+        ext_params.push_back(params[0]); // category creator/modifier
+        ext_params.push_back(STREAM_CATEGORIES); // stream for categories
+        ext_params.push_back(params[1]); // category identifier
+        ext_params.push_back(hex_data);
+
+        return publishfrom(ext_params, fHelp);
+    }
+    else
+    {
+        throw runtime_error("Unauthorized address\n");
+    }
+}
+
+// param1 - record type creator/modifier
+// param2 - record type key
+// param3 - record type data
+// Should include the following:
+// Corresponding Category: { category: <category_key> }
+
+Value writerecordtype(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() != 3)
+        throw runtime_error("Help message not found\n");
+
+    if (haspermission(params[0].get_str(), "admin"))
+    {
+        Array ext_params;
+        Object data;
+
+        data.push_back(Pair("data",params[2]));
+
+        const Value& json_data = data;
+        const std::string string_data = write_string(json_data, false);
+
+        std::string hex_data = HexStr(string_data.begin(), string_data.end());
+
+        ext_params.push_back(params[0]); // record type creator/modifier
+        ext_params.push_back(STREAM_RECORDTYPES); // stream for record types
+        ext_params.push_back(params[1]); // record type identifier
+        ext_params.push_back(hex_data);
+
+        return publishfrom(ext_params, fHelp);
+    }
+    else
+    {
+        throw runtime_error("Unauthorized address\n");
+    }
+}
+
 /* AMB END */
