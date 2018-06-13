@@ -1803,7 +1803,7 @@ Value writeannotatedbadge(const Array& params, bool fHelp)
         std::string hex_data = HexStr(string_data.begin(), string_data.end());
 
         ext_params.push_back(params[0]); // badge creator
-        ext_params.push_back(STREAM_ANNOTATEDRECORDS); // stream for annotating/revoking badges
+        ext_params.push_back(STREAM_ANNOTATEDBADGES); // stream for annotating/revoking badges
         ext_params.push_back(params[1]); // transaction id of annotated badge
         ext_params.push_back(hex_data);
 
