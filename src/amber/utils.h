@@ -39,6 +39,7 @@ struct StreamConsts
 
 		vector<string> admin_streams;
 		admin_streams.push_back(STREAM_AUTHNODES);
+        admin_streams.push_back(STREAM_TRANSACTIONPARAMS);
         // admin_streams.push_back(STREAM_INVALIDBLOCKS);
 		m["admin"] = admin_streams;
 
