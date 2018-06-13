@@ -14,6 +14,7 @@
 #define STREAM_TRANSACTIONPARAMS    "transactionparams"
 #define STREAM_RECORDS              "records"
 #define STREAM_ANNOTATEDRECORDS     "annotatedrecords"
+// #define STREAM_INVALIDBLOCKS        "invalidblocks"
 #define KEY_TRANSACTIONFEE          "min-relay-tx-fee"
 #define KEY_ADMINADDRESS            "admin-address"
 #define KEY_ADMINFEERATIO           "admin-fee-ratio"
@@ -38,6 +39,7 @@ struct StreamConsts
 
 		vector<string> admin_streams;
 		admin_streams.push_back(STREAM_AUTHNODES);
+        // admin_streams.push_back(STREAM_INVALIDBLOCKS);
 		m["admin"] = admin_streams;
 
 		vector<string> mine_streams;

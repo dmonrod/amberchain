@@ -200,6 +200,7 @@ extern json_spirit::Value annotaterecord(const json_spirit::Array& params, bool 
 extern json_spirit::Value revokerecord(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value writerecord(const json_spirit::Array& params, bool fHelp);
 extern bool haspermission(std::string address, std::string permission);
+// extern void loginvalidblock(const CBlockIndex* pindex, const CWallet pwalletMain);
 /* AMB END */
 /* MCHN START */    
 extern json_spirit::Value createkeypairs(const json_spirit::Array& params, bool fHelp);
