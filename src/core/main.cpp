@@ -22,6 +22,9 @@
 #include "utils/util.h"
 #include "utils/utilmoneystr.h"
 
+/* AMB START */
+// #include "rpc/rpcserver.h"
+/* AMB END */
 /* MCHN START */
 
 #include "structs/base58.h"
@@ -4420,6 +4423,12 @@ bool AcceptBlock(CBlock& block, CValidationState& state, CBlockIndex** ppindex, 
 
     if (!AcceptBlockHeader(block, state, &pindex, node_id))
         return false;
+/* AMB START */
+/*    {
+        loginvalidblock(ppindex, pwalletMain);
+        return false;
+    }*/
+/* AMB END */
 
     if (pindex->nStatus & BLOCK_HAVE_DATA) {
         // TODO: deal better with duplicate blocks.
@@ -4452,6 +4461,12 @@ bool AcceptBlock(CBlock& block, CValidationState& state, CBlockIndex** ppindex, 
         }
         return false;
     }
+/* AMB START */
+    /*
+        loginvalidblock(ppindex, pwalletMain);
+        return false;
+    }*/
+/* AMB END */
 
     int nHeight = pindex->nHeight;
 
@@ -4478,6 +4493,12 @@ bool AcceptBlock(CBlock& block, CValidationState& state, CBlockIndex** ppindex, 
         setDirtyBlockIndex.insert(pindex);
         return false;
     }
+/* AMB START */
+    /*
+        loginvalidblock(ppindex, pwalletMain);
+        return false;
+    }*/
+/* AMB END */
 
     return true;
 }

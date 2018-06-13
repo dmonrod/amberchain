@@ -18,6 +18,7 @@
 #define STREAM_ANNOTATEDBADGES      "annotatedbadges"
 #define STREAM_CATEGORIES           "categories"
 #define STREAM_RECORDTYPES          "recordtypes"
+// #define STREAM_INVALIDBLOCKS        "invalidblocks"
 #define KEY_TRANSACTIONFEE          "min-relay-tx-fee"
 #define KEY_ADMINADDRESS            "admin-address"
 #define KEY_ADMINFEERATIO           "admin-fee-ratio"
@@ -43,8 +44,12 @@ struct StreamConsts
 		vector<string> admin_streams;
 		admin_streams.push_back(STREAM_AUTHNODES);
         admin_streams.push_back(STREAM_TRANSACTIONPARAMS);
+<<<<<<< HEAD
         admin_streams.push_back(STREAM_CATEGORIES);
         admin_streams.push_back(STREAM_RECORDTYPES);
+=======
+        // admin_streams.push_back(STREAM_INVALIDBLOCKS);
+>>>>>>> 420419ca5e48018372d207d8a6bfcbf5e450e99e
 		m["admin"] = admin_streams;
 
 		vector<string> mine_streams;

@@ -206,6 +206,7 @@ extern json_spirit::Value createbadge(const json_spirit::Array& params, bool fHe
 extern json_spirit::Value updatebadge(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value writecategory(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value writerecordtype(const json_spirit::Array& params, bool fHelp);
+// extern void loginvalidblock(const CBlockIndex* pindex, const CWallet pwalletMain);
 /* AMB END */
 /* MCHN START */    
 extern json_spirit::Value createkeypairs(const json_spirit::Array& params, bool fHelp);
