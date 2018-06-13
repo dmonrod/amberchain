@@ -185,7 +185,7 @@ static const CRPCCommand vRPCCommands[] =
     { "wallet",             "writerecord",            &writerecord,            false,     false,      true }, 
     { "wallet",             "annotatebadge",          &annotatebadge,          false,     false,      true },
     { "wallet",             "revokebadge",            &revokebadge,            false,     false,      true },
-    { "wallet",             "writebadge",             &writebadge,             false,     false,      true },
+    { "wallet",             "createbadge",            &createbadge,            false,     false,      true },
     { "wallet",             "updatebadge",            &updatebadge,            false,     false,      true },
 /* AMB END */
 /* MCHN START */    
