@@ -1692,12 +1692,12 @@ Value revokerecord(const Array& params, bool fHelp)
 }
 
 // param1 - badge creator
-// param2 - badge identifier
-// param3 - badge data
+// param2 - badge data
+// key of all badges = rootbadges
 
 Value createbadge(const Array& params, bool fHelp)
 {
-    if (fHelp || params.size() != 3)
+    if (fHelp || params.size() != 2)
         throw runtime_error("Help message not found\n");
 
     if (haspermission(params[0].get_str(), "mine"))
@@ -1705,7 +1705,7 @@ Value createbadge(const Array& params, bool fHelp)
         Array ext_params;
         Object data;
 
-        data.push_back(Pair("data",params[2]));
+        data.push_back(Pair("data",params[1]));
 
         const Value& json_data = data;
         const std::string string_data = write_string(json_data, false);
@@ -1714,7 +1714,7 @@ Value createbadge(const Array& params, bool fHelp)
 
         ext_params.push_back(params[0]); // badge creator
         ext_params.push_back(STREAM_BADGES); // stream for creating badges
-        ext_params.push_back(params[1]); // badge identifier
+        ext_params.push_back("rootbadges"); // key for all badges
         ext_params.push_back(hex_data);
 
         return publishfrom(ext_params, fHelp);
@@ -1725,17 +1725,15 @@ Value createbadge(const Array& params, bool fHelp)
     }
 }
 
-bool isbadgecreator(std::string address, std::string badge_identifier)
+bool isbadgecreator(std::string address, std::string transaction_id)
 {
     Array params;
     params.push_back(STREAM_BADGES);
-    params.push_back(badge_identifier);
-    Array results = liststreamkeyitems(params, false).get_array();
+    params.push_back(transaction_id);
+    Object result = getstreamitem(params, false).get_obj();
 
-    if (results.size() > 0) {
-        Object firstBadgeEntry = results.front().get_obj();
-        std::string firstBadgePublisherString = firstBadgeEntry[0].value_.get_array().front().get_str();
-
+    if (result.size() > 0) {
+        std::string firstBadgePublisherString = result[0].value_.get_array().front().get_str();
         if ( strcmp(firstBadgePublisherString.c_str(), address.c_str()) == 0) {
             return true;
         }
@@ -1745,7 +1743,7 @@ bool isbadgecreator(std::string address, std::string badge_identifier)
 }
 
 // param1 - address updating the badge
-// param2 - badge identifier
+// param2 - badge transaction id found in rootbadges
 // param3 - badge data
 
 Value updatebadge(const Array& params, bool fHelp)
