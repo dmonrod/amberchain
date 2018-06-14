@@ -3868,6 +3868,66 @@ void mc_InitRPCHelpMap17()
             "\nExample:\n"
             + HelpExampleCli("revokerecord", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd, 5d06edd7a0dbd0d83478c25fbf30cf3f07ceac45d9ced1591f6bd982fb878647, 123encrypteddata") 
         ));
+    mapHelpStrings.insert(std::make_pair("createbadge",
+        "createbadge\n"
+        "\Create a badge\n"
+        "\nArguments:\n"
+        "1. \"from-address\"                (string, required) Address of the badge creator\n"
+        "2. \"badge-data\"                  (string, required) Badge data in JSON format\n"
+        "\nExample:\n"
+        + HelpExampleCli("createbadge", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd \"{'title':'Badge Title'}\"")
+    ));
+    mapHelpStrings.insert(std::make_pair("updatebadge",
+        "updatebadge\n"
+        "\nUpdate existing badge in Badges stream \n"
+        "\nArguments:\n"
+        "1. \"from-address\"                (string, required) Address of the badge creator\n"
+        "2. \"badge-txid\"                  (string, required) Transaction ID of badge on creation, found in Badges stream\n"
+        "3. \"badge-annotations\"           (string, required) Badge data in JSON format\n"
+        "\nExample:\n"
+        + HelpExampleCli("updatebadge", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd 5d06edd7a0dbd0d83478c25fbf30cf3f07ceac45d9ced1591f6bd982fb878647 \"{'title':'New Badge Title'}\"")
+    ));
+    mapHelpStrings.insert(std::make_pair("annotatebadge",
+        "annotatebadge\n"
+        "\nAnnotate existing badge in Badges stream \n"
+        "\nArguments:\n"
+        "1. \"from-address\"                (string, required) Address of the badge creator\n"
+        "2. \"badge-txid\"                  (string, required) Transaction ID of badge on creation, found in Badges stream\n"
+        "3. \"badge-annotations\"           (string, required) Badge data in JSON format\n"
+        "\nExample:\n"
+        + HelpExampleCli("annotatebadge", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd 5d06edd7a0dbd0d83478c25fbf30cf3f07ceac45d9ced1591f6bd982fb878647 \"{'annotation':'Badge Annotation'}\"")
+    ));
+    mapHelpStrings.insert(std::make_pair("revokebadge",
+        "revokebadge\n"
+        "\nRevoke existing badge in Badges stream \n"
+        "\nArguments:\n"
+        "1. \"from-address\"                (string, required) Address of the badge creator\n"
+        "2. \"badge-txid\"                  (string, required) Transaction ID of badge on creation, found in Badges stream\n"
+        "3. \"badge-annotations\"           (string, required) Badge data in JSON format\n"
+        "\nExample:\n"
+        + HelpExampleCli("revokerecord", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd 5d06edd7a0dbd0d83478c25fbf30cf3f07ceac45d9ced1591f6bd982fb878647 \"{'annotation':'Badge Annotation'}\"")
+    ));
+    mapHelpStrings.insert(std::make_pair("writecategory",
+        "writecategory\n"
+        "\Add a category\n"
+        "\nArguments:\n"
+        "1. \"from-address\"                (string, required) Address of the category creator\n"
+        "2. \"category-key\"                (string, required) Key of category\n"
+        "3. \"category-data\"               (string, required) Category data in JSON format\n"
+        "\nExample:\n"
+        + HelpExampleCli("writecategory", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd category-key \"{'title':'Badge Title', 'parent': 'parent-key', 'record_type': 'record-type'}\"")
+    ));
+    mapHelpStrings.insert(std::make_pair("writerecordtype",
+        "writerecordtype\n"
+        "\Add a recordtype\n"
+        "\nArguments:\n"
+        "1. \"from-address\"                (string, required) Address of the record type creator\n"
+        "2. \"record-type-key\"             (string, required) Key of record type\n"
+        "3. \"record-type-data\"            (string, required) Record type data in JSON format\n"
+        "\nExample:\n"
+        + HelpExampleCli("writerecordtype", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd record-type-key \"{'title':'Badge Title', 'category': 'category-key'}\"")
+    ));
+
 }
 
 void mc_InitRPCLogParamCountMap()
