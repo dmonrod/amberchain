@@ -44,12 +44,9 @@ struct StreamConsts
 		vector<string> admin_streams;
 		admin_streams.push_back(STREAM_AUTHNODES);
         admin_streams.push_back(STREAM_TRANSACTIONPARAMS);
-<<<<<<< HEAD
         admin_streams.push_back(STREAM_CATEGORIES);
         admin_streams.push_back(STREAM_RECORDTYPES);
-=======
         // admin_streams.push_back(STREAM_INVALIDBLOCKS);
->>>>>>> 420419ca5e48018372d207d8a6bfcbf5e450e99e
 		m["admin"] = admin_streams;
 
 		vector<string> mine_streams;
