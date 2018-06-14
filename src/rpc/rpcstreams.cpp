@@ -1742,7 +1742,7 @@ bool isbadgecreator(std::string address, std::string transaction_id)
     return false;
 }
 
-// param1 - address updating the badge
+// param1 - badge creator
 // param2 - badge transaction id found in rootbadges
 // param3 - badge data
 
@@ -1777,7 +1777,7 @@ Value updatebadge(const Array& params, bool fHelp)
 }
 
 // param1 - badge creator
-// param2 - previous stream id
+// param2 - badge transaction id found in rootbadges
 // param3 - badge annotations
 // param4 - type
 
@@ -1814,7 +1814,7 @@ Value writeannotatedbadge(const Array& params, bool fHelp)
 }
 
 // param1 - badge creator
-// param2 - previous stream id
+// param2 - badge transaction id found in rootbadges
 // param3 - badge annotations
 
 Value annotatebadge(const Array& params, bool fHelp)
@@ -1841,7 +1841,7 @@ Value annotatebadge(const Array& params, bool fHelp)
 }
 
 // param1 - badge creator
-// param2 - previous stream id
+// param2 - badge transaction id found in rootbadges
 // param3 - badge annotations
 
 Value revokebadge(const Array& params, bool fHelp)
