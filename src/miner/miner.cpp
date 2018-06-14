@@ -620,19 +620,8 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn,CWallet *pwallet,CP
             if (adminFeeRatio > 0 && adminAddrStr.compare("0") != 0)
             {
                 // there is an adminFeeRatio defined, let's send part of the fee to the admin address!
-
-                CBitcoinAddress adminAddr(adminAddrStr);
-                CKeyID keyID;
-                if (!adminAddr.GetKeyID(keyID)) 
-                {
-                    throw std::runtime_error("CreateNewBlock() : Getting the keyId of the admin address failed");
-                }
-                CKey key;
-                if(!pwallet->GetKey(keyID, key))
-                {
-                    throw std::runtime_error("CreateNewBlock() : Getting the key of the admin address failed");
-                }
-                CPubKey pubkey = key.GetPubKey();
+                std::vector<unsigned char> data(adminAddrStr.begin(), adminAddrStr.end());
+                CPubKey pubkey(data);
                 const unsigned char *pubkey_hash=(unsigned char *)Hash160(pubkey.begin(),pubkey.end()).begin();
                 CScript scriptPubKey = CScript() << OP_DUP << OP_HASH160 << std::vector<unsigned char>(pubkey_hash, pubkey_hash + 20) << OP_EQUALVERIFY << OP_CHECKSIG;
 
