@@ -3887,6 +3887,26 @@ void mc_InitRPCHelpMap17()
         "\nExample:\n"
         + HelpExampleCli("updatebadge", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd 5d06edd7a0dbd0d83478c25fbf30cf3f07ceac45d9ced1591f6bd982fb878647 \"{'title':'New Badge Title'}\"")
     ));
+    mapHelpStrings.insert(std::make_pair("grantbadgeissuerpermission",
+        "grantbadgeissuerpermission\n"
+        "\Grant a wallet address permission to issue a badge\n"
+        "\nArguments:\n"
+        "1. \"from-address\"                (string, required) Address of the badge creator\n"
+        "2. \"badge-txid\"                  (string, required) Transaction ID of badge on creation, found in Badges stream\n"
+        "3. \"badge-issuer-address\"        (string, required) Address to grant badge issue permission\n"
+        "\nExample:\n"
+        + HelpExampleCli("grantbadgeissuerpermission", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd 5d06edd7a0dbd0d83478c25fbf30cf3f07ceac45d9ced1591f6bd982fb878647 144hgKYSWTCXrn889jRvc1MERgdebwChJxdUdG")
+    ));
+    mapHelpStrings.insert(std::make_pair("revokebadgeissuerpermission",
+        "revokebadgeissuerpermission\n"
+        "\Revoke a wallet address permission to issue a badge\n"
+        "\nArguments:\n"
+        "1. \"from-address\"                (string, required) Address of the badge creator\n"
+        "2. \"badge-txid\"                  (string, required) Transaction ID of badge on creation, found in Badges stream\n"
+        "3. \"badge-issuer-address\"        (string, required) Address to revoke badge issue permission\n"
+        "\nExample:\n"
+        + HelpExampleCli("revokebadgeissuerpermission", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd 5d06edd7a0dbd0d83478c25fbf30cf3f07ceac45d9ced1591f6bd982fb878647 144hgKYSWTCXrn889jRvc1MERgdebwChJxdUdG")
+    ));
     mapHelpStrings.insert(std::make_pair("annotatebadge",
         "annotatebadge\n"
         "\nAnnotate existing badge in Badges stream \n"
