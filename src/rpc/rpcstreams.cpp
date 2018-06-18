@@ -1575,30 +1575,31 @@ Value writerecord(const Array& params, bool fHelp)
     if (fHelp || params.size() != 4)
         throw runtime_error("Help message not found\n");
 
-    if (haspermission(params[0].get_str(), "mine")) 
-    {
-        Array ext_params;
-        Object content;
+    Object content;
 
-        content.push_back(Pair("data",params[2]));
-        content.push_back(Pair("encrypted-key",params[3]));
+    content.push_back(Pair("data",params[2]));
+    content.push_back(Pair("encrypted-key",params[3]));
 
-        const Value& json_data = content;
-        const std::string string_data = write_string(json_data, false);
-        
-        std::string hex_data = HexStr(string_data.begin(), string_data.end());
+    const Value& json_data = content;
+    const std::string string_data = write_string(json_data, false);
+    
+    std::string hex_data = HexStr(string_data.begin(), string_data.end());
 
-        ext_params.push_back(params[0]); // from-address
-        ext_params.push_back(STREAM_RECORDS); // stream for writing records
-        ext_params.push_back(params[1]); // wallet address of involved user
-        ext_params.push_back(hex_data);
+    Object raw_data;
+    raw_data.push_back(Pair("for", STREAM_RECORDS));
+    raw_data.push_back(Pair("key", params[1]));
+    raw_data.push_back(Pair("data", hex_data));
 
-        return publishfrom(ext_params, fHelp);
-    }
-    else
-    {
-        throw runtime_error("Unauthorized address\n");
-    }
+    Array ext_params;
+
+    Object addresses;
+    Array dataArray;
+    dataArray.push_back(raw_data);
+    ext_params.push_back(params[0]); // from-address
+    ext_params.push_back(addresses); // addresses
+    ext_params.push_back(dataArray); // data array
+
+    return createrawsendfrom(ext_params, fHelp);
 }
 
 // param1 - from-address
@@ -1609,6 +1610,18 @@ Value writeannotatedrecord(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() != 4)
         throw runtime_error("Help message not found\n");
+
+    Array pub_params;
+    pub_params.push_back(STREAM_RECORDS);
+    pub_params.push_back(params[1]);
+    Object result = getstreamitem(pub_params, false).get_obj();
+
+    if (result.size() > 0) {
+        std::string publisher_item = result[0].value_.get_array().front().get_str();
+            if (strcmp(publisher_item.c_str(), params[0].get_str().c_str()) != 0) {
+                throw runtime_error("Address is not the previous publisher");
+        }
+    }
 
     if (haspermission(params[0].get_str(), "mine")) 
     {
