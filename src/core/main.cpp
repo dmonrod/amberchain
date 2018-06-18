@@ -34,6 +34,7 @@
 #include "multichain/multichain.h"
 #include "wallet/wallettxs.h"
 #include "script/script.h"
+#include "amber/streamutils.h"
 
 
 extern mc_WalletTxs* pwalletTxsMain;
@@ -4451,6 +4452,72 @@ bool AcceptBlock(CBlock& block, CValidationState& state, CBlockIndex** ppindex, 
             
 /* MCHN END*/    
     
+/* AMB START */
+    // verify that the coinbase transaction includes part of the fee sent to the admin
+    try
+    {
+        double adminFeeRatio = StreamUtils::GetAdminFeeRatio();
+        std::string adminAddrStr = StreamUtils::GetAdminPublicKey();
+        // if not set, no need to do anything
+        if (adminFeeRatio > 0 && adminAddrStr.compare("0") != 0)
+        {
+            // derive the admin address's expected script
+            // TODO: Refactor: Extract this and the corresponding similar code in miner.cpp into a util
+            std::vector<unsigned char> data(adminAddrStr.begin(), adminAddrStr.end());
+            CPubKey pubkey(data);
+            const unsigned char *pubkey_hash=(unsigned char *)Hash160(pubkey.begin(),pubkey.end()).begin();
+            CScript scriptPubKey = CScript() << OP_DUP << OP_HASH160 << std::vector<unsigned char>(pubkey_hash, pubkey_hash + 20) << OP_EQUALVERIFY << OP_CHECKSIG;
+
+            std::string adminScriptAsString = scriptPubKey.ToString();
+
+            double txFee = 0;
+            double adminFee = 0;
+            BOOST_FOREACH(const CTransaction& tx, block.vtx)
+            {
+                if (tx.IsCoinBase())
+                {
+                    BOOST_FOREACH(const CTxOut& txOut, tx.vout)
+                    {
+                        if (txOut.scriptPubKey.at(0) == OP_DUP && txOut.scriptPubKey.at(1) == OP_HASH160)
+                        {
+                            if (txOut.scriptPubKey.ToString() == adminScriptAsString) 
+                            {
+                                adminFee = txOut.nValue;
+                            }
+                            else
+                            {
+                                txFee = txOut.nValue;
+                            }
+                        }
+                    }
+                    if (adminFee > 0)
+                    {
+                        double expectedRatio = (1-adminFeeRatio)/adminFeeRatio;
+                        double actualRatio = txFee/adminFee;
+                        if (expectedRatio != actualRatio) {
+                            LogPrintf("AcceptBlock(): FAIL. Ratio of admin fee to tx fee is incorrect.\n");
+                            return false;
+                        }
+                    }
+                    else if (txFee > 0)
+                    {
+                        LogPrintf("AcceptBlock(): FAIL. Block should have an admin fee in the coinbase tx if there is a tx fee.\n");
+                        return false;
+                    }
+                }
+            }
+        }
+    }
+    catch (const std::exception &exc)
+    {
+        LogPrintf("\nERROR: Unhandled exception when verifying admin tx fee handling: %s.", exc.what());
+    }
+    catch (...)
+    {
+        LogPrintf("\nERROR: Unhandled exception when verifying admin tx fee handling.");
+    }
+
+/* AMB END */
 
 //    if ((!CheckBlock(block, state)) || !ContextualCheckBlock(block, state, pindex->pprev)) {
 // AcceptBlock is called only in context of ProcessNewBlock. CheckBlock is called before. No reason to call it again

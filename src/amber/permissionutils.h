@@ -15,7 +15,7 @@ using namespace std;
 using namespace json_spirit;
 
 namespace PermissionUtils {
-    string GetFirstAdminAddressFromPermissions();
+    string GetFirstAdminPublicKeyFromPermissions();
     Array GetArrayOfAdminItems();
 }
 

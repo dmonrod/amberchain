@@ -8,12 +8,12 @@ using namespace std;
 using namespace json_spirit;
 
 namespace PermissionUtils {
-    string GetFirstAdminAddressFromPermissions() {
+    string GetFirstAdminPublicKeyFromPermissions() {
         Array adminItems = GetArrayOfAdminItems();
         Object adminItemsFirstEntry = adminItems.front().get_obj();
-        string firstAdminAddress = HexToStr(adminItemsFirstEntry[0].value_.get_str());
+        string firstAdminPublicKey = HexToStr(adminItemsFirstEntry[0].value_.get_str());
         
-        return firstAdminAddress;
+        return firstAdminPublicKey;
     }
 
     Array GetArrayOfAdminItems() {

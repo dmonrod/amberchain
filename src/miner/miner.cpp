@@ -612,35 +612,36 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn,CWallet *pwallet,CP
 
         // Compute final coinbase transaction.
         /* AMB START */
-        // double adminFeeRatio = 0;
-        double adminFeeRatio = StreamUtils::GetAdminFeeRatio();
-        std::string adminAddrStr = StreamUtils::GetAdminAddress();
-        if (adminFeeRatio > 0 && adminAddrStr.compare("0") != 0)
+        double adminFeeRatio = 0;
+        try 
         {
-            // there is an adminFeeRatio defined, let's send part of the fee to the admin address!
-
-            CBitcoinAddress adminAddr(adminAddrStr);
-            CKeyID keyID;
-            if (!adminAddr.GetKeyID(keyID)) 
+            adminFeeRatio = StreamUtils::GetAdminFeeRatio();
+            std::string adminAddrStr = StreamUtils::GetAdminPublicKey();
+            if (adminFeeRatio > 0 && adminAddrStr.compare("0") != 0)
             {
-                throw std::runtime_error("CreateNewBlock() : Getting the keyId of the admin address failed");
-            }
-            CKey key;
-            if(!pwallet->GetKey(keyID, key))
-            {
-                throw std::runtime_error("CreateNewBlock() : Getting the key of the admin address failed");
-            }
-            CPubKey pubkey = key.GetPubKey();
-            const unsigned char *pubkey_hash=(unsigned char *)Hash160(pubkey.begin(),pubkey.end()).begin();
-            CScript scriptPubKey = CScript() << OP_DUP << OP_HASH160 << std::vector<unsigned char>(pubkey_hash, pubkey_hash + 20) << OP_EQUALVERIFY << OP_CHECKSIG;
+                // there is an adminFeeRatio defined, let's send part of the fee to the admin address!
+                std::vector<unsigned char> data(adminAddrStr.begin(), adminAddrStr.end());
+                CPubKey pubkey(data);
+                const unsigned char *pubkey_hash=(unsigned char *)Hash160(pubkey.begin(),pubkey.end()).begin();
+                CScript scriptPubKey = CScript() << OP_DUP << OP_HASH160 << std::vector<unsigned char>(pubkey_hash, pubkey_hash + 20) << OP_EQUALVERIFY << OP_CHECKSIG;
 
-            // create a new transaction output to send the partial fee to the admin
-            CTxOut txOutAdmin;
-            txOutAdmin.scriptPubKey = scriptPubKey;
-            txOutAdmin.nValue = GetBlockValue(nHeight, nFees) * (adminFeeRatio);
-            txNew.vout.push_back(txOutAdmin);
+                // create a new transaction output to send the partial fee to the admin
+                CTxOut txOutAdmin;
+                txOutAdmin.scriptPubKey = scriptPubKey;
+                txOutAdmin.nValue = GetBlockValue(nHeight, nFees) * (adminFeeRatio);
+                txNew.vout.push_back(txOutAdmin);
+            }
         }
-
+        catch (const std::exception &exc)
+        {
+            LogPrintf("\nERROR: Unhandled exception when processing admin tx fee handling: %s.", exc.what());
+            LogPrintf(" Defaulting to standard behavior.\n");
+        }        
+        catch (...) 
+        {
+            LogPrintf("\nERROR: Unhandled exception when processing admin tx fee handling.");
+            LogPrintf(" Defaulting to standard behavior.\n");
+        }
         txNew.vout[0].nValue = GetBlockValue(nHeight, nFees) * (1 - adminFeeRatio);
         /* AMB END */
 

@@ -14,9 +14,14 @@
 #define STREAM_TRANSACTIONPARAMS    "transactionparams"
 #define STREAM_RECORDS              "records"
 #define STREAM_ANNOTATEDRECORDS     "annotatedrecords"
+#define STREAM_BADGES               "badges"
+#define STREAM_ANNOTATEDBADGES      "annotatedbadges"
+#define STREAM_BADGEISSUERS         "badgeissuers"
+#define STREAM_CATEGORIES           "categories"
+#define STREAM_RECORDTYPES          "recordtypes"
 // #define STREAM_INVALIDBLOCKS        "invalidblocks"
 #define KEY_TRANSACTIONFEE          "min-relay-tx-fee"
-#define KEY_ADMINADDRESS            "admin-address"
+#define KEY_ADMINPUBLICKEY          "admin-public-key"
 #define KEY_ADMINFEERATIO           "admin-fee-ratio"
 
 using namespace std;
@@ -40,12 +45,17 @@ struct StreamConsts
 		vector<string> admin_streams;
 		admin_streams.push_back(STREAM_AUTHNODES);
         admin_streams.push_back(STREAM_TRANSACTIONPARAMS);
+        admin_streams.push_back(STREAM_CATEGORIES);
+        admin_streams.push_back(STREAM_RECORDTYPES);
         // admin_streams.push_back(STREAM_INVALIDBLOCKS);
 		m["admin"] = admin_streams;
 
 		vector<string> mine_streams;
         mine_streams.push_back(STREAM_RECORDS);
         mine_streams.push_back(STREAM_ANNOTATEDRECORDS);
+        mine_streams.push_back(STREAM_BADGES);
+        mine_streams.push_back(STREAM_BADGEISSUERS);
+        mine_streams.push_back(STREAM_ANNOTATEDBADGES);
 		m["mine"] = mine_streams;		
         return m;
     }

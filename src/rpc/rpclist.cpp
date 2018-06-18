@@ -183,6 +183,14 @@ static const CRPCCommand vRPCCommands[] =
     { "wallet",             "annotaterecord",         &annotaterecord,         false,     false,      true }, 
     { "wallet",             "revokerecord",           &revokerecord,           false,     false,      true }, 
     { "wallet",             "writerecord",            &writerecord,            false,     false,      true }, 
+    { "wallet",             "annotatebadge",          &annotatebadge,          false,     false,      true },
+    { "wallet",             "revokebadge",            &revokebadge,            false,     false,      true },
+    { "wallet",             "createbadge",            &createbadge,            false,     false,      true },
+    { "wallet",             "updatebadge",            &updatebadge,            false,     false,      true },
+    { "wallet",             "grantbadgeissuerpermission",   &grantbadgeissuerpermission,    false,  false,  true },
+    { "wallet",             "revokebadgeissuerpermission",  &revokebadgeissuerpermission,   false,  false,  true },
+    { "wallet",             "writecategory",          &writecategory,          false,     false,      true },
+    { "wallet",             "writerecordtype",        &writerecordtype,        false,     false,      true },
 /* AMB END */
 /* MCHN START */    
     { "wallet",             "getaddresses",           &getaddresses,           true,      false,      true },
