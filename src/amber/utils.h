@@ -16,6 +16,7 @@
 #define STREAM_ANNOTATEDRECORDS     "annotatedrecords"
 #define STREAM_BADGES               "badges"
 #define STREAM_ANNOTATEDBADGES      "annotatedbadges"
+#define STREAM_BADGEISSUERS         "badgeissuers"
 #define STREAM_CATEGORIES           "categories"
 #define STREAM_RECORDTYPES          "recordtypes"
 // #define STREAM_INVALIDBLOCKS        "invalidblocks"
@@ -53,6 +54,7 @@ struct StreamConsts
         mine_streams.push_back(STREAM_RECORDS);
         mine_streams.push_back(STREAM_ANNOTATEDRECORDS);
         mine_streams.push_back(STREAM_BADGES);
+        mine_streams.push_back(STREAM_BADGEISSUERS);
         mine_streams.push_back(STREAM_ANNOTATEDBADGES);
 		m["mine"] = mine_streams;		
         return m;

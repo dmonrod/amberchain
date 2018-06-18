@@ -187,6 +187,8 @@ static const CRPCCommand vRPCCommands[] =
     { "wallet",             "revokebadge",            &revokebadge,            false,     false,      true },
     { "wallet",             "createbadge",            &createbadge,            false,     false,      true },
     { "wallet",             "updatebadge",            &updatebadge,            false,     false,      true },
+    { "wallet",             "grantbadgeissuerpermission",   &grantbadgeissuerpermission,    false,  false,  true },
+    { "wallet",             "revokebadgeissuerpermission",  &revokebadgeissuerpermission,   false,  false,  true },
     { "wallet",             "writecategory",          &writecategory,          false,     false,      true },
     { "wallet",             "writerecordtype",        &writerecordtype,        false,     false,      true },
 /* AMB END */

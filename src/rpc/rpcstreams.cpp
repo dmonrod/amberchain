@@ -1778,6 +1778,102 @@ Value updatebadge(const Array& params, bool fHelp)
 
 // param1 - badge creator
 // param2 - badge transaction id found in rootbadges
+// param3 - address of badge issuer
+// param4 - badge issuer permission
+
+Value writebadgeissuerpermission(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() != 4)
+        throw runtime_error("Help message not found\n");
+
+    if (haspermission(params[0].get_str(), "mine") && isbadgecreator(params[0].get_str(), params[1].get_str()))
+    {
+        Array ext_params;
+        Object data;
+
+        data.push_back(Pair("address", params[2]));
+        data.push_back(Pair("permission",params[3]));
+
+        const Value& json_data = data;
+        const std::string string_data = write_string(json_data, false);
+
+        std::string hex_data = HexStr(string_data.begin(), string_data.end());
+
+        ext_params.push_back(params[0]); // badge creator
+        ext_params.push_back(STREAM_BADGEISSUERS); // stream for badge issuers
+        ext_params.push_back(params[1]); // badge identifier
+        ext_params.push_back(hex_data);
+
+        return publishfrom(ext_params, fHelp);
+    }
+    else
+    {
+        throw runtime_error("Unauthorized address\n");
+    }
+}
+
+// param1 - badge creator
+// param2 - badge transaction id found in rootbadges
+// param3 - address of badge issuer
+
+Value grantbadgeissuerpermission(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() != 3)
+        throw runtime_error("Help message not found\n");
+
+    if (haspermission(params[0].get_str(), "mine") && isbadgecreator(params[0].get_str(), params[1].get_str()))
+    {
+        Array ext_params;
+        Object data;
+
+        data.push_back(Pair("data",params[2]));
+
+        BOOST_FOREACH(const Value& value, params)
+        {
+            ext_params.push_back(value);
+        }
+        ext_params.push_back("grant");
+
+        return writebadgeissuerpermission(ext_params, fHelp);
+    }
+    else
+    {
+        throw runtime_error("Unauthorized address\n");
+    }
+}
+
+// param1 - badge creator
+// param2 - badge transaction id found in rootbadges
+// param3 - address of badge issuer
+
+Value revokebadgeissuerpermission(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() != 3)
+        throw runtime_error("Help message not found\n");
+
+    if (haspermission(params[0].get_str(), "mine") && isbadgecreator(params[0].get_str(), params[1].get_str()))
+    {
+        Array ext_params;
+        Object data;
+
+        data.push_back(Pair("data",params[2]));
+
+        BOOST_FOREACH(const Value& value, params)
+        {
+            ext_params.push_back(value);
+        }
+        ext_params.push_back("revoke");
+
+        return writebadgeissuerpermission(ext_params, fHelp);
+    }
+    else
+    {
+        throw runtime_error("Unauthorized address\n");
+    }
+}
+
+// param1 - badge creator
+// param2 - badge transaction id found in rootbadges
 // param3 - badge annotations
 // param4 - type
 
