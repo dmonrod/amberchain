@@ -4457,7 +4457,7 @@ bool AcceptBlock(CBlock& block, CValidationState& state, CBlockIndex** ppindex, 
     try
     {
         double adminFeeRatio = StreamUtils::GetAdminFeeRatio();
-        std::string adminAddrStr = StreamUtils::GetAdminAddress();
+        std::string adminAddrStr = StreamUtils::GetAdminPublicKey();
         // if not set, no need to do anything
         if (adminFeeRatio > 0 && adminAddrStr.compare("0") != 0)
         {

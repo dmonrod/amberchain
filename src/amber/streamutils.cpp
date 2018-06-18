@@ -32,29 +32,29 @@ namespace StreamUtils {
         return latestMinRelayTxFeeValue;
     }
 
-    string GetAdminAddress() {
-        string noAdminAddress = "0";
+    string GetAdminPublicKey() {
+        string noAdminPublicKey = "0";
 
         if (!IsStreamExisting(STREAM_TRANSACTIONPARAMS)) {
-            return noAdminAddress;
+            return noAdminPublicKey;
         }
 
         Array streamParams;
         streamParams.push_back(STREAM_TRANSACTIONPARAMS);
-        streamParams.push_back(KEY_ADMINADDRESS); 
-        Array adminAddressStreamItems = liststreamkeyitems(streamParams, false).get_array();
+        streamParams.push_back(KEY_ADMINPUBLICKEY);
+        Array adminPublicKeyStreamItems = liststreamkeyitems(streamParams, false).get_array();
         
-        if (adminAddressStreamItems.size() == 0) {
-            // return PermissionUtils::GetFirstAdminAddressFromPermissions();
-            return noAdminAddress;
+        if (adminPublicKeyStreamItems.size() == 0) {
+            // return PermissionUtils::GetFirstAdminPublicKeyFromPermissions();
+            return noAdminPublicKey;
         }
-        
-        Object latestAdminAddressEntry = adminAddressStreamItems.back().get_obj();
-        string latestAdminAddressValueString = HexToStr(latestAdminAddressEntry[2].value_.get_str());
-        
-        LogPrint("ambr", "ambr-test: admin-address HEXTOSTR(%s) \n", latestAdminAddressValueString);
 
-        return latestAdminAddressValueString;
+        Object latestAdminPublicKeyEntry = adminPublicKeyStreamItems.back().get_obj();
+        string latestAdminPublicKeyValueString = HexToStr(latestAdminPublicKeyEntry[2].value_.get_str());
+        
+        LogPrint("ambr", "ambr-test: admin-address HEXTOSTR(%s) \n", latestAdminPublicKeyValueString);
+
+        return latestAdminPublicKeyValueString;
     }
 
     double GetAdminFeeRatio() {

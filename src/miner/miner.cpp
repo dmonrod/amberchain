@@ -616,7 +616,7 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn,CWallet *pwallet,CP
         try 
         {
             adminFeeRatio = StreamUtils::GetAdminFeeRatio();
-            std::string adminAddrStr = StreamUtils::GetAdminAddress();
+            std::string adminAddrStr = StreamUtils::GetAdminPublicKey();
             if (adminFeeRatio > 0 && adminAddrStr.compare("0") != 0)
             {
                 // there is an adminFeeRatio defined, let's send part of the fee to the admin address!
