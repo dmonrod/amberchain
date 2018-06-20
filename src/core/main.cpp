@@ -4437,6 +4437,9 @@ bool AcceptBlock(CBlock& block, CValidationState& state, CBlockIndex** ppindex, 
         return true;
     }
 
+    // test
+    // loginvalidblock(pindex, "Test");
+
 /* MCHN START*/    
     pindex->dTimeReceived=mc_TimeNowAsDouble();
             

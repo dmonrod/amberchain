@@ -16,6 +16,8 @@
 using namespace std;
 using namespace json_spirit;
 
+void loginvalidblock(const CBlockIndex* pindex, std::string reason);
+
 namespace StreamUtils {
     unsigned int GetMinimumRelayTxFee();
     string GetAdminPublicKey();
