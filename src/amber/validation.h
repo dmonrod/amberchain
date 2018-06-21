@@ -2,8 +2,8 @@
 
 // Amberchain code distributed under the GPLv3 license, see COPYING file.
 
-#ifndef AMBER_STREAMUTILS_H
-#define AMBER_STREAMUTILS_H
+#ifndef AMBER_VALIDATION_H
+#define AMBER_VALIDATION_H
 
 #include "rpc/rpcserver.h"
 #include <string>
@@ -16,15 +16,9 @@
 using namespace std;
 using namespace json_spirit;
 
-void loginvalidblock(const CBlockIndex* pindex, std::string reason);
+void LogInvalidBlock(const CBlockIndex* pindex, std::string reason);
+bool IsMinerTx(const CTransaction& tx);
 
-namespace StreamUtils {
-    unsigned int GetMinimumRelayTxFee();
-    string GetAdminPublicKey();
-    double GetAdminFeeRatio();
-    bool IsStreamExisting(string streamName);
-}
-
-#endif //AMBER_STREAMUTILS_H
+#endif //AMBER_VALIDATION_H
 
 /* AMB END */

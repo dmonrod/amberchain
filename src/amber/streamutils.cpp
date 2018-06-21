@@ -3,6 +3,10 @@
 // Amberchain code distributed under the GPLv3 license, see COPYING file.
 
 #include "amber/streamutils.h"
+#include "structs/base58.h"
+#include "chain/chain.h"
+#include "json/json_spirit.h"
+#include "utils/utilstrencodings.h"
 
 using namespace std;
 using namespace json_spirit;
@@ -99,3 +103,4 @@ namespace StreamUtils {
 }
 
 /* AMB END */
+
