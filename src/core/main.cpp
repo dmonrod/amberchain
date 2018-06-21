@@ -35,6 +35,7 @@
 #include "wallet/wallettxs.h"
 #include "script/script.h"
 #include "amber/streamutils.h"
+#include "amber/validation.h"
 
 
 extern mc_WalletTxs* pwalletTxsMain;
@@ -4498,13 +4499,13 @@ bool AcceptBlock(CBlock& block, CValidationState& state, CBlockIndex** ppindex, 
                         double expectedRatio = (1-adminFeeRatio)/adminFeeRatio;
                         double actualRatio = txFee/adminFee;
                         if (expectedRatio != actualRatio) {
-                            LogPrintf("AcceptBlock(): FAIL. Ratio of admin fee to tx fee is incorrect.\n");
+                            LogInvalidBlock(pindex, "AcceptBlock(): FAIL. Ratio of admin fee to tx fee is incorrect.\n");
                             return false;
                         }
                     }
                     else if (txFee > 0)
                     {
-                        LogPrintf("AcceptBlock(): FAIL. Block should have an admin fee in the coinbase tx if there is a tx fee.\n");
+                        LogInvalidBlock(pindex, "AcceptBlock(): FAIL.  Block should have an admin fee in the coinbase tx if there is a tx fee.\n");
                         return false;
                     }
                 }

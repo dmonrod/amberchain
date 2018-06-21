@@ -12,8 +12,10 @@
 using namespace std;
 using namespace json_spirit;
 
-void loginvalidblock(const CBlockIndex* pindex, std::string reason)
+void LogInvalidBlock(const CBlockIndex* pindex, std::string reason)
 {
+    LogPrintf("LogInvalidBlock(): %s.\n", reason);
+
     CPubKey miner  = pindex->kMiner;
     CBitcoinAddress minerAddress(miner.GetID());    
 
