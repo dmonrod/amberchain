@@ -3929,7 +3929,7 @@ void mc_InitRPCHelpMap17()
     ));
     mapHelpStrings.insert(std::make_pair("writecategory",
         "writecategory\n"
-        "\Add a category\n"
+        "\nAdd a category\n"
         "\nArguments:\n"
         "1. \"from-address\"                (string, required) Address of the category creator\n"
         "2. \"category-key\"                (string, required) Key of category\n"
@@ -3939,7 +3939,7 @@ void mc_InitRPCHelpMap17()
     ));
     mapHelpStrings.insert(std::make_pair("writerecordtype",
         "writerecordtype\n"
-        "\Add a recordtype\n"
+        "\nAdd a recordtype\n"
         "\nArguments:\n"
         "1. \"from-address\"                (string, required) Address of the record type creator\n"
         "2. \"record-type-key\"             (string, required) Key of record type\n"
@@ -3947,7 +3947,36 @@ void mc_InitRPCHelpMap17()
         "\nExample:\n"
         + HelpExampleCli("writerecordtype", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd record-type-key \"{'title':'Badge Title', 'category': 'category-key'}\"")
     ));
-
+    mapHelpStrings.insert(std::make_pair("listservice",
+        "listservice\n"
+        "\nLists a service to Amberchain\n"
+        "\nArguments:\n"
+        "1. \"from-address\"                (string, required) Address of the service owner\n"
+        "2. \"service-name\"                (string, required) Name of the new service\n"
+        "3. \"service-data\"                (string, required) Details of the service in JSON format\n"
+        "\nExample:\n"
+        + HelpExampleCli("listservice", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd record-type-key \"{'fee':'20 units', 'maturity-date': '01-2-12'}\"")
+    ));
+    mapHelpStrings.insert(std::make_pair("updateservice",
+        "listservice\n"
+        "\nUpdates an existing service to Amberchain\n"
+        "\nArguments:\n"
+        "1. \"from-address\"                (string, required) Address of the service owner\n"
+        "2. \"service-name\"                (string, required) Name of the new service\n"
+        "3. \"service-data\"                (string, required) Details of the service in JSON format\n"
+        "\nExample:\n"
+        + HelpExampleCli("updateservice", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd record-type-key \"{'fee':'20 units', 'maturity-date': '01-2-12'}\"")
+    ));
+    mapHelpStrings.insert(std::make_pair("delistservice",
+        "listservice\n"
+        "\nRemoves a service from Amberchain\n"
+        "\nArguments:\n"
+        "1. \"from-address\"                (string, required) Address of the service owner\n"
+        "2. \"service-name\"                (string, required) Name of the new service\n"
+        "3. \"service-data\"                (string, required) Details of the service in JSON format\n"
+        "\nExample:\n"
+        + HelpExampleCli("delist", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd record-type-key \"{'fee':'20 units', 'maturity-date': '01-2-12'}\"")
+    ));
 }
 
 void mc_InitRPCLogParamCountMap()
