@@ -2050,4 +2050,125 @@ Value writerecordtype(const Array& params, bool fHelp)
     }
 }
 
+// param1 - from-address
+// param2 - service name
+// param3 - JSON of service details
+Value listservice(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() != 3)
+        throw runtime_error("Help message not found\n");
+
+    Object data;
+    data.push_back(Pair("data",params[2]));
+
+    const Value& json_data = data;
+    const std::string string_data = write_string(json_data, false);
+
+    std::string hex_data = HexStr(string_data.begin(), string_data.end());
+
+    Object raw_data;
+    raw_data.push_back(Pair("for", STREAM_SERVICES));
+    raw_data.push_back(Pair("key", params[1]));
+    raw_data.push_back(Pair("data", hex_data));
+
+    Array ext_params;
+
+    Object addresses;
+    Array dataArray;
+    dataArray.push_back(raw_data);
+    ext_params.push_back(params[0]); // from-address
+    ext_params.push_back(addresses); // addresses
+    ext_params.push_back(dataArray); // data array
+
+    return createrawsendfrom(ext_params, fHelp);
+}
+
+// param1 - from-address
+// param2 - service name
+// param3 - JSON of service details
+// param4 - type
+Value writeannotatedservice(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() != 4)
+        throw runtime_error("Help message not found\n");
+
+    Array pub_params;
+    pub_params.push_back(STREAM_SERVICES);
+    pub_params.push_back(params[1]);
+    Array items = liststreamkeyitems(pub_params, false).get_array();
+    Object result = items[items.size() - 1].get_obj();
+
+    if (result.size() > 0) {
+        std::string publisher_item = result[0].value_.get_array().back().get_str();
+            if (strcmp(publisher_item.c_str(), params[0].get_str().c_str()) != 0) {
+                throw runtime_error("Address is not the previous publisher");
+        }
+    }
+
+    Object data;
+
+    data.push_back(Pair("type",params[3]));
+    data.push_back(Pair("data",params[2]));
+
+    const Value& json_data = data;
+    const std::string string_data = write_string(json_data, false);
+
+    std::string hex_data = HexStr(string_data.begin(), string_data.end());
+
+    Object raw_data;
+    raw_data.push_back(Pair("for", STREAM_SERVICES));
+    raw_data.push_back(Pair("key", params[1]));
+    raw_data.push_back(Pair("data", hex_data));
+
+    Array ext_params;
+
+    Object addresses;
+    Array dataArray;
+    dataArray.push_back(raw_data);
+    ext_params.push_back(params[0]); // from-address
+    ext_params.push_back(addresses); // addresses
+    ext_params.push_back(dataArray); // data array
+
+    return createrawsendfrom(ext_params, fHelp);
+}
+
+// param1 - from-address
+// param2 - service name (key)
+// param3 - data
+Value updateservice(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() != 3)
+        throw runtime_error("Help message not found\n");
+
+    Array ext_params;
+
+    BOOST_FOREACH(const Value& value, params)
+    {
+        ext_params.push_back(value);
+    }
+    ext_params.push_back("update");
+
+    return writeannotatedservice(ext_params, fHelp);
+}
+
+
+// param1 - from-address
+// param2 - service name (key)
+// param3 - data
+Value delistservice(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() != 3)
+        throw runtime_error("Help message not found\n");
+
+    Array ext_params;
+
+    BOOST_FOREACH(const Value& value, params)
+    {
+        ext_params.push_back(value);
+    }
+    ext_params.push_back("delist");
+
+    return writeannotatedservice(ext_params, fHelp);
+}
+
 /* AMB END */
