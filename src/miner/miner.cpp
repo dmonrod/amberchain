@@ -28,6 +28,7 @@
 #include <boost/tuple/tuple.hpp>
 
 #include "amber/streamutils.h"
+#include "amber/validation.h"
 
 using namespace std;
 
@@ -541,6 +542,10 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn,CWallet *pwallet,CP
             }
 
             CAmount nTxFees = view.GetValueIn(tx)-tx.GetValueOut();
+            if (StreamUtils::GetMinimumRelayTxFee() > 0 && !IsMinerTx(tx) && nTxFees <= 0) {
+                LogPrint("mchn","mchn-miner: Rejected tx %s: Should have nonzero tx fee.\n",tx.GetHash().GetHex().c_str());
+                continue;
+            }
 
             nTxSigOps += GetP2SHSigOpCount(tx, view);
             if (nBlockSigOps + nTxSigOps >= MAX_BLOCK_SIGOPS)

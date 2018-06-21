@@ -312,6 +312,7 @@ libbitcoin_util_a_SOURCES = \
   amber/utils.cpp \
   amber/permissionutils.cpp \
   amber/streamutils.cpp \
+  amber/validation.cpp \
   amber/strencodings.cpp \
   $(BITCOIN_CORE_H)
 
