@@ -1624,31 +1624,31 @@ Value writeannotatedrecord(const Array& params, bool fHelp)
         }
     }
 
-    if (haspermission(params[0].get_str(), "mine")) 
-    {
+    Object content;
 
-        Array ext_params;
-        Object content;
+    content.push_back(Pair("type",params[3]));
+    content.push_back(Pair("data",params[2]));
 
-        content.push_back(Pair("type",params[3]));
-        content.push_back(Pair("data",params[2]));
+    const Value& json_data = content;
+    const std::string string_data = write_string(json_data, false);
+    
+    std::string hex_data = HexStr(string_data.begin(), string_data.end());
+    
+    Object raw_data;
+    raw_data.push_back(Pair("for", STREAM_SERVICES));
+    raw_data.push_back(Pair("key", params[1]));
+    raw_data.push_back(Pair("data", hex_data));
 
-        const Value& json_data = content;
-        const std::string string_data = write_string(json_data, false);
-        
-        std::string hex_data = HexStr(string_data.begin(), string_data.end());
+    Array ext_params;
 
-        ext_params.push_back(params[0]); // from-address
-        ext_params.push_back(STREAM_ANNOTATEDRECORDS); // stream for annotating/revoking records
-        ext_params.push_back(params[1]); // transaction id of annotated record
-        ext_params.push_back(hex_data);
+    Object addresses;
+    Array dataArray;
+    dataArray.push_back(raw_data);
+    ext_params.push_back(params[0]); // from-address
+    ext_params.push_back(addresses); // addresses
+    ext_params.push_back(dataArray); // data array
 
-        return publishfrom(ext_params, fHelp);
-    }
-    else
-    {
-        throw runtime_error("Unauthorized address\n");
-    }
+    return createrawsendfrom(ext_params, fHelp);
 }
 
 // param1 - from-address
