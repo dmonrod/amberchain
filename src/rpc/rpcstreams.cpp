@@ -1790,6 +1790,145 @@ Value updatebadge(const Array& params, bool fHelp)
 }
 
 // param1 - badge creator
+// param2 - badge receiver
+// param3 - badge transaction id found in rootbadges
+// param4 - badge notes
+// param5 - badge action [ issue | revoke ]
+
+Value writeissuedbadges(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() != 5)
+        throw runtime_error("Help message not found\n");
+
+    Object data;
+
+    data.push_back(Pair("badge",params[2])); // badge identifier
+    data.push_back(Pair("notes",params[3])); // badge notes
+    data.push_back(Pair("action",params[4])); // badge action
+
+    const Value& json_data = data;
+    const std::string string_data = write_string(json_data, false);
+
+    std::string hex_data = HexStr(string_data.begin(), string_data.end());
+
+    Object raw_data;
+    raw_data.push_back(Pair("for", STREAM_ISSUEDBADGES));
+    raw_data.push_back(Pair("key", params[1])); // badge receiver
+    raw_data.push_back(Pair("data", hex_data));
+
+    Array ext_params;
+
+    Object addresses;
+    Array dataArray;
+    dataArray.push_back(raw_data);
+    ext_params.push_back(params[0]); // badge creator
+    ext_params.push_back(addresses); // addresses
+    ext_params.push_back(dataArray); // data array
+
+    return createrawsendfrom(ext_params, fHelp);
+}
+
+// param1 - badge creator
+// param2 - badge receiver
+// param3 - badge transaction id found in rootbadges
+// param4 - badge notes
+
+Value issuebadge(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() != 4)
+        throw runtime_error("Help message not found\n");
+
+    Array ext_params;
+
+    if (haspermission(params[0].get_str(), "mine") && isbadgecreator(params[0].get_str(), params[2].get_str()))
+    {
+        BOOST_FOREACH(const Value& value, params)
+        {
+            ext_params.push_back(value);
+        }
+        ext_params.push_back("issue");
+    }
+    else
+    {
+        throw runtime_error("Unauthorized address\n");
+    }
+
+    return writeissuedbadges(ext_params, fHelp);
+}
+
+// param1 - badge creator
+// param2 - badge receiver
+// param3 - badge transaction id found in rootbadges
+// param4 - badge notes
+
+Value revokebadge(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() != 4)
+        throw runtime_error("Help message not found\n");
+
+    Array ext_params;
+
+    if (haspermission(params[0].get_str(), "mine") && isbadgecreator(params[0].get_str(), params[2].get_str()))
+    {
+        BOOST_FOREACH(const Value& value, params)
+        {
+            ext_params.push_back(value);
+        }
+        ext_params.push_back("revoke");
+    }
+    else
+    {
+        throw runtime_error("Unauthorized address\n");
+    }
+
+    return writeissuedbadges(ext_params, fHelp);
+}
+
+// param1 - badge creator
+// param2 - badge receiver
+// param3 - badge transaction id found in rootbadges
+// param4 - badge notes
+// param5 - request status [ request | approve | disapprove ]
+// param6 - badge action [ issue | revoke ]
+// param7 - issue badge requestor
+
+Value requestissuebadge(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() != 7)
+        throw runtime_error("Help message not found\n");
+
+    Object data;
+
+    data.push_back(Pair("receiver",params[1])); // badge receiver
+    data.push_back(Pair("badge",params[2])); // badge identifier
+    data.push_back(Pair("notes",params[3])); // badge notes
+    data.push_back(Pair("status",params[4])); // badge status
+    data.push_back(Pair("action",params[5])); // badge action
+    data.push_back(Pair("requestor",params[6])); // badge requestor
+
+    const Value& json_data = data;
+    const std::string string_data = write_string(json_data, false);
+
+    std::string hex_data = HexStr(string_data.begin(), string_data.end());
+
+    Object raw_data;
+    raw_data.push_back(Pair("for", STREAM_ISSUEBADGEREQUESTS));
+    raw_data.push_back(Pair("key", params[0])); // badge creator
+    raw_data.push_back(Pair("data", hex_data));
+
+    Array ext_params;
+
+    Object addresses;
+    Array dataArray;
+    dataArray.push_back(raw_data);
+    ext_params.push_back(params[6]); // badge requestor
+    ext_params.push_back(addresses); // addresses
+    ext_params.push_back(dataArray); // data array
+
+    return createrawsendfrom(ext_params, fHelp);
+}
+
+// param1 - badge creator
 // param2 - badge transaction id found in rootbadges
 // param3 - address of badge issuer
 // param4 - badge issuer permission
@@ -1940,34 +2079,6 @@ Value annotatebadge(const Array& params, bool fHelp)
             ext_params.push_back(value);
         }
         ext_params.push_back("annotate");
-    }
-    else
-    {
-        throw runtime_error("Unauthorized address\n");
-    }
-
-    return writeannotatedbadge(ext_params, fHelp);
-}
-
-// param1 - badge creator
-// param2 - badge transaction id found in rootbadges
-// param3 - badge annotations
-
-Value revokebadge(const Array& params, bool fHelp)
-{
-    if (fHelp || params.size() != 3)
-        throw runtime_error("Help message not found\n");
-
-
-    Array ext_params;
-
-    if (haspermission(params[0].get_str(), "mine") && isbadgecreator(params[0].get_str(), params[1].get_str()))
-    {
-        BOOST_FOREACH(const Value& value, params)
-        {
-            ext_params.push_back(value);
-        }
-        ext_params.push_back("revoke");
     }
     else
     {
