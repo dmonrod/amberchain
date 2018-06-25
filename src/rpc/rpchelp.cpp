@@ -3952,10 +3952,9 @@ void mc_InitRPCHelpMap17()
         "\nLists a service to Amberchain\n"
         "\nArguments:\n"
         "1. \"from-address\"                (string, required) Address of the service owner\n"
-        "2. \"service-name\"                (string, required) Name of the new service\n"
-        "3. \"service-data\"                (string, required) Details of the service in JSON format\n"
+        "2. \"service-data\"                (string, required) Details of the service in JSON format\n"
         "\nExample:\n"
-        + HelpExampleCli("listservice", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd record-type-key \"{'fee':'20 units', 'maturity-date': '01-2-12'}\"")
+        + HelpExampleCli("listservice", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd \"{'fee':'20 units', 'maturity-date': '01-2-12'}\"")
     ));
     mapHelpStrings.insert(std::make_pair("updateservice",
         "listservice\n"

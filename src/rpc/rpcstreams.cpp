@@ -2051,15 +2051,14 @@ Value writerecordtype(const Array& params, bool fHelp)
 }
 
 // param1 - from-address
-// param2 - service name
-// param3 - JSON of service details
+// param2 - JSON of service details
 Value listservice(const Array& params, bool fHelp)
 {
-    if (fHelp || params.size() != 3)
+    if (fHelp || params.size() != 2)
         throw runtime_error("Help message not found\n");
 
     Object data;
-    data.push_back(Pair("data",params[2]));
+    data.push_back(Pair("data",params[1]));
 
     const Value& json_data = data;
     const std::string string_data = write_string(json_data, false);
@@ -2068,7 +2067,7 @@ Value listservice(const Array& params, bool fHelp)
 
     Object raw_data;
     raw_data.push_back(Pair("for", STREAM_SERVICES));
-    raw_data.push_back(Pair("key", params[1]));
+    raw_data.push_back(Pair("key", "service"));
     raw_data.push_back(Pair("data", hex_data));
 
     Array ext_params;
