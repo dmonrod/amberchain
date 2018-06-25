@@ -3870,7 +3870,7 @@ void mc_InitRPCHelpMap17()
         ));
     mapHelpStrings.insert(std::make_pair("createbadge",
         "createbadge\n"
-        "\Create a badge\n"
+        "\nCreate a badge\n"
         "\nArguments:\n"
         "1. \"from-address\"                (string, required) Address of the badge creator\n"
         "2. \"badge-data\"                  (string, required) Badge data in JSON format\n"
@@ -3889,7 +3889,7 @@ void mc_InitRPCHelpMap17()
     ));
     mapHelpStrings.insert(std::make_pair("grantbadgeissuerpermission",
         "grantbadgeissuerpermission\n"
-        "\Grant a wallet address permission to issue a badge\n"
+        "\nGrant a wallet address permission to issue a badge\n"
         "\nArguments:\n"
         "1. \"from-address\"                (string, required) Address of the badge creator\n"
         "2. \"badge-txid\"                  (string, required) Transaction ID of badge on creation, found in Badges stream\n"
@@ -3899,7 +3899,7 @@ void mc_InitRPCHelpMap17()
     ));
     mapHelpStrings.insert(std::make_pair("revokebadgeissuerpermission",
         "revokebadgeissuerpermission\n"
-        "\Revoke a wallet address permission to issue a badge\n"
+        "\nRevoke a wallet address permission to issue a badge\n"
         "\nArguments:\n"
         "1. \"from-address\"                (string, required) Address of the badge creator\n"
         "2. \"badge-txid\"                  (string, required) Transaction ID of badge on creation, found in Badges stream\n"
@@ -3957,21 +3957,21 @@ void mc_InitRPCHelpMap17()
         + HelpExampleCli("listservice", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd \"{'fee':'20 units', 'maturity-date': '01-2-12'}\"")
     ));
     mapHelpStrings.insert(std::make_pair("updateservice",
-        "listservice\n"
+        "updateservice\n"
         "\nUpdates an existing service to Amberchain\n"
         "\nArguments:\n"
         "1. \"from-address\"                (string, required) Address of the service owner\n"
-        "2. \"service-name\"                (string, required) Name of the new service\n"
+        "2. \"stream-txid\"                 (string, required) Transaction ID of the item to be updated in the services stream\n"
         "3. \"service-data\"                (string, required) Details of the service in JSON format\n"
         "\nExample:\n"
         + HelpExampleCli("updateservice", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd record-type-key \"{'fee':'20 units', 'maturity-date': '01-2-12'}\"")
     ));
     mapHelpStrings.insert(std::make_pair("delistservice",
-        "listservice\n"
+        "delistservice\n"
         "\nRemoves a service from Amberchain\n"
         "\nArguments:\n"
         "1. \"from-address\"                (string, required) Address of the service owner\n"
-        "2. \"service-name\"                (string, required) Name of the new service\n"
+        "2. \"stream-txid\"                 (string, required) Transaction ID of the item to be delisted in the services stream\n"
         "3. \"service-data\"                (string, required) Details of the service in JSON format\n"
         "\nExample:\n"
         + HelpExampleCli("delist", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd record-type-key \"{'fee':'20 units', 'maturity-date': '01-2-12'}\"")

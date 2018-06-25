@@ -2083,7 +2083,7 @@ Value listservice(const Array& params, bool fHelp)
 }
 
 // param1 - from-address
-// param2 - service name
+// param2 - stream txid
 // param3 - JSON of service details
 // param4 - type
 Value writeannotatedservice(const Array& params, bool fHelp)
@@ -2094,8 +2094,7 @@ Value writeannotatedservice(const Array& params, bool fHelp)
     Array pub_params;
     pub_params.push_back(STREAM_SERVICES);
     pub_params.push_back(params[1]);
-    Array items = liststreamkeyitems(pub_params, false).get_array();
-    Object result = items[items.size() - 1].get_obj();
+    Object result = getstreamitem(pub_params, false).get_obj();
 
     if (result.size() > 0) {
         std::string publisher_item = result[0].value_.get_array().back().get_str();
@@ -2132,7 +2131,7 @@ Value writeannotatedservice(const Array& params, bool fHelp)
 }
 
 // param1 - from-address
-// param2 - service name (key)
+// param2 - stream txid
 // param3 - data
 Value updateservice(const Array& params, bool fHelp)
 {
@@ -2152,7 +2151,7 @@ Value updateservice(const Array& params, bool fHelp)
 
 
 // param1 - from-address
-// param2 - service name (key)
+// param2 - stream txid
 // param3 - data
 Value delistservice(const Array& params, bool fHelp)
 {
