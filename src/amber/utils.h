@@ -14,6 +14,8 @@
 #define STREAM_TRANSACTIONPARAMS    "transactionparams"
 #define STREAM_RECORDS              "records"
 #define STREAM_BADGES               "badges"
+#define STREAM_ISSUEDBADGES         "issuedbadges"
+#define STREAM_ISSUEBADGEREQUESTS   "issuebadgerequests"
 #define STREAM_ANNOTATEDBADGES      "annotatedbadges"
 #define STREAM_BADGEISSUERS         "badgeissuers"
 #define STREAM_CATEGORIES           "categories"
@@ -55,6 +57,8 @@ struct StreamConsts
         mine_streams.push_back(STREAM_BADGES);
         mine_streams.push_back(STREAM_BADGEISSUERS);
         mine_streams.push_back(STREAM_ANNOTATEDBADGES);
+        mine_streams.push_back(STREAM_ISSUEDBADGES);
+        mine_streams.push_back(STREAM_ISSUEBADGEREQUESTS);
 		m["mine"] = mine_streams;		
         return m;
     }
