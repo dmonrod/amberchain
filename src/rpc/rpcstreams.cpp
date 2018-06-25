@@ -1635,7 +1635,7 @@ Value writeannotatedrecord(const Array& params, bool fHelp)
     std::string hex_data = HexStr(string_data.begin(), string_data.end());
     
     Object raw_data;
-    raw_data.push_back(Pair("for", STREAM_SERVICES));
+    raw_data.push_back(Pair("for", STREAM_RECORDS));
     raw_data.push_back(Pair("key", params[1]));
     raw_data.push_back(Pair("data", hex_data));
 
