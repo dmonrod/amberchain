@@ -178,6 +178,8 @@ static const CRPCCommand vRPCCommands[] =
     { "hidden",             "sendtoaddress",          &sendtoaddress,          false,     false,      true },
     { "wallet",             "send",                   &sendtoaddress,          false,     false,      true },
 /* AMB START */
+    { "wallet",             "registeraddress",        &registeraddress,        false,     false,      true }, 
+    { "wallet",             "getpubkeyforaddress",    &getpubkeyforaddress,    false,     false,      true }, 
     { "wallet",             "approveauthority",       &approveauthority,       false,     false,      true }, 
     { "wallet",             "requestauthority",       &requestauthority,       false,     false,      true }, 
     { "wallet",             "annotaterecord",         &annotaterecord,         false,     false,      true }, 
