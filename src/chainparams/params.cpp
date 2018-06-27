@@ -1,5 +1,5 @@
 // Copyright (c) 2014-2017 Coin Sciences Ltd
-// MultiChain code distributed under the GPLv3 license, see COPYING file.
+// Amberchain code distributed under the GPLv3 license, see COPYING file.
 
 #include "multichain/multichain.h"
 
@@ -390,37 +390,40 @@ int mc_MultichainParams::Create(const char* name,int version)
                                 *((unsigned char*)ptrData+3)=mc_RandomInRange(0xe0,0xff);
                             }
                         }
+                        /* AMB START */
+                        // Modify default params to match bitcoin format (so that we can accept bitcoin-compatible keys)
                         if(strcmp(param->m_Name,"addresspubkeyhashversion") == 0)
                         {
-                            size=4;
+                            size=1;
                             *((unsigned char*)ptrData+0)=0x00;
-                            *((unsigned char*)ptrData+1)=mc_RandomInRange(0x00,0xff);
-                            *((unsigned char*)ptrData+2)=mc_RandomInRange(0x00,0xff);
-                            *((unsigned char*)ptrData+3)=mc_RandomInRange(0x00,0xff);
+                            // *((unsigned char*)ptrData+1)=mc_RandomInRange(0x00,0xff);
+                            // *((unsigned char*)ptrData+2)=mc_RandomInRange(0x00,0xff);
+                            // *((unsigned char*)ptrData+3)=mc_RandomInRange(0x00,0xff);
                         }
                         if(strcmp(param->m_Name,"addressscripthashversion") == 0)
                         {
-                            size=4;
+                            size=1;
                             *((unsigned char*)ptrData+0)=0x05;
-                            *((unsigned char*)ptrData+1)=mc_RandomInRange(0x00,0xff);
-                            *((unsigned char*)ptrData+2)=mc_RandomInRange(0x00,0xff);
-                            *((unsigned char*)ptrData+3)=mc_RandomInRange(0x00,0xff);
+                            // *((unsigned char*)ptrData+1)=mc_RandomInRange(0x00,0xff);
+                            // *((unsigned char*)ptrData+2)=mc_RandomInRange(0x00,0xff);
+                            // *((unsigned char*)ptrData+3)=mc_RandomInRange(0x00,0xff);
                         }
                         if(strcmp(param->m_Name,"privatekeyversion") == 0)
                         {
-                            size=4;
+                            size=1;
                             *((unsigned char*)ptrData+0)=0x80;
-                            *((unsigned char*)ptrData+1)=mc_RandomInRange(0x00,0xff);
-                            *((unsigned char*)ptrData+2)=mc_RandomInRange(0x00,0xff);
-                            *((unsigned char*)ptrData+3)=mc_RandomInRange(0x00,0xff);
+                            // *((unsigned char*)ptrData+1)=mc_RandomInRange(0x00,0xff);
+                            // *((unsigned char*)ptrData+2)=mc_RandomInRange(0x00,0xff);
+                            // *((unsigned char*)ptrData+3)=mc_RandomInRange(0x00,0xff);
                         }
+                        /* AMB END */
                         if(strcmp(param->m_Name,"addresschecksumvalue") == 0)
                         {
                             size=4;
-                            *((unsigned char*)ptrData+0)=mc_RandomInRange(0x00,0xff);
-                            *((unsigned char*)ptrData+1)=mc_RandomInRange(0x00,0xff);
-                            *((unsigned char*)ptrData+2)=mc_RandomInRange(0x00,0xff);
-                            *((unsigned char*)ptrData+3)=mc_RandomInRange(0x00,0xff);
+                            *((unsigned char*)ptrData+0)=0x00;
+                            *((unsigned char*)ptrData+1)=0x00;
+                            *((unsigned char*)ptrData+2)=0x00;
+                            *((unsigned char*)ptrData+3)=0x00;
                         }
                         break;
                 }
