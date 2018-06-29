@@ -4424,28 +4424,31 @@ bool AcceptBlock(CBlock& block, CValidationState& state, CBlockIndex** ppindex, 
     CBlockIndex *&pindex = *ppindex;
 
     if (!AcceptBlockHeader(block, state, &pindex, node_id))
-        return false;
+    {
 /* AMB START */
-/*    {
-        loginvalidblock(ppindex, pwalletMain);
-        return false;
-    }*/
+        LogInvalidBlock(pindex, "AcceptBlock(): FAIL. Invalid block header.\n");        
 /* AMB END */
+        return false;
+    }
 
     if (pindex->nStatus & BLOCK_HAVE_DATA) {
         // TODO: deal better with duplicate blocks.
         // return state.DoS(20, error("AcceptBlock() : already have block %d %s", pindex->nHeight, pindex->GetBlockHash().ToString()), REJECT_DUPLICATE, "duplicate");
+/* AMB START */
+        LogInvalidBlock(pindex, "AcceptBlock(): FAIL. Duplicate block.\n");        
+/* AMB END */
         return true;
     }
 
-    // test
-    // loginvalidblock(pindex, "Test");
 
 /* MCHN START*/    
     pindex->dTimeReceived=mc_TimeNowAsDouble();
             
     if(!VerifyBlockSignature(&block,false))
     {
+/* AMB START */
+        LogInvalidBlock(pindex, "AcceptBlock(): FAIL. Invalid block signature.\n");        
+/* AMB END */
         return false;
     }    
     
@@ -4562,14 +4565,11 @@ bool AcceptBlock(CBlock& block, CValidationState& state, CBlockIndex** ppindex, 
     {
         pindex->nStatus |= BLOCK_FAILED_VALID;
         setDirtyBlockIndex.insert(pindex);
+/* AMB START */
+        LogInvalidBlock(pindex, "AcceptBlock(): FAIL. Failed block miner verification.\n");        
+/* AMB END */
         return false;
     }
-/* AMB START */
-    /*
-        loginvalidblock(ppindex, pwalletMain);
-        return false;
-    }*/
-/* AMB END */
 
     return true;
 }
