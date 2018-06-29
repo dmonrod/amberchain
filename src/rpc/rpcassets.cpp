@@ -1429,6 +1429,22 @@ Value gettotalbalances(const Array& params, bool fHelp)
     return  getassetbalances(new_params,fHelp);
 }
 
+/* AMB START */
+bool doesassetexist(std::string assetname)
+{
+    try 
+    {
+        Array assetparams;
+        assetparams.push_back(assetname);
+        Array assetresults = listassets(assetparams, false).get_array();
+        return true;
+    }
+    catch (...) 
+    {
+        return false;
+    }
+}
+/* AMB END */
 
 Value listassets(const Array& params, bool fHelp)
 {

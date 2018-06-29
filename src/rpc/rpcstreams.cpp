@@ -2226,12 +2226,18 @@ Value writerecordtype(const Array& params, bool fHelp)
 
 // param1 - from-address
 // param2 - JSON of service details
+// param3 - name of service
+// param4 - (optional) quantity of service
 Value listservice(const Array& params, bool fHelp)
 {
-    if (fHelp || params.size() != 2)
+    if (fHelp || params.size() > 4)
         throw runtime_error("Help message not found\n");
 
+    if (doesassetexist(params[2].get_str()))
+        throw runtime_error("Service name already exists.");
+
     Object data;
+    data.push_back(Pair("name", params[2]));
     data.push_back(Pair("data",params[1]));
 
     const Value& json_data = data;
@@ -2239,16 +2245,40 @@ Value listservice(const Array& params, bool fHelp)
 
     std::string hex_data = HexStr(string_data.begin(), string_data.end());
 
+    Array ext_params;
+
+    Object addresses;
+    Array dataArray;
+    
+    if (params.size() == 4)
+    {
+        Object issue_params;
+        Object issue_raw;
+
+        int quantity = atoi(params[3].get_str().c_str());
+
+        issue_raw.push_back(Pair("raw", quantity));
+        const Value& value_issue_raw = issue_raw;
+        issue_params.push_back(Pair("issue", value_issue_raw));
+        const Value& value_issue_params = issue_params;
+
+        addresses.push_back(Pair(params[0].get_str(), value_issue_params));    
+
+        Object asset_data;
+        asset_data.push_back(Pair("create", "asset"));
+        asset_data.push_back(Pair("name", params[2].get_str()));
+        asset_data.push_back(Pair("open", true));
+
+        dataArray.push_back(asset_data);
+    }
+
     Object raw_data;
     raw_data.push_back(Pair("for", STREAM_SERVICES));
     raw_data.push_back(Pair("key", "service"));
     raw_data.push_back(Pair("data", hex_data));
 
-    Array ext_params;
-
-    Object addresses;
-    Array dataArray;
     dataArray.push_back(raw_data);
+
     ext_params.push_back(params[0]); // from-address
     ext_params.push_back(addresses); // addresses
     ext_params.push_back(dataArray); // data array

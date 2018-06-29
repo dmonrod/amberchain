@@ -3909,7 +3909,7 @@ void mc_InitRPCHelpMap17()
     ));
     mapHelpStrings.insert(std::make_pair("issuebadge",
         "issuebadge\n"
-        "\Issue an existing badge in Badges stream to an address\n"
+        "\nIssue an existing badge in Badges stream to an address\n"
         "\nArguments:\n"
         "1. \"from-address\"                (string, required) Address of the badge creator\n"
         "2. \"badge-receiver\"              (string, required) Address of the badge receiver\n"
@@ -3920,7 +3920,7 @@ void mc_InitRPCHelpMap17()
     ));
     mapHelpStrings.insert(std::make_pair("revokebadge",
         "revokebadge\n"
-        "\Revoke an existing badge in Badges stream of an address\n"
+        "\nRevoke an existing badge in Badges stream of an address\n"
         "\nArguments:\n"
         "1. \"from-address\"                (string, required) Address of the badge creator\n"
         "2. \"badge-receiver\"              (string, required) Address of the badge receiver\n"
@@ -3931,7 +3931,7 @@ void mc_InitRPCHelpMap17()
     ));
     mapHelpStrings.insert(std::make_pair("requestissuebadge",
         "requestissuebadge\n"
-        "\Send a request to issue \n"
+        "\nSend a request to issue \n"
         "\nArguments:\n"
         "1. \"from-address\"                (string, required) Address of the badge creator\n"
         "2. \"badge-receiver\"              (string, required) Address of the badge receiver\n"
@@ -3999,6 +3999,8 @@ void mc_InitRPCHelpMap17()
         "\nArguments:\n"
         "1. \"from-address\"                (string, required) Address of the service owner\n"
         "2. \"service-data\"                (string, required) Details of the service in JSON format\n"
+        "3. \"service-name\"                (string, required) Name of the new service\n"
+        "4. \"quantity\"                    (string, optional) Quantity of the service (if applicable)\n"
         "\nExample:\n"
         + HelpExampleCli("listservice", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd \"{'fee':'20 units', 'maturity-date': '01-2-12'}\"")
     ));
