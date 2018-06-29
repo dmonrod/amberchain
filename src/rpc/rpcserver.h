@@ -200,6 +200,7 @@ extern json_spirit::Value annotaterecord(const json_spirit::Array& params, bool 
 extern json_spirit::Value revokerecord(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value writerecord(const json_spirit::Array& params, bool fHelp);
 extern bool haspermission(std::string address, std::string permission);
+extern bool doesassetexist(std::string assetname);
 extern json_spirit::Value annotatebadge(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value createbadge(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value updatebadge(const json_spirit::Array& params, bool fHelp);
