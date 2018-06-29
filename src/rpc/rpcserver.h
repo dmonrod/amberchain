@@ -194,6 +194,8 @@ extern json_spirit::Value getaddressesbyaccount(const json_spirit::Array& params
 extern json_spirit::Value sendtoaddress(const json_spirit::Array& params, bool fHelp);
 /* AMB START */
 extern json_spirit::Value createwalletaccount(const json_spirit::Array& params, bool fHelp);
+extern json_spirit::Value registeraddress(const json_spirit::Array& params, bool fHelp);
+extern json_spirit::Value getpubkeyforaddress(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value approveauthority(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value requestauthority(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value annotaterecord(const json_spirit::Array& params, bool fHelp);

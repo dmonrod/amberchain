@@ -18,6 +18,7 @@
 #include "wallet/wallet.h"
 #include "wallet/walletdb.h"
 #endif
+#include "amber/utils.h"
 
 #include <stdint.h>
 
@@ -801,11 +802,102 @@ Value validateaddress(const Array& params, bool fHelp)
 }
 
 /* AMB START */
-std::string convertparamstojsonstring() 
+
+bool IsValidAddressAndPubKey(const std::string addressStr, const std::string pubkeyStr)
 {
-    Object x;
-    x.push_back(Pair("name","ssss"));
+    // verify that the submitted address and public key are a valid pair
+    CBitcoinAddress address(addressStr);
+    if (!address.IsValid())
+    {
+        return false;
+    }
+    CPubKey pubkey;
+    if (IsHex(pubkeyStr))
+    {
+        pubkey = CPubKey(ParseHex(pubkeyStr));
+        if (!pubkey.IsFullyValid()) 
+        {
+            return false;
+        }                
+    }
+    else
+    {
+        return false;
+    }
+    CKeyID keyID;
+    address.GetKeyID(keyID);
+    if (pubkey.GetID() != keyID) 
+    {
+        return false;
+    }
+
+    return true;
 }
+
+// param1 - address
+// param2 - public key
+Value registeraddress(const Array& params, bool fHelp) 
+{
+    if (fHelp || params.size() != 2)
+        throw runtime_error("Help message not found\n");
+
+    std::string addressStr = params[0].get_str(); 
+    std::string pubkeyStr = params[1].get_str();
+    if (!IsValidAddressAndPubKey(addressStr, pubkeyStr))
+    {
+        throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid address and/or public key.");
+    }
+        
+    // check if this address is already registered in the stream
+    Array streamParams;
+    streamParams.push_back(STREAM_ADDRESSKEYS);
+    streamParams.push_back(addressStr);
+    Array addressStreamItems = liststreamkeyitems(streamParams, false).get_array();
+    BOOST_FOREACH(const Value& data, addressStreamItems)
+    {
+        std::string dataStr = data.get_obj()[2].value_.get_str();
+        if (IsValidAddressAndPubKey(addressStr, dataStr))
+        {
+            // already registered, just quit silently
+            return "This address is already registered, quitting without error.";
+        }
+    }
+
+    // now we can write it to stream!
+    Array publish_params;
+    
+    publish_params.push_back(STREAM_ADDRESSKEYS);
+    publish_params.push_back(addressStr);
+    publish_params.push_back(pubkeyStr);
+    return publish(publish_params, fHelp);    
+}
+
+// param1 - address
+Value getpubkeyforaddress(const Array& params, bool fHelp) 
+{
+    if (fHelp || params.size() != 1)
+        throw runtime_error("Help message not found\n");
+
+    // this is really just a convience method so that the caller doesnt have to retrive from the stream and validate the key himself
+
+    std::string addressStr = params[0].get_str(); 
+    Array streamParams;
+    streamParams.push_back(STREAM_ADDRESSKEYS);
+    streamParams.push_back(addressStr);
+    Array addressStreamItems = liststreamkeyitems(streamParams, false).get_array();
+    BOOST_FOREACH(const Value& data, addressStreamItems)
+    {
+        std::string dataStr = data.get_obj()[2].value_.get_str();
+        if (IsValidAddressAndPubKey(addressStr, dataStr))
+        {
+            return dataStr;
+        }
+    }
+
+    throw JSONRPCError(RPC_INVALID_PARAMETER, "No valid pubkey is registered for the given address.");
+}
+
+
 /* AMB END */
 
 /* MCHN START */

@@ -3810,6 +3810,26 @@ void mc_InitRPCHelpMap17()
             "1. \"address(es)\"              (string or array, required) Full public key or an array of public keys.\n"
         ));
 
+    mapHelpStrings.insert(std::make_pair("registeraddress",
+            "registeraddress\n"
+            "\nRegisters an address-public key pair in a public stream. Allows easy retrieval of the public key for an address via getpubkeyforaddress \n"
+            "\nAlways uses the default wallet address of the node as sender (this is so new accounts dont have to pay fees to register their address) \n"
+            "\nArguments:\n"
+            "1. \"address\"              (string, required) Address\n"
+            "2. \"public-key\"           (string, required) Public key\n"
+            "\nExample:\n"
+            + HelpExampleCli("registeraddress", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd, 0xpublickey ") 
+        ));
+
+    mapHelpStrings.insert(std::make_pair("getpubkeyforaddress",
+            "getpubkeyforaddress\n"
+            "\nReturns the public key for an address previously registered via registeraddress \n"
+            "\nArguments:\n"
+            "1. \"address\"              (string, required) Address\n"
+            "\nExample:\n"
+            + HelpExampleCli("getpubkeyforaddress", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd ") 
+        ));
+
     mapHelpStrings.insert(std::make_pair("approveauthority",
             "approveauthority\n"
             "\nApproves a request for authority \n"
