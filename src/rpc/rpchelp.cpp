@@ -3983,6 +3983,16 @@ void mc_InitRPCHelpMap17()
         "\nExample:\n"
         + HelpExampleCli("writecategory", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd category-key \"{'title':'Badge Title', 'parent': 'parent-key', 'record_type': 'record-type'}\"")
     ));
+    mapHelpStrings.insert(std::make_pair("writecustomcategory",
+        "writecustomcategory\n"
+        "\nAdd a category (custom categories defined by users)\n"
+        "\nArguments:\n"
+        "1. \"from-address\"                (string, required) Address of the category creator\n"
+        "2. \"category-key\"                (string, required) Key of category\n"
+        "3. \"category-data\"               (string, required) Category data in JSON format\n"
+        "\nExample:\n"
+        + HelpExampleCli("writecustomcategory", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd category-key \"{'title':'Badge Title', 'parent': 'parent-key', 'record_type': 'record-type'}\"")
+    ));
     mapHelpStrings.insert(std::make_pair("writerecordtype",
         "writerecordtype\n"
         "\nAdd a recordtype\n"

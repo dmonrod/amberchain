@@ -19,6 +19,7 @@
 #define STREAM_ANNOTATEDBADGES      "annotatedbadges"
 #define STREAM_BADGEISSUERS         "badgeissuers"
 #define STREAM_CATEGORIES           "categories"
+#define STREAM_CUSTOMCATEGORIES     "customcategories"
 #define STREAM_RECORDTYPES          "recordtypes"
 #define STREAM_SERVICES             "services"
 #define STREAM_INVALIDBLOCKS        "invalidblocks"

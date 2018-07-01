@@ -15,6 +15,7 @@ sleep 3
 
 ./amberchain-cli $chainName create stream authorityrequests     true
 ./amberchain-cli $chainName create stream invalidblocks         true
+./amberchain-cli $chainName create stream customcategories      true
 
 ./amberchain-cli $chainName create stream authoritynodes        false
 ./amberchain-cli $chainName create stream transactionparams     false
