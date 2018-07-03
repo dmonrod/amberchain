@@ -28,5 +28,6 @@ sleep 3
 ./amberchain-cli $chainName create stream annotatedbadges       false
 ./amberchain-cli $chainName create stream categories            false
 ./amberchain-cli $chainName create stream recordtypes           false
+./amberchain-cli $chainName create stream services              false
 
 cd -
