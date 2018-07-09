@@ -206,7 +206,7 @@ static const mc_OneMultichainParam MultichainParamArray[] =
                    "maxstdtxsize","Standard transaction definitions",
                    "Only accept and relay transactions which qualify as 'standard'."},
     { "maxstdtxsize"                 , "max-std-tx-size"                 , 
-                   MC_PRM_UINT32  | MC_PRM_USER | MC_PRM_CLONE                  , -1,   4194304,       1024,  100000000, 0.0, 10001, 0, "-mc-maxstdtxsize",
+                   MC_PRM_UINT32  | MC_PRM_USER | MC_PRM_CLONE                  , -1,   100000000,       1024,  100000000, 0.0, 10001, 0, "-mc-maxstdtxsize",
                    "maxstdopreturnscount","",
                    "Maximum size of standard transactions, in bytes."},
     { "maxstdopreturnscount"                  , "max-std-op-returns-count"                  , 
