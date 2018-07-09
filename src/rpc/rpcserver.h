@@ -212,7 +212,11 @@ extern json_spirit::Value requestissuebadge(const json_spirit::Array& params, bo
 extern json_spirit::Value grantbadgeissuerpermission(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value revokebadgeissuerpermission(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value writecategory(const json_spirit::Array& params, bool fHelp);
+extern json_spirit::Value updatecategory(const json_spirit::Array& params, bool fHelp);
+extern json_spirit::Value deletecategory(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value writecustomcategory(const json_spirit::Array& params, bool fHelp);
+extern json_spirit::Value updatecustomcategory(const json_spirit::Array& params, bool fHelp);
+extern json_spirit::Value deletecustomcategory(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value writerecordtype(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value listservice(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value updateservice(const json_spirit::Array& params, bool fHelp);

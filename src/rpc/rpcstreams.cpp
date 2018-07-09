@@ -2152,10 +2152,9 @@ Value annotatebadge(const Array& params, bool fHelp)
 }
 
 // param1 - category creator/modifier
-// param2 - category key
+// param2 - category key - use "rootcategories" for parent categories, use <parent_tx_id> for child categories
 // param3 - category data
 // Should include the following:
-// Parent Category: { parent: <parent_key> }
 // Corresponding Record Type: { record_type: <record_type_key> }
 
 Value writecategory(const Array& params, bool fHelp)
@@ -2189,10 +2188,109 @@ Value writecategory(const Array& params, bool fHelp)
 }
 
 // param1 - category creator/modifier
-// param2 - category key
+// param2 - category txid found in STREAM_CATEGORIES
 // param3 - category data
 // Should include the following:
-// Parent Category: { parent: <parent_key> }
+// Corresponding Record Type: { record_type: <record_type_key> }
+// Fields of latest category and new values
+// param4 - update type (update/delete)
+
+Value writeupdatecategories(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() != 4)
+        throw runtime_error("Help message not found\n");
+
+    if (haspermission(params[0].get_str(), "admin"))
+    {
+
+        Array ext_params;
+        Object data;
+
+        data.push_back(Pair("update_type",params[3]));
+        data.push_back(Pair("data",params[2]));
+
+        const Value& json_data = data;
+        const std::string string_data = write_string(json_data, false);
+
+        std::string hex_data = HexStr(string_data.begin(), string_data.end());
+
+        ext_params.push_back(params[0]); // category creator/modifier
+        ext_params.push_back(STREAM_UPDATECATEGORIES); // stream for category updates/deletes
+        ext_params.push_back(params[1]); // category identifier
+        ext_params.push_back(hex_data);
+
+        return publishfrom(ext_params, fHelp);
+    }
+    else
+    {
+        throw runtime_error("Unauthorized address\n");
+    }
+}
+
+// param1 - category creator/modifier
+// param2 - category txid found in STREAM_CATEGORIES
+// param3 - category data
+// Should include the following:
+// Corresponding Record Type: { record_type: <record_type_key> }
+// Fields of latest category and new values
+
+Value updatecategory(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() != 3)
+        throw runtime_error("Help message not found\n");
+
+    Array ext_params;
+
+    if (haspermission(params[0].get_str(), "admin"))
+    {
+        BOOST_FOREACH(const Value& value, params)
+        {
+            ext_params.push_back(value);
+        }
+        ext_params.push_back("update");
+    }
+    else
+    {
+        throw runtime_error("Unauthorized address\n");
+    }
+
+    return writeupdatecategories(ext_params, fHelp);
+}
+
+// param1 - category creator/modifier
+// param2 - category txid found in STREAM_CATEGORIES
+// param3 - category data
+// Should include the following:
+// Corresponding Record Type: { record_type: <record_type_key> }
+// Fields of latest category and new values
+
+Value deletecategory(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() != 3)
+        throw runtime_error("Help message not found\n");
+
+    Array ext_params;
+
+    if (haspermission(params[0].get_str(), "admin"))
+    {
+        BOOST_FOREACH(const Value& value, params)
+        {
+            ext_params.push_back(value);
+        }
+        ext_params.push_back("delete");
+    }
+    else
+    {
+        throw runtime_error("Unauthorized address\n");
+    }
+
+    return writeupdatecategories(ext_params, fHelp);
+}
+
+// param1 - category creator/modifier
+// param2 - category key - use "rootcategories" for parent categories, use <parent_tx_id> for child categories
+// param3 - category data
+// Should include the following:
 // Corresponding Record Type: { record_type: <record_type_key> }
 
 Value writecustomcategory(const Array& params, bool fHelp)
@@ -2216,6 +2314,84 @@ Value writecustomcategory(const Array& params, bool fHelp)
     ext_params.push_back(hex_data);
 
     return publishfrom(ext_params, fHelp);
+}
+
+// param1 - category creator/modifier
+// param2 - category txid found in STREAM_CUSTOMCATEGORIES
+// param3 - category data
+// Should include the following:
+// Corresponding Record Type: { record_type: <record_type_key> }
+// Fields of latest category and new values
+// param4 - update type (update/delete)
+
+Value writeupdatecustomcategories(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() != 4)
+        throw runtime_error("Help message not found\n");
+
+    Array ext_params;
+    Object data;
+
+    data.push_back(Pair("update_type",params[3]));
+    data.push_back(Pair("data",params[2]));
+
+    const Value& json_data = data;
+    const std::string string_data = write_string(json_data, false);
+
+    std::string hex_data = HexStr(string_data.begin(), string_data.end());
+
+    ext_params.push_back(params[0]); // category creator/modifier
+    ext_params.push_back(STREAM_UPDATECUSTOMCATEGORIES); // stream for category updates/deletes
+    ext_params.push_back(params[1]); // category identifier
+    ext_params.push_back(hex_data);
+
+    return publishfrom(ext_params, fHelp);
+}
+
+// param1 - category creator/modifier
+// param2 - category txid found in STREAM_CUSTOMCATEGORIES
+// param3 - category data
+// Should include the following:
+// Corresponding Record Type: { record_type: <record_type_key> }
+// Fields of latest category and new values
+
+Value updatecustomcategory(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() != 3)
+        throw runtime_error("Help message not found\n");
+
+    Array ext_params;
+
+    BOOST_FOREACH(const Value& value, params)
+    {
+        ext_params.push_back(value);
+    }
+    ext_params.push_back("update");
+
+    return writeupdatecustomcategories(ext_params, fHelp);
+}
+
+// param1 - category creator/modifier
+// param2 - category txid found in STREAM_CUSTOMCATEGORIES
+// param3 - category data
+// Should include the following:
+// Corresponding Record Type: { record_type: <record_type_key> }
+// Fields of latest category and new values
+
+Value deletecustomcategory(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() != 3)
+        throw runtime_error("Help message not found\n");
+
+    Array ext_params;
+
+    BOOST_FOREACH(const Value& value, params)
+    {
+        ext_params.push_back(value);
+    }
+    ext_params.push_back("delete");
+
+    return writeupdatecustomcategories(ext_params, fHelp);
 }
 
 // param1 - record type creator/modifier

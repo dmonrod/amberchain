@@ -3975,13 +3975,33 @@ void mc_InitRPCHelpMap17()
     ));
     mapHelpStrings.insert(std::make_pair("writecategory",
         "writecategory\n"
-        "\nAdd a category\n"
+        "\nAdd a category (admin/authority)\n"
         "\nArguments:\n"
         "1. \"from-address\"                (string, required) Address of the category creator\n"
-        "2. \"category-key\"                (string, required) Key of category\n"
+        "2. \"category-key\"                (string, required) Key of category (\"rootcategories\" for parent categories, parent category txid for child categories)\n"
         "3. \"category-data\"               (string, required) Category data in JSON format\n"
         "\nExample:\n"
         + HelpExampleCli("writecategory", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd category-key \"{'title':'Badge Title', 'parent': 'parent-key', 'record_type': 'record-type'}\"")
+    ));
+    mapHelpStrings.insert(std::make_pair("updatecategory",
+        "updatecategory\n"
+        "\nUpdate a category (admin/authority)\n"
+        "\nArguments:\n"
+        "1. \"from-address\"                (string, required) Address of the category creator\n"
+        "2. \"category-key\"                (string, required) Category txid found in categories stream\n"
+        "3. \"category-data\"               (string, required) Category data in JSON format\n"
+        "\nExample:\n"
+        + HelpExampleCli("updatecategory", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd 5d06edd7a0dbd0d83478c25fbf30cf3f07ceac45d9ced1591f6bd982fb878647 \"{'title':'Badge Title', 'parent': 'parent-key', 'record_type': 'record-type'}\"")
+    ));
+    mapHelpStrings.insert(std::make_pair("deletecategory",
+        "deletecategory\n"
+        "\nDelete a category (admin/authority)\n"
+        "\nArguments:\n"
+        "1. \"from-address\"                (string, required) Address of the category creator\n"
+        "2. \"category-key\"                (string, required) Category txid found in categories stream\n"
+        "3. \"category-data\"               (string, required) Category data in JSON format\n"
+        "\nExample:\n"
+        + HelpExampleCli("deletecategory", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd 5d06edd7a0dbd0d83478c25fbf30cf3f07ceac45d9ced1591f6bd982fb878647 \"{'title':'Badge Title', 'parent': 'parent-key', 'record_type': 'record-type'}\"")
     ));
     mapHelpStrings.insert(std::make_pair("writecustomcategory",
         "writecustomcategory\n"
@@ -3991,7 +4011,27 @@ void mc_InitRPCHelpMap17()
         "2. \"category-key\"                (string, required) Key of category\n"
         "3. \"category-data\"               (string, required) Category data in JSON format\n"
         "\nExample:\n"
-        + HelpExampleCli("writecustomcategory", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd category-key \"{'title':'Badge Title', 'parent': 'parent-key', 'record_type': 'record-type'}\"")
+        + HelpExampleCli("writecustomcategory", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd 5d06edd7a0dbd0d83478c25fbf30cf3f07ceac45d9ced1591f6bd982fb878647 \"{'title':'Badge Title', 'parent': 'parent-key', 'record_type': 'record-type'}\"")
+    ));
+    mapHelpStrings.insert(std::make_pair("updatecustomcategory",
+        "updatecustomcategory\n"
+        "\nUpdate a category (custom categories defined by users)\n"
+        "\nArguments:\n"
+        "1. \"from-address\"                (string, required) Address of the category creator\n"
+        "2. \"category-key\"                (string, required) Category txid found in categories stream\n"
+        "3. \"category-data\"               (string, required) Category data in JSON format\n"
+        "\nExample:\n"
+        + HelpExampleCli("updatecustomcategory", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd 5d06edd7a0dbd0d83478c25fbf30cf3f07ceac45d9ced1591f6bd982fb878647 \"{'title':'Badge Title', 'parent': 'parent-key', 'record_type': 'record-type'}\"")
+    ));
+    mapHelpStrings.insert(std::make_pair("deletecustomcategory",
+        "deletecustomcategory\n"
+        "\nDelete a category (custom categories defined by users)\n"
+        "\nArguments:\n"
+        "1. \"from-address\"                (string, required) Address of the category creator\n"
+        "2. \"category-key\"                (string, required) Category txid found in categories stream\n"
+        "3. \"category-data\"               (string, required) Category data in JSON format\n"
+        "\nExample:\n"
+        + HelpExampleCli("deletecustomcategory", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd 5d06edd7a0dbd0d83478c25fbf30cf3f07ceac45d9ced1591f6bd982fb878647 \"{'title':'Badge Title', 'parent': 'parent-key', 'record_type': 'record-type'}\"")
     ));
     mapHelpStrings.insert(std::make_pair("writerecordtype",
         "writerecordtype\n"
