@@ -440,7 +440,7 @@ Value approveauthority(const Array& params, bool fHelp)
 
         publish_params.push_back(params[0]);
         publish_params.push_back(STREAM_AUTHNODES);
-        publish_params.push_back(params[0]);
+        publish_params.push_back(params[1]);
         publish_params.push_back(hex_data);
 
         grantfromcmd(pre_params, fHelp);
