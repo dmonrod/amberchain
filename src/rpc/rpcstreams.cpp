@@ -1800,32 +1800,44 @@ Value writeissuedbadges(const Array& params, bool fHelp)
     if (fHelp || params.size() != 5)
         throw runtime_error("Help message not found\n");
 
-    Object data;
+    Array keyBadgeParams;
+    Array keyAddressParams;
 
-    data.push_back(Pair("badge",params[2])); // badge identifier
-    data.push_back(Pair("notes",params[3])); // badge notes
-    data.push_back(Pair("action",params[4])); // badge action
+    Object keyBadgeData;
+    Object keyAddressData;
 
-    const Value& json_data = data;
-    const std::string string_data = write_string(json_data, false);
+    //data preparation for when key is the badge txid
+    keyBadgeData.push_back(Pair("address",params[1])); // badge receiver
+    keyBadgeData.push_back(Pair("notes",params[3])); // badge notes
+    keyBadgeData.push_back(Pair("action",params[4])); // badge action
 
-    std::string hex_data = HexStr(string_data.begin(), string_data.end());
+    const Value& keyBadgeJsonData = keyBadgeData;
+    const std::string keyBadgeStringData = write_string(keyBadgeJsonData, false);
 
-    Object raw_data;
-    raw_data.push_back(Pair("for", STREAM_ISSUEDBADGES));
-    raw_data.push_back(Pair("key", params[1])); // badge receiver
-    raw_data.push_back(Pair("data", hex_data));
+    std::string keyBadgeHexData = HexStr(keyBadgeStringData.begin(), keyBadgeStringData.end());
 
-    Array ext_params;
+    keyBadgeParams.push_back(params[0]); // badge creator
+    keyBadgeParams.push_back(STREAM_ISSUEDBADGES); // stream for issue badges
+    keyBadgeParams.push_back(params[2]); // badge identifier
+    keyBadgeParams.push_back(keyBadgeHexData);
 
-    Object addresses;
-    Array dataArray;
-    dataArray.push_back(raw_data);
-    ext_params.push_back(params[0]); // badge creator
-    ext_params.push_back(addresses); // addresses
-    ext_params.push_back(dataArray); // data array
+    //data preparation for when key is the badge receiver's address
+    keyAddressData.push_back(Pair("badge", params[2]));
+    keyAddressData.push_back(Pair("notes",params[3])); // badge notes
+    keyAddressData.push_back(Pair("action",params[4])); // badge action
 
-    return createrawsendfrom(ext_params, fHelp);
+    const Value& keyAddressJsonData = keyAddressData;
+    const std::string keyAddressStringData = write_string(keyAddressJsonData, false);
+
+    std::string keyAddressHexData = HexStr(keyAddressStringData.begin(), keyAddressStringData.end());
+
+    keyAddressParams.push_back(params[0]); // badge creator
+    keyAddressParams.push_back(STREAM_ISSUEDBADGES); // stream for badge issuers
+    keyAddressParams.push_back(params[1]); // badge receiver's address
+    keyAddressParams.push_back(keyAddressHexData);
+
+    publishfrom(keyAddressParams, fHelp);
+    return publishfrom(keyBadgeParams, fHelp);
 }
 
 // param1 - badge creator
