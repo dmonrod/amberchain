@@ -1939,13 +1939,12 @@ bool isbadgeissuer(std::string creator_address, std::string issuer_address, std:
 // param2 - badge receiver
 // param3 - badge transaction id found in rootbadges
 // param4 - badge notes
-// param5 - request status [ request | approve | disapprove ]
-// param6 - badge action [ issue | revoke ]
-// param7 - issue badge requestor
+// param5 - badge action [ issue | revoke ]
+// param6 - issue badge requestor
 
 Value requestissuebadge(const Array& params, bool fHelp)
 {
-    if (fHelp || params.size() != 7)
+    if (fHelp || params.size() != 6)
         throw runtime_error("Help message not found\n");
 
     if (isbadgeissuer(params[0].get_str(), params[6].get_str(), params[2].get_str())) {
@@ -1954,9 +1953,8 @@ Value requestissuebadge(const Array& params, bool fHelp)
         data.push_back(Pair("receiver",params[1])); // badge receiver
         data.push_back(Pair("badge",params[2])); // badge identifier
         data.push_back(Pair("notes",params[3])); // badge notes
-        data.push_back(Pair("status",params[4])); // badge status
-        data.push_back(Pair("action",params[5])); // badge action
-        data.push_back(Pair("requestor",params[6])); // badge requestor
+        data.push_back(Pair("action",params[4])); // badge action
+        data.push_back(Pair("requestor",params[5])); // badge requestor
 
         const Value& json_data = data;
         const std::string string_data = write_string(json_data, false);
@@ -1973,7 +1971,7 @@ Value requestissuebadge(const Array& params, bool fHelp)
         Object addresses;
         Array dataArray;
         dataArray.push_back(raw_data);
-        ext_params.push_back(params[6]); // badge requestor
+        ext_params.push_back(params[5]); // badge requestor
         ext_params.push_back(addresses); // addresses
         ext_params.push_back(dataArray); // data array
 
