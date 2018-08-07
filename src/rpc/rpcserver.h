@@ -221,6 +221,7 @@ extern json_spirit::Value writerecordtype(const json_spirit::Array& params, bool
 extern json_spirit::Value listservice(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value updateservice(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value delistservice(const json_spirit::Array& params, bool fHelp);
+extern json_spirit::Value logactivity(const json_spirit::Array& params, bool fHelp);
 // extern void loginvalidblock(const CBlockIndex* pindex, const CWallet pwalletMain);
 /* AMB END */
 /* MCHN START */    
