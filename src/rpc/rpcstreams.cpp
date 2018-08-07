@@ -2480,12 +2480,50 @@ Value listservice(const Array& params, bool fHelp)
         issue_params.push_back(Pair("issue", value_issue_raw));
         const Value& value_issue_params = issue_params;
 
-        addresses.push_back(Pair(params[0].get_str(), value_issue_params));    
+        if (haspermission(params[0].get_str(), "mine"))
+        {
+            addresses.push_back(Pair(params[0].get_str(), value_issue_params));    
+        }
+        else
+        {
+            Array multisig_params;
+            Array auth_addresses;
+            Array liststreamkeys_params;
+
+            // GET ALL AUTHORITY ENTRIES IN STREAM OF AUTHORITY NODES
+            liststreamkeys_params.push_back(STREAM_AUTHNODES);            
+            Value list_auth = liststreamkeys(liststreamkeys_params, false);
+
+            // LOOP THROUGH THE STREAM ITEMS AND THEN EXTRACT ONLY THE ADDRESSES
+            for(int i = 0; i < list_auth.get_array().size(); i++)
+            {
+                auth_addresses.push_back(list_auth.get_array()[i].get_obj()[0].value_.get_str());
+            }
+
+            // CREATE MULTISIG WALLET 
+            if (auth_addresses.size() < 3) 
+            {
+                multisig_params.push_back(auth_addresses.size());
+            }
+            else
+            {
+                multisig_params.push_back(3);
+            }
+            multisig_params.push_back(auth_addresses);
+
+            std::string multisig = addmultisigaddress(multisig_params, false).get_str();
+            addresses.push_back(Pair(multisig, value_issue_params));
+        }
 
         Object asset_data;
+        Object asset_metadata;
+        asset_metadata.push_back(Pair("owner", params[0].get_str()));
+        const Value& value_asset_metadata = asset_metadata;
+
         asset_data.push_back(Pair("create", "asset"));
         asset_data.push_back(Pair("name", params[2].get_str()));
         asset_data.push_back(Pair("open", true));
+        asset_data.push_back(Pair("details", value_asset_metadata));
 
         dataArray.push_back(asset_data);
     }

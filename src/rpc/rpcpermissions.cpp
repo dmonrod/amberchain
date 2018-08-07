@@ -341,6 +341,12 @@ Value grantoperation(const Array& params)
         }
     }
 
+    std::string services_stream = STREAM_SERVICES;
+    if (int32_t(permission_list.find(services_stream + ".write")) >= 0)
+    {
+        permissions.push_back("issue");
+    }
+
     for(std::vector<std::string>::iterator it = permissions.begin(); it != permissions.end(); ++it) {
         std::string stream_name = *it;
         
