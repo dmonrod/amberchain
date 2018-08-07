@@ -2629,4 +2629,28 @@ Value delistservice(const Array& params, bool fHelp)
     return writeannotatedservice(ext_params, fHelp);
 }
 
+// param1 - from-address
+// param2 - Transaction id of activity to be logged
+Value logactivity(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() > 4)
+        throw runtime_error("Help message not found\n");
+
+    Object data;
+    data.push_back(Pair("txid", params[1]));
+
+    const Value& json_data = data;
+    const std::string string_data = write_string(json_data, false);
+
+    std::string hex_data = HexStr(string_data.begin(), string_data.end());
+
+    Array ext_params;
+
+    ext_params.push_back(params[0]); // from-address
+    ext_params.push_back(STREAM_ACTIVITIES); // stream
+    ext_params.push_back(params[0]);
+    ext_params.push_back(hex_data); // data hex
+
+    return publishfrom(ext_params, fHelp);
+}
 /* AMB END */

@@ -4074,6 +4074,15 @@ void mc_InitRPCHelpMap17()
         "\nExample:\n"
         + HelpExampleCli("delist", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd record-type-key \"{'fee':'20 units', 'maturity-date': '01-2-12'}\"")
     ));
+    mapHelpStrings.insert(std::make_pair("logactivity",
+        "logactivity\n"
+        "\nLogs and activity to Amberchain\n"
+        "\nArguments:\n"
+        "1. \"from-address\"                (string, required) Address doing the action.\n"
+        "2. \"stream-txid\"                 (string, required) Transaction ID of the item to be logged in the activities stream\n"
+        "\nExample:\n"
+        + HelpExampleCli("logactivity", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd 5d06edd7a0dbd0d83478c25fbf30cf3f07ceac45d9ced1591f6bd982fb878647")
+    ));
 }
 
 void mc_InitRPCLogParamCountMap()
