@@ -1951,7 +1951,7 @@ Value requestissuebadge(const Array& params, bool fHelp)
         Object data;
 
         data.push_back(Pair("receiver",params[1])); // badge receiver
-        data.push_back(Pair("badge",params[2])); // badge identifier
+        data.push_back(Pair("creator",params[2])); // badge creator
         data.push_back(Pair("notes",params[3])); // badge notes
         data.push_back(Pair("action",params[4])); // badge action
         data.push_back(Pair("requestor",params[5])); // badge requestor
@@ -1963,7 +1963,7 @@ Value requestissuebadge(const Array& params, bool fHelp)
 
         Object raw_data;
         raw_data.push_back(Pair("for", STREAM_ISSUEBADGEREQUESTS));
-        raw_data.push_back(Pair("key", params[0])); // badge creator
+        raw_data.push_back(Pair("key", params[0])); // badge identifier
         raw_data.push_back(Pair("data", hex_data));
 
         Array ext_params;
