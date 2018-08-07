@@ -1947,7 +1947,7 @@ Value requestissuebadge(const Array& params, bool fHelp)
     if (fHelp || params.size() != 6)
         throw runtime_error("Help message not found\n");
 
-    if (isbadgeissuer(params[0].get_str(), params[6].get_str(), params[2].get_str())) {
+    if (isbadgeissuer(params[0].get_str(), params[5].get_str(), params[2].get_str())) {
         Object data;
 
         data.push_back(Pair("receiver",params[1])); // badge receiver
