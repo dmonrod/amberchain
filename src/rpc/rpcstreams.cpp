@@ -2639,6 +2639,7 @@ Value logactivity(const Array& params, bool fHelp)
 
     Object data;
     data.push_back(Pair("txid", params[1]));
+    data.push_back(Pair("stream", params[2]));
 
     const Value& json_data = data;
     const std::string string_data = write_string(json_data, false);
@@ -2649,7 +2650,7 @@ Value logactivity(const Array& params, bool fHelp)
 
     ext_params.push_back(params[0]); // from-address
     ext_params.push_back(STREAM_ACTIVITIES); // stream
-    ext_params.push_back(params[2]); //stream of txid
+    ext_params.push_back(params[0]); //stream of txid
     ext_params.push_back(hex_data); // data hex
 
     return publishfrom(ext_params, fHelp);
