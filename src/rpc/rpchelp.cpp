@@ -4083,6 +4083,18 @@ void mc_InitRPCHelpMap17()
         "\nExample:\n"
         + HelpExampleCli("logactivity", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd 5d06edd7a0dbd0d83478c25fbf30cf3f07ceac45d9ced1591f6bd982fb878647")
     ));
+    mapHelpStrings.insert(std::make_pair("sharetxn",
+        "sharetxn\n"
+        "\nWrites a shared txn Amberchain. Returns a raw transaction that needs to be signed.\n"
+        "\nArguments:\n"
+        "1. \"from-address\"                (string, required) Address doing the action, the sharer.\n"
+        "2. \"to-address\"                  (string, required) The address to whom the transaction is being shared.\n"
+        "3. \"payload\"                     (string, required) String content to be shared, in hex\n"
+        "4. \"expiry_date\"                 (string, optional) Expiry date for the access, in YYYY-MM-DD format\n"
+        "5. \"keys\"                        (string, optional) JSON string with the encrypted keys for each authority to verify the access expiry \n"
+        "\nExample:\n"
+        + HelpExampleCli("sharetxn", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd 1TRFiwrYNG5xQWhk7thCToY7jfa9fyZECo2R6W 5d06edd7a0dbd0d83478c25fbf30cf3f07ceac45d9ced1591f6bd982fb878647")
+    ));
 }
 
 void mc_InitRPCLogParamCountMap()

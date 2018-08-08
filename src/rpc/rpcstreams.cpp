@@ -2653,4 +2653,45 @@ Value logactivity(const Array& params, bool fHelp)
 
     return publishfrom(ext_params, fHelp);
 }
+
+// param1 - from-address
+// param2 - to-address
+// param3 - payload
+// param4 - expiry date
+// param5 - keys json
+// return rawtx
+Value sharetxn(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() > 4)
+        throw runtime_error("Help message not found\n");
+
+    Object data;
+
+    data.push_back(Pair("from_address",params[0]));
+    data.push_back(Pair("to_address",params[1]));
+    data.push_back(Pair("payload",params[2]));
+    data.push_back(Pair("expiry_date",params[3]));
+    data.push_back(Pair("keys",params[4]));
+
+    const Value& json_data = data;
+    const std::string string_data = write_string(json_data, false);
+
+    std::string hex_data = HexStr(string_data.begin(), string_data.end());
+
+    Object raw_data;
+    raw_data.push_back(Pair("for", STREAM_SHAREDTXNS));
+    raw_data.push_back(Pair("key", params[1])); // to_address
+    raw_data.push_back(Pair("data", hex_data));
+
+    Array ext_params;
+
+    Object addresses;
+    Array dataArray;
+    dataArray.push_back(raw_data);
+    ext_params.push_back(params[0]); // from-address
+    ext_params.push_back(addresses); // addresses
+    ext_params.push_back(dataArray); // data array
+
+    return createrawsendfrom(ext_params, fHelp);
+}
 /* AMB END */

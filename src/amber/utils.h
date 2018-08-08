@@ -27,6 +27,7 @@
 #define STREAM_INVALIDBLOCKS            "invalidblocks"
 #define STREAM_ADDRESSKEYS              "addresskeys"
 #define STREAM_ACTIVITIES               "activities"
+#define STREAM_SHAREDTXNS               "sharedtxns"
 #define KEY_TRANSACTIONFEE              "min-relay-tx-fee"
 #define KEY_ADMINPUBLICKEY              "admin-public-key"
 #define KEY_ADMINFEERATIO               "admin-fee-ratio"

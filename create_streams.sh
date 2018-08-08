@@ -13,6 +13,7 @@ chainName="$1"
 ./amberchain-cli $chainName create stream invalidblocks             true
 ./amberchain-cli $chainName create stream customcategories          true
 ./amberchain-cli $chainName create stream updatecustomcategories    true
+./amberchain-cli $chainName create stream sharedtxns                true
 
 ./amberchain-cli $chainName create stream authoritynodes            false
 ./amberchain-cli $chainName create stream transactionparams         false
@@ -28,4 +29,4 @@ chainName="$1"
 ./amberchain-cli $chainName create stream recordtypes               false
 ./amberchain-cli $chainName create stream services                  false
 ./amberchain-cli $chainName create stream activities                false
-./amberchain-cli $chainName create stream sharedtxns                false
+
