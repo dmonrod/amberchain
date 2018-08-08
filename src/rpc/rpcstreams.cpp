@@ -2662,7 +2662,7 @@ Value logactivity(const Array& params, bool fHelp)
 // return rawtx
 Value sharetxn(const Array& params, bool fHelp)
 {
-    if (fHelp || params.size() > 4)
+    if (fHelp || params.size() < 3 || params.size() == 4 )
         throw runtime_error("Help message not found\n");
 
     Object data;
@@ -2670,8 +2670,10 @@ Value sharetxn(const Array& params, bool fHelp)
     data.push_back(Pair("from_address",params[0]));
     data.push_back(Pair("to_address",params[1]));
     data.push_back(Pair("payload",params[2]));
-    data.push_back(Pair("expiry_date",params[3]));
-    data.push_back(Pair("keys",params[4]));
+    if (params.size() > 3) {
+        data.push_back(Pair("expiry_date",params[3]));
+        data.push_back(Pair("keys",params[4]));
+    }
 
     const Value& json_data = data;
     const std::string string_data = write_string(json_data, false);
