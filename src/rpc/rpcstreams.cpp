@@ -2588,12 +2588,50 @@ Value listservice(const Array& params, bool fHelp)
         issue_params.push_back(Pair("issue", value_issue_raw));
         const Value& value_issue_params = issue_params;
 
-        addresses.push_back(Pair(params[0].get_str(), value_issue_params));    
+        if (haspermission(params[0].get_str(), "mine"))
+        {
+            addresses.push_back(Pair(params[0].get_str(), value_issue_params));    
+        }
+        else
+        {
+            Array multisig_params;
+            Array auth_addresses;
+            Array liststreamkeys_params;
+
+            // GET ALL AUTHORITY ENTRIES IN STREAM OF AUTHORITY NODES
+            liststreamkeys_params.push_back(STREAM_AUTHNODES);            
+            Value list_auth = liststreamkeys(liststreamkeys_params, false);
+
+            // LOOP THROUGH THE STREAM ITEMS AND THEN EXTRACT ONLY THE ADDRESSES
+            for(int i = 0; i < list_auth.get_array().size(); i++)
+            {
+                auth_addresses.push_back(list_auth.get_array()[i].get_obj()[0].value_.get_str());
+            }
+
+            // CREATE MULTISIG WALLET 
+            if (auth_addresses.size() < 3) 
+            {
+                multisig_params.push_back(auth_addresses.size());
+            }
+            else
+            {
+                multisig_params.push_back(3);
+            }
+            multisig_params.push_back(auth_addresses);
+
+            std::string multisig = addmultisigaddress(multisig_params, false).get_str();
+            addresses.push_back(Pair(multisig, value_issue_params));
+        }
 
         Object asset_data;
+        Object asset_metadata;
+        asset_metadata.push_back(Pair("owner", params[0].get_str()));
+        const Value& value_asset_metadata = asset_metadata;
+
         asset_data.push_back(Pair("create", "asset"));
         asset_data.push_back(Pair("name", params[2].get_str()));
         asset_data.push_back(Pair("open", true));
+        asset_data.push_back(Pair("details", value_asset_metadata));
 
         dataArray.push_back(asset_data);
     }
@@ -2699,4 +2737,71 @@ Value delistservice(const Array& params, bool fHelp)
     return writeannotatedservice(ext_params, fHelp);
 }
 
+// param1 - from-address
+// param2 - Transaction id of activity to be logged
+Value logactivity(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() > 4)
+        throw runtime_error("Help message not found\n");
+
+    Object data;
+    data.push_back(Pair("txid", params[1]));
+
+    const Value& json_data = data;
+    const std::string string_data = write_string(json_data, false);
+
+    std::string hex_data = HexStr(string_data.begin(), string_data.end());
+
+    Array ext_params;
+
+    ext_params.push_back(params[0]); // from-address
+    ext_params.push_back(STREAM_ACTIVITIES); // stream
+    ext_params.push_back(params[0]);
+    ext_params.push_back(hex_data); // data hex
+
+    return publishfrom(ext_params, fHelp);
+}
+
+// param1 - from-address
+// param2 - to-address
+// param3 - payload
+// param4 - expiry date
+// param5 - keys json
+// return rawtx
+Value sharetxn(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() < 3 || params.size() == 4 )
+        throw runtime_error("Help message not found\n");
+
+    Object data;
+
+    data.push_back(Pair("from_address",params[0]));
+    data.push_back(Pair("to_address",params[1]));
+    data.push_back(Pair("payload",params[2]));
+    if (params.size() > 3) {
+        data.push_back(Pair("expiry_date",params[3]));
+        data.push_back(Pair("keys",params[4]));
+    }
+
+    const Value& json_data = data;
+    const std::string string_data = write_string(json_data, false);
+
+    std::string hex_data = HexStr(string_data.begin(), string_data.end());
+
+    Object raw_data;
+    raw_data.push_back(Pair("for", STREAM_SHAREDTXNS));
+    raw_data.push_back(Pair("key", params[1])); // to_address
+    raw_data.push_back(Pair("data", hex_data));
+
+    Array ext_params;
+
+    Object addresses;
+    Array dataArray;
+    dataArray.push_back(raw_data);
+    ext_params.push_back(params[0]); // from-address
+    ext_params.push_back(addresses); // addresses
+    ext_params.push_back(dataArray); // data array
+
+    return createrawsendfrom(ext_params, fHelp);
+}
 /* AMB END */
