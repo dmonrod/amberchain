@@ -31,5 +31,6 @@ sleep 3
 ./amberchain-cli $chainName create stream updatecategories          false
 ./amberchain-cli $chainName create stream recordtypes               false
 ./amberchain-cli $chainName create stream services                  false
+./amberchain-cli $chainName create stream processissuebadgerequests false
 
 cd -

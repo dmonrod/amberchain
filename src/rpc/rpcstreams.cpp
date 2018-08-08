@@ -9,6 +9,8 @@
 #include "amber/utils.h"
 #include "amber/strencodings.h"
 
+#include "utils/util.h"
+
 Value createupgradefromcmd(const Array& params, bool fHelp);
 
 void parseStreamIdentifier(Value stream_identifier,mc_EntityDetails *entity)
@@ -1951,7 +1953,7 @@ Value requestissuebadge(const Array& params, bool fHelp)
         Object data;
 
         data.push_back(Pair("receiver",params[1])); // badge receiver
-        data.push_back(Pair("creator",params[2])); // badge creator
+        data.push_back(Pair("creator",params[0])); // badge creator
         data.push_back(Pair("notes",params[3])); // badge notes
         data.push_back(Pair("action",params[4])); // badge action
         data.push_back(Pair("requestor",params[5])); // badge requestor
@@ -1963,7 +1965,7 @@ Value requestissuebadge(const Array& params, bool fHelp)
 
         Object raw_data;
         raw_data.push_back(Pair("for", STREAM_ISSUEBADGEREQUESTS));
-        raw_data.push_back(Pair("key", params[0])); // badge identifier
+        raw_data.push_back(Pair("key", params[2])); // badge identifier
         raw_data.push_back(Pair("data", hex_data));
 
         Array ext_params;
@@ -1980,6 +1982,114 @@ Value requestissuebadge(const Array& params, bool fHelp)
     else {
         throw runtime_error("Address is not an issuer\n");
     }
+}
+
+bool isbadgerequestproccessed(std::string creator_address, std::string request_txid)
+{
+    Array params;
+    params.push_back(STREAM_PROCESSISSUEBADGEREQUESTS);
+    params.push_back(request_txid);
+    Array results = liststreamkeyitems(params, false).get_array();
+
+    bool processed = false;
+
+    if (results.size() > 0)
+    {
+        BOOST_FOREACH(const Value& value, results) {
+            Object object = value.get_obj();
+
+            std::string publisher = object[0].value_.get_array().front().get_str();
+
+            if ( strcmp(publisher.c_str(), creator_address.c_str()) == 0 )
+            {
+                processed = true;
+                break;
+            }
+        }
+    }
+
+    return processed;
+}
+
+// param1 - badge creator
+
+Value processrequestissuebadge(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() != 1)
+        throw runtime_error("Help message not found\n");
+
+    Array badge_params;
+    badge_params.push_back(STREAM_BADGES);
+    badge_params.push_back(params[0].get_str());
+    Array badge_results = liststreampublisheritems(badge_params, false).get_array();
+
+    BOOST_FOREACH(const Value& badge_value, badge_results)
+    {
+        Object badge = badge_value.get_obj();
+        std::string key = badge[1].value_.get_str();
+
+        if ( strcmp(key.c_str(), "rootbadges") == 0)
+        {
+            std::string badge_identifier = badge.back().value_.get_str();
+            Array issuebadgerequest_params;
+            issuebadgerequest_params.push_back(STREAM_ISSUEBADGEREQUESTS);
+            issuebadgerequest_params.push_back(badge_identifier);
+
+            Array issuebadgerequest_results = liststreamkeyitems(issuebadgerequest_params, false).get_array();
+
+            BOOST_FOREACH(const Value& request_value, issuebadgerequest_results)
+            {
+                Object request = request_value.get_obj();
+                std::string request_txid = request.back().value_.get_str();
+                if (!isbadgerequestproccessed(params[0].get_str(), request_txid))
+                {
+                    std::string publisher = request[0].value_.get_array().front().get_str();
+
+                    std::string hex_data = request[2].value_.get_str();
+                    std::string json_data = HexToStr(hex_data);
+                    Value data;
+                    read_string(json_data, data);
+                    Object data_object = data.get_obj();
+
+                    std::string requestor = data_object[4].value_.get_str();
+
+                    if ( (isbadgeissuer(params[0].get_str(), publisher, badge_identifier)) && (strcmp(publisher.c_str(), requestor.c_str()) == 0) )
+                    {
+                        std::string receiver = data_object[0].value_.get_str();
+                        std::string action = data_object[3].value_.get_str();
+
+                        Array issuebadge_params;
+                        issuebadge_params.push_back(params[0].get_str());
+                        issuebadge_params.push_back(receiver);
+                        issuebadge_params.push_back(badge_identifier);
+                        issuebadge_params.push_back("processrequestissuebadge called");
+
+                        if (strcmp(action.c_str(), "issue") == 0)
+                        {
+                            issuebadge(issuebadge_params, false);
+                        }
+                        else if (strcmp(action.c_str(), "revoke") == 0)
+                        {
+                            revokebadge(issuebadge_params, false);
+                        }
+
+                        std::string string_data = "This issue/revoke badge request has been processed";
+                        std::string hex_data = HexStr(string_data.begin(), string_data.end());
+
+                        Array publish_params;
+                        publish_params.push_back(params[0]);
+                        publish_params.push_back(STREAM_PROCESSISSUEBADGEREQUESTS);
+                        publish_params.push_back(request_txid);
+                        publish_params.push_back(hex_data);
+
+                        publishfrom(publish_params, false);
+                    }
+                }
+            }
+        }
+    }
+
+    return Value::null;
 }
 
 // param1 - badge creator

@@ -3929,6 +3929,14 @@ void mc_InitRPCHelpMap17()
         "\nExample:\n"
         + HelpExampleCli("revokebadge", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd 1FD1NRHvuPSwZtMJuTWHJguUMeAZzdPCuGuPMv 5d06edd7a0dbd0d83478c25fbf30cf3f07ceac45d9ced1591f6bd982fb878647 \"{'notes':'Badge Notes'}\"")
     ));
+    mapHelpStrings.insert(std::make_pair("processrequestissuebadge",
+        "processrequestissuebadge\n"
+        "\nTriggers the creator-based batch processing of issue/revoke badge requests from badge issuers\n"
+        "\nArguments:\n"
+        "1. \"from-address\"                (string, required) Address of the badge creator\n"
+        "\nExample:\n"
+        + HelpExampleCli("requestissuebadge", "1TRFiwrYNG5xQWhk7thCToY7jfa9fyZECo2R6W")
+    ));
     mapHelpStrings.insert(std::make_pair("requestissuebadge",
         "requestissuebadge\n"
         "\nSend a request to issue \n"
