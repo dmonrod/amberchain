@@ -4080,8 +4080,9 @@ void mc_InitRPCHelpMap17()
         "\nArguments:\n"
         "1. \"from-address\"                (string, required) Address doing the action.\n"
         "2. \"stream-txid\"                 (string, required) Transaction ID of the item to be logged in the activities stream\n"
+        "3. \"stream\"                      (string, required) Stream in which transaction is located\n"
         "\nExample:\n"
-        + HelpExampleCli("logactivity", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd 5d06edd7a0dbd0d83478c25fbf30cf3f07ceac45d9ced1591f6bd982fb878647")
+        + HelpExampleCli("logactivity", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd 5d06edd7a0dbd0d83478c25fbf30cf3f07ceac45d9ced1591f6bd982fb878647 badges")
     ));
     mapHelpStrings.insert(std::make_pair("sharetxn",
         "sharetxn\n"

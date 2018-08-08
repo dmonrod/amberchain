@@ -2631,6 +2631,7 @@ Value delistservice(const Array& params, bool fHelp)
 
 // param1 - from-address
 // param2 - Transaction id of activity to be logged
+// param3 - Stream 
 Value logactivity(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() > 4)
@@ -2648,7 +2649,7 @@ Value logactivity(const Array& params, bool fHelp)
 
     ext_params.push_back(params[0]); // from-address
     ext_params.push_back(STREAM_ACTIVITIES); // stream
-    ext_params.push_back(params[0]);
+    ext_params.push_back(params[2]); //stream of txid
     ext_params.push_back(hex_data); // data hex
 
     return publishfrom(ext_params, fHelp);
