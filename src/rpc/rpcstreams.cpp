@@ -2742,7 +2742,7 @@ Value delistservice(const Array& params, bool fHelp)
 // param3 - Stream 
 Value logactivity(const Array& params, bool fHelp)
 {
-    if (fHelp || params.size() > 4)
+    if (fHelp || params.size() != 3)
         throw runtime_error("Help message not found\n");
 
     Object data;
