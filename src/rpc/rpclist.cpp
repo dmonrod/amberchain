@@ -206,6 +206,8 @@ static const CRPCCommand vRPCCommands[] =
     { "wallet",             "delistservice",          &delistservice,          false,     false,      true },
     { "wallet",             "logactivity",            &logactivity,            false,     false,      true },
     { "wallet",             "sharetxn",               &sharetxn,               false,     false,      true },
+    { "wallet",             "updateservicequantity",  &updateservicequantity,  false,     false,      true },
+    
 /* AMB END */
 /* MCHN START */    
     { "wallet",             "getaddresses",           &getaddresses,           true,      false,      true },
