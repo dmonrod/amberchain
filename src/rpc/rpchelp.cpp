@@ -3929,6 +3929,14 @@ void mc_InitRPCHelpMap17()
         "\nExample:\n"
         + HelpExampleCli("revokebadge", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd 1FD1NRHvuPSwZtMJuTWHJguUMeAZzdPCuGuPMv 5d06edd7a0dbd0d83478c25fbf30cf3f07ceac45d9ced1591f6bd982fb878647 \"{'notes':'Badge Notes'}\"")
     ));
+    mapHelpStrings.insert(std::make_pair("processrequestissuebadge",
+        "processrequestissuebadge\n"
+        "\nTriggers the creator-based batch processing of issue/revoke badge requests from badge issuers\n"
+        "\nArguments:\n"
+        "1. \"from-address\"                (string, required) Address of the badge creator\n"
+        "\nExample:\n"
+        + HelpExampleCli("requestissuebadge", "1TRFiwrYNG5xQWhk7thCToY7jfa9fyZECo2R6W")
+    ));
     mapHelpStrings.insert(std::make_pair("requestissuebadge",
         "requestissuebadge\n"
         "\nSend a request to issue \n"
@@ -3937,11 +3945,10 @@ void mc_InitRPCHelpMap17()
         "2. \"badge-receiver\"              (string, required) Address of the badge receiver\n"
         "3. \"badge-txid\"                  (string, required) Transaction ID of badge on creation, found in Badges stream\n"
         "4. \"badge-notes\"                 (string, required) Badge notes in JSON format\n"
-        "5. \"request-status\"              (string, required) Status of request - [request | approve | disapprove]\n"
-        "6. \"badge-action\"                (string, required) Badge action to grant receiver - [issue | revoke]\n"
-        "7. \"issue-badge-requestor\"       (string, required) Address of requestor for issuing/revoking a badge\n"
+        "5. \"badge-action\"                (string, required) Badge action to grant receiver - [issue | revoke]\n"
+        "6. \"issue-badge-requestor\"       (string, required) Address of requestor for issuing/revoking a badge\n"
         "\nExample:\n"
-        + HelpExampleCli("requestissuebadge", "1TRFiwrYNG5xQWhk7thCToY7jfa9fyZECo2R6W 1FD1NRHvuPSwZtMJuTWHJguUMeAZzdPCuGuPMv ce026992e3e8b3b9aba891d98172a4e231c751564f61a2b37a603559038c3103 request issue 14y6tTa4sQdnpTPApRLcCJfQ27cyaC5ZZ9WZww")
+        + HelpExampleCli("requestissuebadge", "1TRFiwrYNG5xQWhk7thCToY7jfa9fyZECo2R6W 1FD1NRHvuPSwZtMJuTWHJguUMeAZzdPCuGuPMv ce026992e3e8b3b9aba891d98172a4e231c751564f61a2b37a603559038c3103 issue 14y6tTa4sQdnpTPApRLcCJfQ27cyaC5ZZ9WZww")
     ));
     mapHelpStrings.insert(std::make_pair("grantbadgeissuerpermission",
         "grantbadgeissuerpermission\n"
