@@ -4103,15 +4103,15 @@ void mc_InitRPCHelpMap17()
         "\nExample:\n"
         + HelpExampleCli("sharetxn", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd 1TRFiwrYNG5xQWhk7thCToY7jfa9fyZECo2R6W 5d06edd7a0dbd0d83478c25fbf30cf3f07ceac45d9ced1591f6bd982fb878647")
     ));
-     mapHelpStrings.insert(std::make_pair("updateservicequantity",
-        "updateservicequantity\n"
+     mapHelpStrings.insert(std::make_pair("addservicequantity",
+        "addservicequantity\n"
         "\nUpdates the quantity of a service\n"
         "\nArguments:\n"
         "1. \"from-address\"                (string, required) Address, must be address of service creator.\n"
         "2. \"txid\"                        (string, required) Transaction ID of the service to be updated\n"
         "3. \"new quantity\"                (string, required) New quantity of service\n"
         "\nExample:\n"
-        + HelpExampleCli("updateservicequantity", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd 5d06edd7a0dbd0d83478c25fbf30cf3f07ceac45d9ced1591f6bd982fb878647 100")
+        + HelpExampleCli("addservicequantity", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd 5d06edd7a0dbd0d83478c25fbf30cf3f07ceac45d9ced1591f6bd982fb878647 100")
     ));
 }
 

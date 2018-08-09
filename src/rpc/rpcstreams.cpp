@@ -2810,7 +2810,7 @@ Value sharetxn(const Array& params, bool fHelp)
 // param1 - from-address
 // param2 - Asset TXID 
 // param3 - Quantity to add from the service
-Value updateservicequantity(const Array& params, bool fHelp)
+Value addservicequantity(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() != 4)
         throw runtime_error("Help message not found\n");
