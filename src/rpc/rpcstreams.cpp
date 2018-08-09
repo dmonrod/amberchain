@@ -2833,7 +2833,48 @@ Value addservicequantity(const Array& params, bool fHelp)
     issuemore_data.push_back(Pair("asset", params[1]));
     issuemore_data.push_back(Pair("raw", params[2]));
     address_data.push_back(Pair("issuemore",issuemore_data));
-    address.push_back(Pair(params[0],address_data));
+    
+    // const Value& json_data = address_data;
+    // const std::string string_data = write_string(json_data, false);
+
+    address.push_back(Pair(params[0].get_str(),address_data));
+
+    Array ext_params;
+    ext_params.push_back(params[0]); // from-address
+    ext_params.push_back(address); // address and issuemore data
+    return createrawsendfrom(ext_params, fHelp);
+    
+}
+
+// param1 - from-address
+// param2 - Asset TXID 
+// param3 - Quantity to remove from the service
+Value removeservicequantity(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() != 4)
+        throw runtime_error("Help message not found\n");
+
+    Array pub_params;
+    pub_params.push_back(STREAM_SERVICES);
+    pub_params.push_back(params[1]);
+    Object result = getstreamitem(pub_params, false).get_obj();
+
+    if (result.size() > 0) {
+        std::string publisher_item = result[0].value_.get_array().back().get_str();
+            if (strcmp(publisher_item.c_str(), params[0].get_str().c_str()) != 0) {
+                throw runtime_error("Address is not the previous publisher");
+        }
+    }
+    Array getinfo_params;
+    Object info = getinfo(getinfo_params,false).get_obj();
+    
+    Object address;
+    Object address_data;
+    Object issuemore_data;
+    issuemore_data.push_back(Pair("asset", params[1]));
+    issuemore_data.push_back(Pair("raw", params[2]));
+    address_data.push_back(Pair("issuemore",issuemore_data));
+    address.push_back(Pair(info[9].value_.get_str(),address_data));
 
     Array ext_params;
     ext_params.push_back(params[0]); // from-address
