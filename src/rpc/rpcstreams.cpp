@@ -2556,7 +2556,7 @@ Value writerecordtype(const Array& params, bool fHelp)
 // param4 - (optional) quantity of service
 Value listservice(const Array& params, bool fHelp)
 {
-    if (fHelp || params.size() > 4)
+    if (fHelp || params.size() < 3)
         throw runtime_error("Help message not found\n");
 
     if (doesassetexist(params[2].get_str()))
@@ -2806,4 +2806,5 @@ Value sharetxn(const Array& params, bool fHelp)
 
     return createrawsendfrom(ext_params, fHelp);
 }
+
 /* AMB END */
