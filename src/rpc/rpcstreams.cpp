@@ -2566,11 +2566,6 @@ Value listservice(const Array& params, bool fHelp)
     data.push_back(Pair("name", params[2]));
     data.push_back(Pair("data",params[1]));
 
-    const Value& json_data = data;
-    const std::string string_data = write_string(json_data, false);
-
-    std::string hex_data = HexStr(string_data.begin(), string_data.end());
-
     Array ext_params;
 
     Object addresses;
@@ -2590,6 +2585,7 @@ Value listservice(const Array& params, bool fHelp)
 
         if (haspermission(params[0].get_str(), "mine"))
         {
+            data.push_back(Pair("asset-holder", params[0]));
             addresses.push_back(Pair(params[0].get_str(), value_issue_params));    
         }
         else
@@ -2621,6 +2617,9 @@ Value listservice(const Array& params, bool fHelp)
 
             std::string multisig = addmultisigaddress(multisig_params, false).get_str();
             addresses.push_back(Pair(multisig, value_issue_params));
+
+            data.push_back(Pair("asset-holder", multisig));
+
         }
 
         Object asset_data;
@@ -2635,6 +2634,11 @@ Value listservice(const Array& params, bool fHelp)
 
         dataArray.push_back(asset_data);
     }
+
+    const Value& json_data = data;
+    const std::string string_data = write_string(json_data, false);
+
+    std::string hex_data = HexStr(string_data.begin(), string_data.end());
 
     Object raw_data;
     raw_data.push_back(Pair("for", STREAM_SERVICES));
