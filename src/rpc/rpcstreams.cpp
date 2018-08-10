@@ -2823,7 +2823,7 @@ Value addservicequantity(const Array& params, bool fHelp)
     pub_params.push_back(STREAM_SERVICES);
     pub_params.push_back(params[1]);
     Object result = getstreamitem(pub_params, false).get_obj();
-
+  
     if (result.size() > 0) {
         std::string publisher_item = result[0].value_.get_array().back().get_str();
             if (strcmp(publisher_item.c_str(), params[0].get_str().c_str()) != 0) {
@@ -2834,18 +2834,16 @@ Value addservicequantity(const Array& params, bool fHelp)
     Object address;
     Object address_data;
     Object issuemore_data;
+
     issuemore_data.push_back(Pair("asset", params[1]));
-    issuemore_data.push_back(Pair("raw", params[2]));
+    issuemore_data.push_back(Pair("raw", atoi(params[2].get_str().c_str())));
     address_data.push_back(Pair("issuemore",issuemore_data));
-    
-    // const Value& json_data = address_data;
-    // const std::string string_data = write_string(json_data, false);
-
     address.push_back(Pair(params[0].get_str(),address_data));
-
+ 
     Array ext_params;
     ext_params.push_back(params[0]); // from-address
     ext_params.push_back(address); // address and issuemore data
+  
     return createrawsendfrom(ext_params, fHelp);
     
 }
@@ -2874,7 +2872,7 @@ Value removeservicequantity(const Array& params, bool fHelp)
     
     Object address;
     Object address_data;
-    address_data.push_back(Pair(params[1].get_str(),params[2].get_str())); //asset issuetxid, amount to burn 
+    address_data.push_back(Pair(params[1].get_str(),atoi(params[2].get_str().c_str()))); //asset issuetxid, amount to burn 
     address.push_back(Pair(info[9].value_.get_str(),address_data));
 
     Array ext_params;
