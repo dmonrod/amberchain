@@ -225,6 +225,7 @@ extern json_spirit::Value delistservice(const json_spirit::Array& params, bool f
 extern json_spirit::Value logactivity(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value sharetxn(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value addservicequantity(const json_spirit::Array& params, bool fHelp);
+extern json_spirit::Value removeservicequantity(const json_spirit::Array& params, bool fHelp);
 // extern void loginvalidblock(const CBlockIndex* pindex, const CWallet pwalletMain);
 /* AMB END */
 /* MCHN START */    

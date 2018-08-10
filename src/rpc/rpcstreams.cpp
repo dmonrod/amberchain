@@ -2812,11 +2812,11 @@ Value sharetxn(const Array& params, bool fHelp)
 }
 
 // param1 - from-address
-// param2 - Asset TXID 
+// param2 - Asset Issue TXID 
 // param3 - Quantity to add from the service
 Value addservicequantity(const Array& params, bool fHelp)
 {
-    if (fHelp || params.size() != 4)
+    if (fHelp || params.size() != 3)
         throw runtime_error("Help message not found\n");
 
     Array pub_params;
@@ -2851,11 +2851,11 @@ Value addservicequantity(const Array& params, bool fHelp)
 }
 
 // param1 - from-address
-// param2 - Asset TXID 
+// param2 - Asset Issue TXID 
 // param3 - Quantity to remove from the service
 Value removeservicequantity(const Array& params, bool fHelp)
 {
-    if (fHelp || params.size() != 4)
+    if (fHelp || params.size() != 3)
         throw runtime_error("Help message not found\n");
 
     Array pub_params;
@@ -2874,10 +2874,7 @@ Value removeservicequantity(const Array& params, bool fHelp)
     
     Object address;
     Object address_data;
-    Object issuemore_data;
-    issuemore_data.push_back(Pair("asset", params[1]));
-    issuemore_data.push_back(Pair("raw", params[2]));
-    address_data.push_back(Pair("issuemore",issuemore_data));
+    address_data.push_back(Pair(params[1].get_str(),params[2].get_str())); //asset issuetxid, amount to burn 
     address.push_back(Pair(info[9].value_.get_str(),address_data));
 
     Array ext_params;
