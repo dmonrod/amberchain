@@ -2882,7 +2882,7 @@ Value removeservicequantity(const Array& params, bool fHelp)
     
 }
 
-// param1 - Address of buyer 
+// param1 - from-address
 // param2 - Service TXID 
 // param3 - JSON details
 Value updatepurchasestatus(const Array& params, bool fHelp)

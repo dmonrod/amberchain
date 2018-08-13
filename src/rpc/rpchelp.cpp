@@ -4127,7 +4127,7 @@ void mc_InitRPCHelpMap17()
         "updatepurchasestatus\n"
         "\nWrites the purchase status to the purchase status stream.\n"
         "\nArguments:\n"
-        "1. \"from-address\"                (string, required) Address, must be allow to write to stream purchasestatus.\n"
+        "1. \"from-address\"                (string, required) Address, must be allowed to write to stream purchasestatus.\n"
         "2. \"txid\"                        (string, required) Transaction ID of the service being purchased.\n"
         "3. \"details\"                     (string, required) Details of the purchase in JSON format.\n"
         "\nExample:\n"
