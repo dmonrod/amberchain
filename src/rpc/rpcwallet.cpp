@@ -1,8 +1,8 @@
 // Copyright (c) 2010 Satoshi Nakamoto
 // Copyright (c) 2014-2016 The Bitcoin Core developers
 // Original code was distributed under the MIT software license.
-// Copyright (c) 2014-2017 Coin Sciences Ltd
-// MultiChain code distributed under the GPLv3 license, see COPYING file.
+// Copyright (c) 2018 Apsaras Group Ltd
+// Amberchain code distributed under the GPLv3 license, see COPYING file.
 
 #include "structs/amount.h"
 #include "structs/base58.h"
@@ -38,6 +38,9 @@ using namespace json_spirit;
 
 /* MCHN END */
 
+/* AMB START */
+#include "amber/utils.h"
+/* AMB END */
 
 int64_t nWalletUnlockTime;
 static CCriticalSection cs_nWalletUnlockTime;
@@ -1115,6 +1118,39 @@ Value addmultisigaddress(const Array& params, bool fHelp)
     return CBitcoinAddress(innerID).ToString();
 }
 
+/*AMB START*/
+std::string getauthmultisigaddress(int sigsrequired)
+{
+    Array multisig_params;
+    Array auth_addresses;
+    Array liststreamkeys_params;
+
+    // GET ALL AUTHORITY ENTRIES IN STREAM OF AUTHORITY NODES
+    liststreamkeys_params.push_back(STREAM_AUTHNODES);
+    Value list_auth = liststreamkeys(liststreamkeys_params, false);
+
+    // LOOP THROUGH THE STREAM ITEMS AND THEN EXTRACT ONLY THE ADDRESSES
+    for(int i = 0; i < list_auth.get_array().size(); i++)
+    {
+        auth_addresses.push_back(list_auth.get_array()[i].get_obj()[0].value_.get_str());
+    }
+
+    // CREATE MULTISIG WALLET
+    if (auth_addresses.size() < sigsrequired)
+    {
+        multisig_params.push_back(auth_addresses.size());
+    }
+    else
+    {
+        multisig_params.push_back(sigsrequired);
+    }
+    multisig_params.push_back(auth_addresses);
+
+    std::string multisig = addmultisigaddress(multisig_params, false).get_str();
+
+    return multisig;
+}
+/*AMB END*/
 
 struct tallyitem
 {

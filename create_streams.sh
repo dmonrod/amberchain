@@ -14,6 +14,7 @@ chainName="$1"
 ./amberchain-cli $chainName create stream customcategories          true
 ./amberchain-cli $chainName create stream updatecustomcategories    true
 ./amberchain-cli $chainName create stream sharedtxns                true
+./amberchain-cli $chainName create stream purchaseinformation       true
 
 ./amberchain-cli $chainName create stream authoritynodes            false
 ./amberchain-cli $chainName create stream transactionparams         false

@@ -2,7 +2,8 @@
 // Copyright (c) 2014-2016 The Bitcoin Core developers
 // Original code was distributed under the MIT software license.
 // Copyright (c) 2014-2017 Coin Sciences Ltd
-// MultiChain code distributed under the GPLv3 license, see COPYING file.
+// Copyright (c) 2018 Apsaras Group Ltd
+// Amberchain code distributed under the GPLv3 license, see COPYING file.
 
 
 #include "rpc/rpcwallet.h"
@@ -2550,6 +2551,21 @@ Value writerecordtype(const Array& params, bool fHelp)
     }
 }
 
+bool doesservicexist(std::string txid)
+{
+    try {
+        Array service_params;
+        service_params.push_back(STREAM_SERVICES);
+        service_params.push_back(txid);
+        Array service_results = getstreamitem(service_params, false).get_array();
+        return true;
+    }
+    catch (...)
+    {
+        return false;
+    }
+}
+
 // param1 - from-address
 // param2 - JSON of service details
 // param3 - name of service
@@ -2721,7 +2737,6 @@ Value updateservice(const Array& params, bool fHelp)
     return writeannotatedservice(ext_params, fHelp);
 }
 
-
 // param1 - from-address
 // param2 - stream txid
 // param3 - data
@@ -2739,6 +2754,120 @@ Value delistservice(const Array& params, bool fHelp)
     ext_params.push_back("delist");
 
     return writeannotatedservice(ext_params, fHelp);
+}
+
+// param1 - from-address (buyer's address)
+// param2 - service txid
+// param3 - name of service
+// param4 - total amount
+// param5 - quantity (optional)
+Value purchaseservice(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() < 4)
+        throw runtime_error("Help message not found\n");
+
+    bool is_escrow = false;
+    bool is_consumable = doesassetexist(params[2].get_str());
+
+    Array service_params;
+    service_params.push_back(STREAM_SERVICES);
+    service_params.push_back(params[1]);
+    Object service_result = getstreamitem(service_params, false).get_obj();
+
+    std::string publisher = service_result[0].value_.get_array().back().get_str();
+
+    Array getinfo_params;
+    Object info = getinfo(getinfo_params,false).get_obj();
+
+    std::string burn_address = info[9].value_.get_str();
+
+    std::string funds_receiver = publisher;
+    std::string assets_receiver = burn_address;
+
+    Object purchase_data;
+    purchase_data.push_back(Pair("service-name", params[2]));
+    purchase_data.push_back(Pair("service-txid", params[1]));
+
+    if (is_escrow)
+    {
+        std::string escrow_address = getauthmultisigaddress(3);
+        funds_receiver = escrow_address;
+        assets_receiver = escrow_address;
+        purchase_data.push_back(Pair("status", "in escrow"));
+    }
+    else
+    {
+        purchase_data.push_back(Pair("status", "completed"));
+    }
+
+    //Consumable Service Logic
+    if (is_consumable)
+    {
+        std::string hex_data = service_result[2].value_.get_str();
+        std::string json_data = HexToStr(hex_data);
+        Value data;
+        read_string(json_data, data);
+        Object data_object = data.get_obj();
+        std::string asset_holder = data_object[2].value_.get_str();
+
+        //1st raw tx for writing to purchase info stream
+        Object first_addresses;
+        Array first_data_array;
+        Array first_ext_params;
+
+        purchase_data.push_back(Pair("to-address", funds_receiver));
+
+        const Value& first_json_data = purchase_data;
+        const std::string first_string_data = write_string(first_json_data, false);
+
+        std::string first_hex_data = HexStr(first_string_data.begin(), first_string_data.end());
+
+        Object first_raw_data;
+        first_raw_data.push_back(Pair("for", STREAM_PURCHASEINFORMATION));
+        first_raw_data.push_back(Pair("key", params[0]));
+        first_raw_data.push_back(Pair("data", first_hex_data));
+
+        first_data_array.push_back(first_raw_data);
+
+        first_ext_params.push_back(params[0]);
+        first_ext_params.push_back(first_addresses);
+        first_ext_params.push_back(first_data_array);
+
+        std::string first_rawtx = createrawsendfrom(first_ext_params, fHelp).get_str();
+
+        //2nd raw tx for transferring assets and funds
+
+        return first_rawtx;
+    }
+    //Non-Consumable Service Logic
+    else
+    {
+        Object addresses;
+        Array data_array;
+        Array ext_params;
+
+        addresses.push_back(Pair(funds_receiver, params[3]));
+
+        purchase_data.push_back(Pair("to-address", funds_receiver));
+
+        const Value& json_data = purchase_data;
+        const std::string string_data = write_string(json_data, false);
+
+        std::string hex_data = HexStr(string_data.begin(), string_data.end());
+
+        Object raw_data;
+        raw_data.push_back(Pair("for", STREAM_PURCHASEINFORMATION));
+        raw_data.push_back(Pair("key", params[0]));
+        raw_data.push_back(Pair("data", hex_data));
+
+        data_array.push_back(raw_data);
+
+        ext_params.push_back(params[0]);
+        ext_params.push_back(addresses);
+        ext_params.push_back(data_array);
+
+        return createrawsendfrom(ext_params, fHelp);
+    }
 }
 
 // param1 - from-address
