@@ -2823,7 +2823,7 @@ Value purchaseservice(const Array& params, bool fHelp)
         std::string first_hex_data = HexStr(first_string_data.begin(), first_string_data.end());
 
         Object first_raw_data;
-        first_raw_data.push_back(Pair("for", STREAM_PURCHASEINFORMATION));
+        first_raw_data.push_back(Pair("for", STREAM_PURCHASESTATUS));
         first_raw_data.push_back(Pair("key", params[0]));
         first_raw_data.push_back(Pair("data", first_hex_data));
 
@@ -2856,7 +2856,7 @@ Value purchaseservice(const Array& params, bool fHelp)
         std::string hex_data = HexStr(string_data.begin(), string_data.end());
 
         Object raw_data;
-        raw_data.push_back(Pair("for", STREAM_PURCHASEINFORMATION));
+        raw_data.push_back(Pair("for", STREAM_PURCHASESTATUS));
         raw_data.push_back(Pair("key", params[0]));
         raw_data.push_back(Pair("data", hex_data));
 
@@ -3009,5 +3009,31 @@ Value removeservicequantity(const Array& params, bool fHelp)
     ext_params.push_back(address); // address and issuemore data
     return createrawsendfrom(ext_params, fHelp);
     
+}
+
+// param1 - from-address
+// param2 - Service TXID 
+// param3 - JSON details
+Value updatepurchasestatus(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() != 3)
+        throw runtime_error("Help message not found\n");
+
+    Object content;
+    content.push_back(Pair("data",params[2]));
+
+    const Value& json_data = content;
+    const std::string string_data = write_string(json_data, false);
+    
+    std::string hex_data = HexStr(string_data.begin(), string_data.end());
+
+    Array ext_params;
+
+    ext_params.push_back(params[0]); //stream of txid
+    ext_params.push_back(STREAM_PURCHASESTATUS); // stream
+    ext_params.push_back(params[1]); //stream of txid
+    ext_params.push_back(hex_data); // data hex
+
+    return publishfrom(ext_params, fHelp);
 }
 /* AMB END */

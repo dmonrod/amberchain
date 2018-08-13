@@ -4123,6 +4123,16 @@ void mc_InitRPCHelpMap17()
         "\nExample:\n"
         + HelpExampleCli("addservicequantity", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd 5d06edd7a0dbd0d83478c25fbf30cf3f07ceac45d9ced1591f6bd982fb878647 100")
     ));
+    mapHelpStrings.insert(std::make_pair("updatepurchasestatus",
+        "updatepurchasestatus\n"
+        "\nWrites the purchase status to the purchase status stream.\n"
+        "\nArguments:\n"
+        "1. \"from-address\"                (string, required) Address, must be allowed to write to stream purchasestatus.\n"
+        "2. \"txid\"                        (string, required) Transaction ID of the service being purchased.\n"
+        "3. \"details\"                     (string, required) Details of the purchase in JSON format.\n"
+        "\nExample:\n"
+        + HelpExampleCli("updatepurchasestatus", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd 5d06edd7a0dbd0d83478c25fbf30cf3f07ceac45d9ced1591f6bd982fb878647 {'status':'pending','qty':200}")
+    ));
 }
 
 void mc_InitRPCLogParamCountMap()
