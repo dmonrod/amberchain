@@ -2881,4 +2881,30 @@ Value removeservicequantity(const Array& params, bool fHelp)
     return createrawsendfrom(ext_params, fHelp);
     
 }
+
+// param1 - Address of buyer 
+// param2 - Service TXID 
+// param3 - JSON details
+Value updatepurchasestatus(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() != 3)
+        throw runtime_error("Help message not found\n");
+
+    Object content;
+    content.push_back(Pair("data",params[2]));
+
+    const Value& json_data = content;
+    const std::string string_data = write_string(json_data, false);
+    
+    std::string hex_data = HexStr(string_data.begin(), string_data.end());
+
+    Array ext_params;
+
+    ext_params.push_back(params[0]); //stream of txid
+    ext_params.push_back(STREAM_PURCHASESTATUS); // stream
+    ext_params.push_back(params[1]); //stream of txid
+    ext_params.push_back(hex_data); // data hex
+
+    return publishfrom(ext_params, fHelp);
+}
 /* AMB END */
