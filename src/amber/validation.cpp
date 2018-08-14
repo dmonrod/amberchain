@@ -12,9 +12,60 @@
 using namespace std;
 using namespace json_spirit;
 
-void LogInvalidBlock(const CBlockIndex* pindex, std::string reason)
+/* Copied from multichainblock.cpp#FindSigner */
+void FindBlockSigner(CBlock *block,unsigned char *sig,int *sig_size,uint32_t *hash_type)
+{
+    int key_size;
+    block->vSigner[0]=0;
+    
+    if(mc_gState->m_NetworkParams->IsProtocolMultichain())
+    {
+        for (unsigned int i = 0; i < block->vtx.size(); i++)
+        {
+            const CTransaction &tx = block->vtx[i];
+            if (tx.IsCoinBase())
+            {
+                for (unsigned int j = 0; j < tx.vout.size(); j++)
+                {
+                    mc_gState->m_TmpScript1->Clear();
+
+                    const CScript& script1 = tx.vout[j].scriptPubKey;        
+                    CScript::const_iterator pc1 = script1.begin();
+
+                    mc_gState->m_TmpScript1->SetScript((unsigned char*)(&pc1[0]),(size_t)(script1.end()-pc1),MC_SCR_TYPE_SCRIPTPUBKEY);
+
+                    for (int e = 0; e < mc_gState->m_TmpScript1->GetNumElements(); e++)
+                    {
+                        if(block->vSigner[0] == 0)
+                        {
+                            mc_gState->m_TmpScript1->SetElement(e);                        
+                            *sig_size=255;
+                            key_size=255;    
+                            if(mc_gState->m_TmpScript1->GetBlockSignature(sig,sig_size,hash_type,block->vSigner+1,&key_size) == 0)
+                            {
+                                block->vSigner[0]=(unsigned char)key_size;
+                            }            
+                        }
+                    }
+                }
+            }
+        }    
+    }
+}
+
+
+void LogInvalidBlock(CBlock& block, const CBlockIndex* pindex, std::string reason)
 {
     LogPrintf("LogInvalidBlock(): %s.\n", reason);
+
+    unsigned char sig[255];
+    int sig_size;//,key_size;
+    uint32_t hash_type;
+    std::vector<unsigned char> vchSigOut;
+    
+    FindBlockSigner(&block, sig, &sig_size, &hash_type);    
+    vchSigOut=std::vector<unsigned char> (sig, sig+sig_size);
+    std::string strSigOut(vchSigOut[0], vchSigOut.size());
 
     CPubKey miner  = pindex->kMiner;
     CBitcoinAddress minerAddress(miner.GetID());    
@@ -38,6 +89,7 @@ void LogInvalidBlock(const CBlockIndex* pindex, std::string reason)
         data.push_back(Pair("height", ((pindex->nHeight))));
         data.push_back(Pair("log2-work", (log(pindex->nChainWork.getdouble())/log(2.0))));
         data.push_back(Pair("date", DateTimeStrFormat("%Y-%m-%d %H:%M:%S", pindex->GetBlockTime())));
+        data.push_back(Pair("block-signature", strSigOut));
         data.push_back(Pair("reason", reason));
 
         const Value& json_data = data;

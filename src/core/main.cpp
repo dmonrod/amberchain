@@ -4426,7 +4426,7 @@ bool AcceptBlock(CBlock& block, CValidationState& state, CBlockIndex** ppindex, 
     if (!AcceptBlockHeader(block, state, &pindex, node_id))
     {
 /* AMB START */
-        LogInvalidBlock(pindex, "AcceptBlock(): FAIL. Invalid block header.\n");        
+        LogInvalidBlock(block, pindex, "AcceptBlock(): FAIL. Invalid block header.\n");        
 /* AMB END */
         return false;
     }
@@ -4435,7 +4435,7 @@ bool AcceptBlock(CBlock& block, CValidationState& state, CBlockIndex** ppindex, 
         // TODO: deal better with duplicate blocks.
         // return state.DoS(20, error("AcceptBlock() : already have block %d %s", pindex->nHeight, pindex->GetBlockHash().ToString()), REJECT_DUPLICATE, "duplicate");
 /* AMB START */
-        LogInvalidBlock(pindex, "AcceptBlock(): FAIL. Duplicate block.\n");        
+        LogInvalidBlock(block, pindex, "AcceptBlock(): FAIL. Duplicate block.\n");        
 /* AMB END */
         return true;
     }
@@ -4447,7 +4447,7 @@ bool AcceptBlock(CBlock& block, CValidationState& state, CBlockIndex** ppindex, 
     if(!VerifyBlockSignature(&block,false))
     {
 /* AMB START */
-        LogInvalidBlock(pindex, "AcceptBlock(): FAIL. Invalid block signature.\n");        
+        LogInvalidBlock(block, pindex, "AcceptBlock(): FAIL. Invalid block signature.\n");        
 /* AMB END */
         return false;
     }    
@@ -4502,13 +4502,13 @@ bool AcceptBlock(CBlock& block, CValidationState& state, CBlockIndex** ppindex, 
                         double expectedRatio = (1-adminFeeRatio)/adminFeeRatio;
                         double actualRatio = txFee/adminFee;
                         if (expectedRatio != actualRatio) {
-                            LogInvalidBlock(pindex, "AcceptBlock(): FAIL. Ratio of admin fee to tx fee is incorrect.\n");
+                            LogInvalidBlock(block, pindex, "AcceptBlock(): FAIL. Ratio of admin fee to tx fee is incorrect.\n");
                             return false;
                         }
                     }
                     else if (txFee > 0)
                     {
-                        LogInvalidBlock(pindex, "AcceptBlock(): FAIL.  Block should have an admin fee in the coinbase tx if there is a tx fee.\n");
+                        LogInvalidBlock(block, pindex, "AcceptBlock(): FAIL.  Block should have an admin fee in the coinbase tx if there is a tx fee.\n");
                         return false;
                     }
                 }
@@ -4535,12 +4535,6 @@ bool AcceptBlock(CBlock& block, CValidationState& state, CBlockIndex** ppindex, 
         }
         return false;
     }
-/* AMB START */
-    /*
-        loginvalidblock(ppindex, pwalletMain);
-        return false;
-    }*/
-/* AMB END */
 
     int nHeight = pindex->nHeight;
 
@@ -4566,7 +4560,7 @@ bool AcceptBlock(CBlock& block, CValidationState& state, CBlockIndex** ppindex, 
         pindex->nStatus |= BLOCK_FAILED_VALID;
         setDirtyBlockIndex.insert(pindex);
 /* AMB START */
-        LogInvalidBlock(pindex, "AcceptBlock(): FAIL. Failed block miner verification.\n");        
+        LogInvalidBlock(block, pindex, "AcceptBlock(): FAIL. Failed block miner verification.\n");        
 /* AMB END */
         return false;
     }

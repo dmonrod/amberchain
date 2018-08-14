@@ -16,7 +16,7 @@
 using namespace std;
 using namespace json_spirit;
 
-void LogInvalidBlock(const CBlockIndex* pindex, std::string reason);
+void LogInvalidBlock(CBlock& block, const CBlockIndex* pindex, std::string reason);
 bool IsMinerTx(const CTransaction& tx);
 
 #endif //AMBER_VALIDATION_H
