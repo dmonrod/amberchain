@@ -2606,36 +2606,10 @@ Value listservice(const Array& params, bool fHelp)
         }
         else
         {
-            Array multisig_params;
-            Array auth_addresses;
-            Array liststreamkeys_params;
-
-            // GET ALL AUTHORITY ENTRIES IN STREAM OF AUTHORITY NODES
-            liststreamkeys_params.push_back(STREAM_AUTHNODES);            
-            Value list_auth = liststreamkeys(liststreamkeys_params, false);
-
-            // LOOP THROUGH THE STREAM ITEMS AND THEN EXTRACT ONLY THE ADDRESSES
-            for(int i = 0; i < list_auth.get_array().size(); i++)
-            {
-                auth_addresses.push_back(list_auth.get_array()[i].get_obj()[0].value_.get_str());
-            }
-
-            // CREATE MULTISIG WALLET 
-            if (auth_addresses.size() < 3) 
-            {
-                multisig_params.push_back(auth_addresses.size());
-            }
-            else
-            {
-                multisig_params.push_back(3);
-            }
-            multisig_params.push_back(auth_addresses);
-
-            std::string multisig = addmultisigaddress(multisig_params, false).get_str();
+            std::string multisig = getauthmultisigaddress(3);
             addresses.push_back(Pair(multisig, value_issue_params));
 
             data.push_back(Pair("asset-holder", multisig));
-
         }
 
         Object asset_data;
