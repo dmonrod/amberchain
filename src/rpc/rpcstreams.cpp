@@ -2898,13 +2898,30 @@ Value updatepurchasestatus(const Array& params, bool fHelp)
     
     std::string hex_data = HexStr(string_data.begin(), string_data.end());
 
+    //code for directly publishing to stream
+    // Array ext_params;
+
+    // ext_params.push_back(params[0]); // address
+    // ext_params.push_back(STREAM_PURCHASESTATUS); // stream
+    // ext_params.push_back(params[1]); //Service txid
+    // ext_params.push_back(hex_data); // data hex
+
+    // return publishfrom(ext_params, fHelp);
+
+    Object raw_data;
+    raw_data.push_back(Pair("for", STREAM_PURCHASESTATUS));
+    raw_data.push_back(Pair("key", params[1])); // Service TXID
+    raw_data.push_back(Pair("data", hex_data));
+
     Array ext_params;
 
-    ext_params.push_back(params[0]); //stream of txid
-    ext_params.push_back(STREAM_PURCHASESTATUS); // stream
-    ext_params.push_back(params[1]); //stream of txid
-    ext_params.push_back(hex_data); // data hex
+    Object addresses;
+    Array dataArray;
+    dataArray.push_back(raw_data);
+    ext_params.push_back(params[0]); // from-address
+    ext_params.push_back(addresses); // addresses
+    ext_params.push_back(dataArray); // data array
 
-    return publishfrom(ext_params, fHelp);
+    return createrawsendfrom(ext_params, fHelp);
 }
 /* AMB END */
