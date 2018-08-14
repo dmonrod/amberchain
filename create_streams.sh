@@ -31,3 +31,4 @@ chainName="$1"
 ./amberchain-cli $chainName create stream services                  false
 ./amberchain-cli $chainName create stream activities                false
 ./amberchain-cli $chainName create stream processissuebadgerequests false
+./amberchain-cli $chainName create stream purchaseoffertransactions false

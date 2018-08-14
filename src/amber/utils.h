@@ -30,6 +30,7 @@
 #define STREAM_SHAREDTXNS                   "sharedtxns"
 #define STREAM_PROCESSISSUEBADGEREQUESTS    "processissuebadgerequests"
 #define STREAM_PURCHASESTATUS               "purchasestatus"
+#define STREAM_PURCHASEOFFERTRANSACTIONS    "purchaseoffertransactions"
 #define KEY_TRANSACTIONFEE                  "min-relay-tx-fee"
 #define KEY_ADMINPUBLICKEY                  "admin-public-key"
 #define KEY_ADMINFEERATIO                   "admin-fee-ratio"
@@ -69,6 +70,7 @@ struct StreamConsts
         mine_streams.push_back(STREAM_ISSUEDBADGES);
         mine_streams.push_back(STREAM_ISSUEBADGEREQUESTS);
         mine_streams.push_back(STREAM_PROCESSISSUEBADGEREQUESTS);
+        mine_streams.push_back(STREAM_PURCHASEOFFERTRANSACTIONS);
 		m["mine"] = mine_streams;		
         return m;
     }
