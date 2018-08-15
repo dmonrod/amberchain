@@ -1128,8 +1128,7 @@ Value getauthmultisigaddress(const Array& params, bool fHelp)
     Array multisig_params;
     Array auth_addresses;
     Array liststreamkeys_params;
-
-    int sigsrequired = params[0].get_int();
+    int sigsrequired = atoi(params[0].get_str().c_str());
 
     // GET ALL AUTHORITY ENTRIES IN STREAM OF AUTHORITY NODES
     liststreamkeys_params.push_back(STREAM_AUTHNODES);
