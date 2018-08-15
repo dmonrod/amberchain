@@ -1119,11 +1119,17 @@ Value addmultisigaddress(const Array& params, bool fHelp)
 }
 
 /*AMB START*/
-std::string getauthmultisigaddress(int sigsrequired)
+// param1 - sigsrequired
+Value getauthmultisigaddress(const Array& params, bool fHelp)
 {
+    if (fHelp || params.size() < 1)
+        throw runtime_error("Help message not found\n");
+
     Array multisig_params;
     Array auth_addresses;
     Array liststreamkeys_params;
+
+    int sigsrequired = params[0].get_int();
 
     // GET ALL AUTHORITY ENTRIES IN STREAM OF AUTHORITY NODES
     liststreamkeys_params.push_back(STREAM_AUTHNODES);
@@ -1146,9 +1152,7 @@ std::string getauthmultisigaddress(int sigsrequired)
     }
     multisig_params.push_back(auth_addresses);
 
-    std::string multisig = addmultisigaddress(multisig_params, false).get_str();
-
-    return multisig;
+    return addmultisigaddress(multisig_params, false).get_str();
 }
 /*AMB END*/
 

@@ -2606,7 +2606,9 @@ Value listservice(const Array& params, bool fHelp)
         }
         else
         {
-            std::string multisig = getauthmultisigaddress(3);
+            Array multisig_params;
+            multisig_params.push_back(3);
+            std::string multisig = getauthmultisigaddress(multisig_params, false).get_str();
             addresses.push_back(Pair(multisig, value_issue_params));
 
             data.push_back(Pair("asset-holder", multisig));
@@ -2768,7 +2770,7 @@ Value purchasenonconsumableservice(const Array& params, bool fHelp)
 
     if (is_escrow)
     {
-        std::string escrow_address = getauthmultisigaddress(3);
+        std::string escrow_address = params[4].get_str();
         funds_receiver = escrow_address;
         assets_receiver = escrow_address;
         purchase_data.push_back(Pair("status", "in escrow"));

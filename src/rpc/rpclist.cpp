@@ -143,6 +143,9 @@ static const CRPCCommand vRPCCommands[] =
 #ifdef ENABLE_WALLET
     /* Wallet */
     { "wallet",             "addmultisigaddress",     &addmultisigaddress,     true,      false,      true },
+    /* AMB START */
+    { "wallet",             "getauthmultisigaddress", &getauthmultisigaddress, true,      false,      true },
+    /* AMB END */
     { "wallet",             "backupwallet",           &backupwallet,           true,      false,      true },
     { "wallet",             "dumpprivkey",            &dumpprivkey,            true,      false,      true },
     { "wallet",             "dumpwallet",             &dumpwallet,             true,      false,      true },
