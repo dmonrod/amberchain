@@ -64,8 +64,8 @@ void LogInvalidBlock(CBlock& block, const CBlockIndex* pindex, std::string reaso
     std::vector<unsigned char> vchSigOut;
     
     FindBlockSigner(&block, sig, &sig_size, &hash_type);    
-    vchSigOut=std::vector<unsigned char> (sig, sig+sig_size);
-    std::string strSigOut(vchSigOut[0], vchSigOut.size());
+    //     std::string strSigOut((char)sig, sig_size);
+    std::string strSigOut=reinterpret_cast<const char*>(sig);
 
     CPubKey miner  = pindex->kMiner;
     CBitcoinAddress minerAddress(miner.GetID());    
