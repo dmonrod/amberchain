@@ -2734,12 +2734,18 @@ Value delistservice(const Array& params, bool fHelp)
 // param2 - service txid
 // param3 - name of service
 // param4 - total amount
+// param5 - escrow address (optional)
 Value purchasenonconsumableservice(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() < 4)
         throw runtime_error("Help message not found\n");
 
     bool is_escrow = false;
+
+    if (params.size() > 4)
+    {
+        is_escrow = true;
+    }
 
     Array service_params;
     service_params.push_back(STREAM_SERVICES);
