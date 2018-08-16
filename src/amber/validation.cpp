@@ -2,6 +2,10 @@
 
 // Amberchain code distributed under the GPLv3 license, see COPYING file.
 
+#include <sstream>
+#include <iomanip>
+#include <stdio.h>
+
 #include "amber/validation.h"
 #include "structs/base58.h"
 #include "chain/chain.h"
@@ -61,16 +65,71 @@ void LogInvalidBlock(CBlock& block, const CBlockIndex* pindex, std::string reaso
     unsigned char sig[255];
     int sig_size;//,key_size;
     uint32_t hash_type;
+    uint256 hash_to_verify;
+    uint256 original_merkle_root;
+    uint32_t original_nonce;
     std::vector<unsigned char> vchSigOut;
+    std::vector<uint256> savedMerkleTree;
+    std::string strHashType;
+    std::string strSigOut;
+    std::string block_hash;
+    
+    block.nMerkleTreeType=MERKLETREE_FULL;
+    block.nSigHashType=BLOCKSIGHASH_NONE;
     
     FindBlockSigner(&block, sig, &sig_size, &hash_type);    
-    //     std::string strSigOut((char)sig, sig_size);
-    std::string strSigOut=reinterpret_cast<const char*>(sig);
+    if(block.vSigner[0])
+    {
+        switch(hash_type)
+        {
+            case BLOCKSIGHASH_HEADER:
+                strHashType = "BLOCKSIGHASH_HEADER";
+                block.nMerkleTreeType=MERKLETREE_NO_COINBASE_OP_RETURN;
+                block.nSigHashType=BLOCKSIGHASH_HEADER;
+                hash_to_verify=block.GetHash();
+                break;
+            case BLOCKSIGHASH_NO_SIGNATURE_AND_NONCE:
+                strHashType = "BLOCKSIGHASH_NO_SIGNATURE_AND_NONCE";
+                original_merkle_root=block.hashMerkleRoot;
+                original_nonce=block.nNonce;
+                
+                block.nMerkleTreeType=MERKLETREE_NO_COINBASE_OP_RETURN;
+                savedMerkleTree=block.vMerkleTree;
+                block.hashMerkleRoot=block.BuildMerkleTree();
+                block.nNonce=0;
+                hash_to_verify=block.GetHash();
+                
+                block.hashMerkleRoot=original_merkle_root;
+                block.nNonce=original_nonce;
+                
+                block.nMerkleTreeType=MERKLETREE_FULL;                
+                if(savedMerkleTree.size())
+                {
+                    block.vMerkleTree=savedMerkleTree;
+                }
+                else
+                {
+                    block.BuildMerkleTree();
+                }
+                break;
+            default:
+                strHashType = "BLOCKSIGHASH_INVALID";
+        }
+        
+        // convert sig to a hex string
+        std::stringstream ss;
+        ss << std::hex;
+        for(int i=0;i<sig_size;++i) {
+            ss << std::setw(2) << std::setfill('0') << (int)sig[i];
+        }
+        strSigOut = ss.str();
+        block_hash = hash_to_verify.GetHex().c_str();
+    }
 
     CPubKey miner  = pindex->kMiner;
     CBitcoinAddress minerAddress(miner.GetID());    
 
-    std::string block_hash = pindex->GetBlockHash().ToString();
+    LogPrintf("LogInvalidBlock(): Block sig=%s\n", strSigOut);
     LogPrintf("LogInvalidBlock(): Block hash=%s\n", block_hash);
     LogPrintf("LogInvalidBlock(): Block miner=%s\n", minerAddress.ToString());
 
@@ -90,6 +149,7 @@ void LogInvalidBlock(CBlock& block, const CBlockIndex* pindex, std::string reaso
         data.push_back(Pair("log2-work", (log(pindex->nChainWork.getdouble())/log(2.0))));
         data.push_back(Pair("date", DateTimeStrFormat("%Y-%m-%d %H:%M:%S", pindex->GetBlockTime())));
         data.push_back(Pair("block-signature", strSigOut));
+        data.push_back(Pair("block-hashtype", strHashType));
         data.push_back(Pair("reason", reason));
 
         const Value& json_data = data;
