@@ -2,6 +2,10 @@
 
 // Amberchain code distributed under the GPLv3 license, see COPYING file.
 
+#include <sstream>
+#include <iomanip>
+#include <stdio.h>
+
 #include "amber/validation.h"
 #include "structs/base58.h"
 #include "chain/chain.h"
@@ -65,7 +69,27 @@ void LogInvalidBlock(CBlock& block, const CBlockIndex* pindex, std::string reaso
     
     FindBlockSigner(&block, sig, &sig_size, &hash_type);    
     //     std::string strSigOut((char)sig, sig_size);
-    std::string strSigOut=reinterpret_cast<const char*>(sig);
+    // std::string strSigOut=reinterpret_cast<const char*>(sig);
+    // convert sig to a hex string
+    std::stringstream ss;
+    ss << std::hex;
+    for(int i=0;i<sig_size;++i) {
+        ss << std::setw(2) << std::setfill('0') << (int)sig[i];
+    }
+    std::string strSigOut = ss.str();
+
+    std::string strHashType;
+    switch(hash_type)
+    {
+        case BLOCKSIGHASH_HEADER:
+            strHashType = "BLOCKSIGHASH_HEADER";
+            break;
+        case BLOCKSIGHASH_NO_SIGNATURE_AND_NONCE:
+            strHashType = "BLOCKSIGHASH_NO_SIGNATURE_AND_NONCE";
+            break;
+        default:
+            strHashType = "BLOCKSIGHASH_INVALID";
+    }
 
     CPubKey miner  = pindex->kMiner;
     CBitcoinAddress minerAddress(miner.GetID());    
@@ -90,6 +114,7 @@ void LogInvalidBlock(CBlock& block, const CBlockIndex* pindex, std::string reaso
         data.push_back(Pair("log2-work", (log(pindex->nChainWork.getdouble())/log(2.0))));
         data.push_back(Pair("date", DateTimeStrFormat("%Y-%m-%d %H:%M:%S", pindex->GetBlockTime())));
         data.push_back(Pair("block-signature", strSigOut));
+        data.push_back(Pair("block-hashtype", strHashType));
         data.push_back(Pair("reason", reason));
 
         const Value& json_data = data;
