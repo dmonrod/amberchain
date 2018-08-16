@@ -78,6 +78,8 @@ void LogInvalidBlock(CBlock& block, const CBlockIndex* pindex, std::string reaso
     }
     std::string strSigOut = ss.str();
 
+    std::string block_hash = pindex->GetBlockHash().ToString();
+
     std::string strHashType;
     switch(hash_type)
     {
@@ -85,7 +87,12 @@ void LogInvalidBlock(CBlock& block, const CBlockIndex* pindex, std::string reaso
             strHashType = "BLOCKSIGHASH_HEADER";
             break;
         case BLOCKSIGHASH_NO_SIGNATURE_AND_NONCE:
+            // use the modified hash as defined by https://www.multichain.com/developers/mining-block-signatures/
             strHashType = "BLOCKSIGHASH_NO_SIGNATURE_AND_NONCE";
+            block.nMerkleTreeType=MERKLETREE_NO_COINBASE_OP_RETURN;
+            block.hashMerkleRoot=block.BuildMerkleTree();
+            block.nNonce=0;
+            block_hash = block.GetHash().ToString();    
             break;
         default:
             strHashType = "BLOCKSIGHASH_INVALID";
@@ -94,7 +101,6 @@ void LogInvalidBlock(CBlock& block, const CBlockIndex* pindex, std::string reaso
     CPubKey miner  = pindex->kMiner;
     CBitcoinAddress minerAddress(miner.GetID());    
 
-    std::string block_hash = pindex->GetBlockHash().ToString();
     LogPrintf("LogInvalidBlock(): Block hash=%s\n", block_hash);
     LogPrintf("LogInvalidBlock(): Block miner=%s\n", minerAddress.ToString());
 
