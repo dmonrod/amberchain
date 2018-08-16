@@ -705,6 +705,45 @@ Value signmessage(const Array& params, bool fHelp)
     return EncodeBase64(&vchSig[0], vchSig.size());
 }
 
+Value verifyblocksignature(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() != 3)                                            // MCHN
+        throw runtime_error("Help message not found\n");
+
+    string strAddress = params[0].get_str();
+    string strSign = params[1].get_str();
+    string strHash = params[2].get_str();
+
+    CBitcoinAddress addr(strAddress);
+    if (!addr.IsValid())
+    {
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid address");            
+    }
+    else
+    {
+        CKeyID keyID;
+        if (!addr.GetKeyID(keyID))
+            throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Address does not refer to key");
+
+        CPubKey vchPubKey;
+        pwalletMain->GetPubKey(keyID, vchPubKey);
+
+        bool fInvalid = false;
+        vector<unsigned char> vchSigOut = DecodeBase64(strSign.c_str(), &fInvalid);
+
+        if (fInvalid)
+            throw JSONRPCError(RPC_DESERIALIZATION_ERROR, "Malformed base64 encoding");
+
+        uint256 hash(strHash);
+        if(!vchPubKey.Verify(hash,vchSigOut))
+        {
+            return false;
+        }                
+    }
+
+    return true;
+}
+
 Value getreceivedbyaddress(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() < 1 || params.size() > 2)                        // MCHN
