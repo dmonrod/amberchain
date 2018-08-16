@@ -222,6 +222,8 @@ extern json_spirit::Value writerecordtype(const json_spirit::Array& params, bool
 extern json_spirit::Value listservice(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value updateservice(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value delistservice(const json_spirit::Array& params, bool fHelp);
+extern json_spirit::Value purchasenonconsumableservice(const json_spirit::Array& params, bool fHelp);
+extern json_spirit::Value purchaseconsumableservice(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value logactivity(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value sharetxn(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value addservicequantity(const json_spirit::Array& params, bool fHelp);
