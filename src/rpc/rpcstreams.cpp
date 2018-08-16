@@ -2607,7 +2607,7 @@ Value listservice(const Array& params, bool fHelp)
         else
         {
             Array multisig_params;
-            multisig_params.push_back(3);
+            multisig_params.push_back("3");
             std::string multisig = getauthmultisigaddress(multisig_params, false).get_str();
             addresses.push_back(Pair(multisig, value_issue_params));
 
