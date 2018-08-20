@@ -2885,6 +2885,7 @@ Value removeservicequantity(const Array& params, bool fHelp)
 // param1 - from-address
 // param2 - Service TXID 
 // param3 - JSON details
+// param4 - 'true' to sign the rawtransaction, from-address must be a multisig address
 Value updatepurchasestatus(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() != 3)
@@ -2922,6 +2923,117 @@ Value updatepurchasestatus(const Array& params, bool fHelp)
     ext_params.push_back(addresses); // addresses
     ext_params.push_back(dataArray); // data array
 
+    if(params.size() == 4  && strcmp(params[3].get_str().c_str(),"true"))
+        ext_params.push_back("sign"); // sign the rawtx
+    
+     
     return createrawsendfrom(ext_params, fHelp);
+}
+
+
+// param0 - escrowaddress
+// param1 - Asset Issue TXID 
+// param2 - Quantity of asset
+// param3 - vendor-address
+// param4 - Amount to pay vendor
+Value completepurchase(const Array& params, bool fHelp)
+{   
+    if (fHelp || params.size() != 5)
+        throw runtime_error("Help message not found\n");
+
+    // Get info for burnaddress
+    Array getinfo_params;
+    Object info = getinfo(getinfo_params,false).get_obj();
+
+    Object addresses;
+    Object burn_data;
+    // Transfer 
+
+    // asset escrow -> burnaddress
+    // pushback(asset id, quantity)
+    burn_data.push_back(Pair(params[1].get_str(),atoi(params[2].get_str().c_str()))); 
+    addresses.push_back(Pair(info[9].value_.get_str(),burn_data)); //burnaddress
+
+    // money escrow -> vendor 
+    // pushback (vendor address, amount to pay vendor)
+    addresses.push_back(Pair(params[3].get_str(),atoi(params[4].get_str().c_str())));
+
+    Array ext_params;
+    ext_params.push_back(params[0]); // escrowaddress
+    ext_params.push_back(addresses); // address and issuemore data
+    return createrawsendfrom(ext_params, fHelp);
+    
+}
+
+// param0 - escrowaddress
+// param1 - Asset Issue TXID 
+// param2 - Quantity of asset
+// param3 - vendor-address
+// param4 - Amount to pay vendor
+// param5 - buyer-address
+// param6 - Amount to pay buyer
+Value refundpurchase(const Array& params, bool fHelp)
+{
+   
+    
+    if (fHelp || params.size() != 7)
+        throw runtime_error("Help message not found\n");
+    
+    Object addresses;
+    Object vendor_data;
+    // Transfer 
+
+    // asset escrow -> vendor
+    // pushback(asset id, quantity)
+    vendor_data.push_back(Pair(params[1].get_str(),atoi(params[2].get_str().c_str()))); //asset issuetxid, amount to burn 
+    addresses.push_back(Pair(params[3].get_str(),vendor_data));
+    // money escrow -> vendor 
+    // pushback (vendor address, amount to pay vendor)
+    addresses.push_back(Pair(params[3].get_str(),atoi(params[4].get_str().c_str())));
+
+    // money escrow -> buyer 
+    // pushback (buyer address, amount to pay buyer)
+    addresses.push_back(Pair(params[5].get_str(),atoi(params[6].get_str().c_str())));
+
+    Array ext_params;
+    ext_params.push_back(params[0]); // escrowaddress
+    ext_params.push_back(addresses); // address and issuemore data
+    return createrawsendfrom(ext_params, fHelp);
+    
+}
+
+// param0 - escrowaddress
+// param1 - Asset Issue TXID 
+// param2 - Quantity of asset
+// param3 - vendor-address
+// param4 - Amount to pay vendor
+Value expirepurchase(const Array& params, bool fHelp)
+{   
+    if (fHelp || params.size() != 5)
+        throw runtime_error("Help message not found\n");
+
+    // Get info for burnaddress
+    Array getinfo_params;
+    Object info = getinfo(getinfo_params,false).get_obj();
+    
+    Object addresses;
+    Object burn_data;
+    // Transfer 
+    // asset escrow -> burnaddress
+    // pushback(asset id, quantity)
+    burn_data.push_back(Pair(params[1].get_str(),atoi(params[2].get_str().c_str()))); //asset issuetxid, amount to burn 
+    addresses.push_back(Pair(info[9].value_.get_str(),burn_data));
+
+   
+    // Transfer 
+    // money escrow -> vendor 
+    // pushback (vendor address, amount to pay vendor)
+    addresses.push_back(Pair(params[3].get_str(),atoi(params[4].get_str().c_str())));
+
+    Array ext_params;
+    ext_params.push_back(params[0]); // escrowaddress
+    ext_params.push_back(addresses); // address and issuemore data
+    return createrawsendfrom(ext_params, fHelp);
+    
 }
 /* AMB END */

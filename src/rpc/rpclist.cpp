@@ -209,7 +209,9 @@ static const CRPCCommand vRPCCommands[] =
     { "wallet",             "addservicequantity",     &addservicequantity,     false,     false,      true },
     { "wallet",             "removeservicequantity",  &removeservicequantity,  false,     false,      true },
     { "wallet",             "updatepurchasestatus",   &updatepurchasestatus,   false,     false,      true },
-    
+    { "wallet",             "completepurchase",       &completepurchase,       false,     false,      true },
+    { "wallet",             "refundpurchase",         &refundpurchase,         false,     false,      true },
+    { "wallet",             "expirepurchase",         &expirepurchase,         false,     false,      true },
 /* AMB END */
 /* MCHN START */    
     { "wallet",             "getaddresses",           &getaddresses,           true,      false,      true },

@@ -4130,8 +4130,47 @@ void mc_InitRPCHelpMap17()
         "1. \"from-address\"                (string, required) Address, must be allowed to write to stream purchasestatus.\n"
         "2. \"txid\"                        (string, required) Transaction ID of the service being purchased.\n"
         "3. \"details\"                     (string, required) Details of the purchase in JSON format.\n"
+        "4. \"sign\"                        (string, optional) 'true' to sign the rawtransaction, from-address must be a multisig address\n"
         "\nExample:\n"
         + HelpExampleCli("updatepurchasestatus", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd 5d06edd7a0dbd0d83478c25fbf30cf3f07ceac45d9ced1591f6bd982fb878647 {'status':'pending','qty':200}")
+    ));
+    mapHelpStrings.insert(std::make_pair("completepurchase",
+        "completepurchase\n"
+        "\nWrites the purchase status to the purchase status stream.\n"
+        "\nArguments:\n"
+        "1. \"escrow-address\"               (string, required) Address of escrow\n"
+        "2. \"asset issue txid\"             (string, required) Transaction ID of the service being purchased.\n"
+        "3. \"quantity\"                     (string, optional) Quantity of Asset that was purchased\n"
+        "4. \"vendor-address\"               (string, required) Address of owner of the service or product\n"
+        "5. \"amount due vendor\"            (string, optional) Amount to transfer from escrow to vendor\n"
+        "\nExample:\n"
+        + HelpExampleCli("completepurchase", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd 5d06edd7a0dbd0d83478c25fbf30cf3f07ceac45d9ced1591f6bd982fb878647 {'status':'pending','qty':200}")
+    ));
+    mapHelpStrings.insert(std::make_pair("refundpurchase",
+        "refundpurchase\n"
+        "\nWrites the purchase status to the purchase status stream.\n"
+        "\nArguments:\n"
+        "1. \"escrow-address\"               (string, required) Address of escrow\n"
+        "2. \"asset issue txid\"             (string, required) Transaction ID of the service being purchased.\n"
+        "3. \"quantity\"                     (string, optional) Quantity of Asset that was purchased\n"
+        "4. \"vendor-address\"               (string, required) Address of owner of the service or product\n"
+        "5. \"amount due vendor\"            (string, optional) Amount to transfer from escrow to vendor\n"
+        "6. \"buyer-address\"                (string, optional) Address of the buyer.\n"
+        "7. \"amount due buyer\"            (string, optional) Amount to transfer from escrow to buyer\n"
+        "\nExample:\n"
+        + HelpExampleCli("refundpurchase", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd 5d06edd7a0dbd0d83478c25fbf30cf3f07ceac45d9ced1591f6bd982fb878647 {'status':'pending','qty':200}")
+    ));
+    mapHelpStrings.insert(std::make_pair("expirepurchase",
+        "expirepurchase\n"
+        "\nWrites the purchase status to the purchase status stream.\n"
+        "\nArguments:\n"
+        "1. \"escrow-address\"               (string, required) Address of escrow\n"
+        "2. \"asset issue txid\"             (string, required) Transaction ID of the service being purchased.\n"
+        "3. \"quantity\"                     (string, optional) Quantity of Asset that was purchased\n"
+        "4. \"vendor-address\"               (string, required) Address of owner of the service or product\n"
+        "5. \"amount due vendor\"            (string, optional) Amount to transfer from escrow to vendor\n"
+        "\nExample:\n"
+        + HelpExampleCli("expirepurchase", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd 5d06edd7a0dbd0d83478c25fbf30cf3f07ceac45d9ced1591f6bd982fb878647 {'status':'pending','qty':200}")
     ));
 }
 
