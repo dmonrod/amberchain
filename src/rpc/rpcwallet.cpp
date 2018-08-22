@@ -1165,7 +1165,7 @@ Value getauthmultisigaddress(const Array& params, bool fHelp)
         throw runtime_error("Help message not found\n");
 
     Array multisig_params;
-    Array auth_addresses;
+    Array auth_pubkeys;
     Array liststreamkeys_params;
     int sigsrequired = atoi(params[0].get_str().c_str());
 
@@ -1176,19 +1176,24 @@ Value getauthmultisigaddress(const Array& params, bool fHelp)
     // LOOP THROUGH THE STREAM ITEMS AND THEN EXTRACT ONLY THE ADDRESSES
     for(int i = 0; i < list_auth.get_array().size(); i++)
     {
-        auth_addresses.push_back(list_auth.get_array()[i].get_obj()[0].value_.get_str());
+        std::string auth_address = list_auth.get_array()[i].get_obj()[0].value_.get_str();
+
+        Array pubkey_params;
+        pubkey_params.push_back(auth_address);
+        std::string auth_pubkey = getpubkeyforaddress(pubkey_params, false).get_str();
+        auth_pubkeys.push_back(auth_pubkey);
     }
 
     // CREATE MULTISIG WALLET
-    if (auth_addresses.size() < sigsrequired)
+    if (auth_pubkeys.size() < sigsrequired)
     {
-        multisig_params.push_back(auth_addresses.size());
+        multisig_params.push_back(auth_pubkeys.size());
     }
     else
     {
         multisig_params.push_back(sigsrequired);
     }
-    multisig_params.push_back(auth_addresses);
+    multisig_params.push_back(auth_pubkeys);
 
     return addmultisigaddress(multisig_params, false).get_str();
 }
