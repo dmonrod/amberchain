@@ -2795,7 +2795,7 @@ Value purchasenonconsumableservice(const Array& params, bool fHelp)
 
     Object raw_data;
     raw_data.push_back(Pair("for", STREAM_PURCHASESTATUS));
-    raw_data.push_back(Pair("key", params[0]));
+    raw_data.push_back(Pair("key", "rootpurchases"));
     raw_data.push_back(Pair("data", hex_data));
 
     data_array.push_back(raw_data);
@@ -2879,7 +2879,7 @@ Value purchaseconsumableservice(const Array& params, bool fHelp)
 
     Object first_raw_data;
     first_raw_data.push_back(Pair("for", STREAM_PURCHASESTATUS));
-    first_raw_data.push_back(Pair("key", params[0]));
+    first_raw_data.push_back(Pair("key", "rootpurchases"));
     first_raw_data.push_back(Pair("data", first_hex_data));
 
     first_data_array.push_back(first_raw_data);
