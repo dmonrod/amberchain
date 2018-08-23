@@ -3106,7 +3106,7 @@ Value updatepurchasestatus(const Array& params, bool fHelp)
 
 Value completepurchase(const Array& params, bool fHelp)
 {   
-    if (fHelp || params.size() != 5)
+    if (fHelp || params.size() != 6)
         throw runtime_error("Help message not found\n");
 
     // Get info for burnaddress
@@ -3162,7 +3162,7 @@ Value refundpurchase(const Array& params, bool fHelp)
 {
    
     
-    if (fHelp || params.size() != 7)
+    if (fHelp || params.size() != 8)
         throw runtime_error("Help message not found\n");
     
     Object addresses;
@@ -3213,7 +3213,7 @@ Value refundpurchase(const Array& params, bool fHelp)
 // param5 - Json Details
 Value expirepurchase(const Array& params, bool fHelp)
 {   
-    if (fHelp || params.size() != 5)
+    if (fHelp || params.size() != 6)
         throw runtime_error("Help message not found\n");
 
     // Get info for burnaddress
