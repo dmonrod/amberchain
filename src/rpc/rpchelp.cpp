@@ -4128,7 +4128,7 @@ void mc_InitRPCHelpMap17()
         "\nWrites the purchase status to the purchase status stream.\n"
         "\nArguments:\n"
         "1. \"from-address\"                (string, required) Address, must be allowed to write to stream purchasestatus.\n"
-        "2. \"txid\"                        (string, required) Transaction ID of the service being purchased.\n"
+        "2. \"txid\"                        (string, required) Transaction ID of the root purchase if root purchase \"rootpurchase\".\n"
         "3. \"details\"                     (string, required) Details of the purchase in JSON format.\n"
         "4. \"sign\"                        (string, optional) 'true' to sign the rawtransaction, from-address must be a multisig address\n"
         "\nExample:\n"
@@ -4171,6 +4171,7 @@ void mc_InitRPCHelpMap17()
         "5. \"amount due vendor\"            (string, optional) Amount to transfer from escrow to vendor\n"
         "\nExample:\n"
         + HelpExampleCli("expirepurchase", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd 5d06edd7a0dbd0d83478c25fbf30cf3f07ceac45d9ced1591f6bd982fb878647 {'status':'pending','qty':200}")
+    ));
     mapHelpStrings.insert(std::make_pair("verifyblocksignature",
         "verifyblocksignature\n"
         "\nVerify a block signature.\n"
