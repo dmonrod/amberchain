@@ -4171,6 +4171,15 @@ void mc_InitRPCHelpMap17()
         "5. \"amount due vendor\"            (string, optional) Amount to transfer from escrow to vendor\n"
         "\nExample:\n"
         + HelpExampleCli("expirepurchase", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd 5d06edd7a0dbd0d83478c25fbf30cf3f07ceac45d9ced1591f6bd982fb878647 {'status':'pending','qty':200}")
+    mapHelpStrings.insert(std::make_pair("verifyblocksignature",
+        "verifyblocksignature\n"
+        "\nVerify a block signature.\n"
+        "\nArguments:\n"
+        "1. \"miner-address\"               (string, required) Miner address.\n"
+        "2. \"signature\"                   (string, required) Signature, base64 encoded.\n"
+        "3. \"hash\"                        (string, required) Block hash, computed as described in https://www.multichain.com/developers/mining-block-signatures/.\n"
+        "\nExample:\n"
+        + HelpExampleCli("verifyblocksignature", "1AN7chsRuUyEtQGgZEDJs3eNBrAapzY2Ab MEUCIQCJmaZFR+cIFwQTRdo5mQtd4FugOtcxFkdqhtnAD3u/NgIgbLB5PiSwDbYuiAT6ShNWYsn6yZCGifty9qXrqmu+QCY= 97a137570e1dbcc01ab49b6ffec18442be6e67144f181824110e2ad96ecb92f1")
     ));
 }
 

@@ -14,10 +14,12 @@ chainName="$1"
 ./amberchain-cli $chainName create stream customcategories          true
 ./amberchain-cli $chainName create stream updatecustomcategories    true
 ./amberchain-cli $chainName create stream sharedtxns                true
+./amberchain-cli $chainName create stream purchasestatus            true
+./amberchain-cli $chainName create stream addresskeys               true
+./amberchain-cli $chainName create stream records                   true
 
 ./amberchain-cli $chainName create stream authoritynodes            false
 ./amberchain-cli $chainName create stream transactionparams         false
-./amberchain-cli $chainName create stream records                   false
 ./amberchain-cli $chainName create stream annotatedrecords          false
 ./amberchain-cli $chainName create stream badges                    false
 ./amberchain-cli $chainName create stream issuedbadges              false
@@ -30,4 +32,4 @@ chainName="$1"
 ./amberchain-cli $chainName create stream services                  false
 ./amberchain-cli $chainName create stream activities                false
 ./amberchain-cli $chainName create stream processissuebadgerequests false
-./amberchain-cli $chainName create stream purchasestatus            false
+./amberchain-cli $chainName create stream purchaseoffertransactions false

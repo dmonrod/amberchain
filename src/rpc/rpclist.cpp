@@ -143,6 +143,9 @@ static const CRPCCommand vRPCCommands[] =
 #ifdef ENABLE_WALLET
     /* Wallet */
     { "wallet",             "addmultisigaddress",     &addmultisigaddress,     true,      false,      true },
+    /* AMB START */
+    { "wallet",             "getauthmultisigaddress", &getauthmultisigaddress, true,      false,      true },
+    /* AMB END */
     { "wallet",             "backupwallet",           &backupwallet,           true,      false,      true },
     { "wallet",             "dumpprivkey",            &dumpprivkey,            true,      false,      true },
     { "wallet",             "dumpwallet",             &dumpwallet,             true,      false,      true },
@@ -204,6 +207,9 @@ static const CRPCCommand vRPCCommands[] =
     { "wallet",             "listservice",            &listservice,            false,     false,      true },
     { "wallet",             "updateservice",          &updateservice,          false,     false,      true },
     { "wallet",             "delistservice",          &delistservice,          false,     false,      true },
+    { "wallet",             "purchasenonconsumableservice", &purchasenonconsumableservice,  false,  false,  true },
+    { "wallet",             "purchaseconsumableservice",    &purchaseconsumableservice,     false,  false,  true },
+    { "wallet",             "delistservice",          &delistservice,          false,     false,      true },
     { "wallet",             "logactivity",            &logactivity,            false,     false,      true },
     { "wallet",             "sharetxn",               &sharetxn,               false,     false,      true },
     { "wallet",             "addservicequantity",     &addservicequantity,     false,     false,      true },
@@ -212,6 +218,8 @@ static const CRPCCommand vRPCCommands[] =
     { "wallet",             "completepurchase",       &completepurchase,       false,     false,      true },
     { "wallet",             "refundpurchase",         &refundpurchase,         false,     false,      true },
     { "wallet",             "expirepurchase",         &expirepurchase,         false,     false,      true },
+    { "wallet",             "verifyblocksignature",   &verifyblocksignature,   false,     false,      true },
+    
 /* AMB END */
 /* MCHN START */    
     { "wallet",             "getaddresses",           &getaddresses,           true,      false,      true },

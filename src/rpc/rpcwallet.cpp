@@ -1,8 +1,8 @@
 // Copyright (c) 2010 Satoshi Nakamoto
 // Copyright (c) 2014-2016 The Bitcoin Core developers
 // Original code was distributed under the MIT software license.
-// Copyright (c) 2014-2017 Coin Sciences Ltd
-// MultiChain code distributed under the GPLv3 license, see COPYING file.
+// Copyright (c) 2018 Apsaras Group Ltd
+// Amberchain code distributed under the GPLv3 license, see COPYING file.
 
 #include "structs/amount.h"
 #include "structs/base58.h"
@@ -38,6 +38,9 @@ using namespace json_spirit;
 
 /* MCHN END */
 
+/* AMB START */
+#include "amber/utils.h"
+/* AMB END */
 
 int64_t nWalletUnlockTime;
 static CCriticalSection cs_nWalletUnlockTime;
@@ -702,6 +705,45 @@ Value signmessage(const Array& params, bool fHelp)
     return EncodeBase64(&vchSig[0], vchSig.size());
 }
 
+Value verifyblocksignature(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() != 3)                                            // MCHN
+        throw runtime_error("Help message not found\n");
+
+    string strAddress = params[0].get_str();
+    string strSign = params[1].get_str();
+    string strHash = params[2].get_str();
+
+    CBitcoinAddress addr(strAddress);
+    if (!addr.IsValid())
+    {
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid address");            
+    }
+    else
+    {
+        CKeyID keyID;
+        if (!addr.GetKeyID(keyID))
+            throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Address does not refer to key");
+
+        CPubKey vchPubKey;
+        pwalletMain->GetPubKey(keyID, vchPubKey);
+
+        bool fInvalid = false;
+        vector<unsigned char> vchSigOut = DecodeBase64(strSign.c_str(), &fInvalid);
+
+        if (fInvalid)
+            throw JSONRPCError(RPC_DESERIALIZATION_ERROR, "Malformed base64 encoding");
+
+        uint256 hash(strHash);
+        if(!vchPubKey.Verify(hash,vchSigOut))
+        {
+            return false;
+        }                
+    }
+
+    return true;
+}
+
 Value getreceivedbyaddress(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() < 1 || params.size() > 2)                        // MCHN
@@ -1115,6 +1157,47 @@ Value addmultisigaddress(const Array& params, bool fHelp)
     return CBitcoinAddress(innerID).ToString();
 }
 
+/*AMB START*/
+// param1 - sigsrequired
+Value getauthmultisigaddress(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() < 1)
+        throw runtime_error("Help message not found\n");
+
+    Array multisig_params;
+    Array auth_pubkeys;
+    Array liststreamkeys_params;
+    int sigsrequired = atoi(params[0].get_str().c_str());
+
+    // GET ALL AUTHORITY ENTRIES IN STREAM OF AUTHORITY NODES
+    liststreamkeys_params.push_back(STREAM_AUTHNODES);
+    Value list_auth = liststreamkeys(liststreamkeys_params, false);
+
+    // LOOP THROUGH THE STREAM ITEMS AND THEN EXTRACT ONLY THE ADDRESSES
+    for(int i = 0; i < list_auth.get_array().size(); i++)
+    {
+        std::string auth_address = list_auth.get_array()[i].get_obj()[0].value_.get_str();
+
+        Array pubkey_params;
+        pubkey_params.push_back(auth_address);
+        std::string auth_pubkey = getpubkeyforaddress(pubkey_params, false).get_str();
+        auth_pubkeys.push_back(auth_pubkey);
+    }
+
+    // CREATE MULTISIG WALLET
+    if (auth_pubkeys.size() < sigsrequired)
+    {
+        multisig_params.push_back(auth_pubkeys.size());
+    }
+    else
+    {
+        multisig_params.push_back(sigsrequired);
+    }
+    multisig_params.push_back(auth_pubkeys);
+
+    return addmultisigaddress(multisig_params, false).get_str();
+}
+/*AMB END*/
 
 struct tallyitem
 {
