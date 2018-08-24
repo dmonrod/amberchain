@@ -4136,7 +4136,7 @@ void mc_InitRPCHelpMap17()
     ));
     mapHelpStrings.insert(std::make_pair("completepurchase",
         "completepurchase\n"
-        "\nWrites the purchase status to the purchase status stream.\n"
+        "\nWrites the purchase status to stream, sends asset to burn address, and sends payment to vendor.\n"
         "\nArguments:\n"
         "1. \"escrow-address\"               (string, required) Address of escrow\n"
         "2. \"asset issue txid\"             (string, required) Transaction ID of the service being purchased.\n"
@@ -4148,7 +4148,7 @@ void mc_InitRPCHelpMap17()
     ));
     mapHelpStrings.insert(std::make_pair("refundpurchase",
         "refundpurchase\n"
-        "\nWrites the purchase status to the purchase status stream.\n"
+        "\n Refunds buyer, sends percent of amount due to seller, sends asset back to buyer, and writes purchase status to stream.\n"
         "\nArguments:\n"
         "1. \"escrow-address\"               (string, required) Address of escrow\n"
         "2. \"asset issue txid\"             (string, required) Transaction ID of the service being purchased.\n"
@@ -4162,7 +4162,7 @@ void mc_InitRPCHelpMap17()
     ));
     mapHelpStrings.insert(std::make_pair("expirepurchase",
         "expirepurchase\n"
-        "\nWrites the purchase status to the purchase status stream.\n"
+        "\n Expires the purchase, burns asset, and sends default asset to vendor.\n"
         "\nArguments:\n"
         "1. \"escrow-address\"               (string, required) Address of escrow\n"
         "2. \"asset issue txid\"             (string, required) Transaction ID of the service being purchased.\n"
