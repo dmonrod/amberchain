@@ -2813,8 +2813,7 @@ Value purchasenonconsumableservice(const Array& params, bool fHelp)
 // param3 - name of service
 // param4 - total amount
 // param5 - quantity
-// param6 - exchange offer
-// param7 - escrow address (optional)
+// param6 - escrow address (optional)
 Value purchaseconsumableservice(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() < 4)
@@ -2848,7 +2847,7 @@ Value purchaseconsumableservice(const Array& params, bool fHelp)
 
     if (is_escrow)
     {
-        std::string escrow_address = params[6].get_str();
+        std::string escrow_address = params[5].get_str();
         funds_receiver = escrow_address;
         assets_receiver = escrow_address;
         purchase_data.push_back(Pair("status", "in escrow"));
@@ -2865,7 +2864,6 @@ Value purchaseconsumableservice(const Array& params, bool fHelp)
     Object data_object = data.get_obj();
     std::string asset_holder = data_object[2].value_.get_str();
 
-    //1st part: generate raw tx for writing to purchase info stream
     Object first_addresses;
     Array first_data_array;
     Array first_ext_params;
@@ -2888,33 +2886,7 @@ Value purchaseconsumableservice(const Array& params, bool fHelp)
     first_ext_params.push_back(first_addresses);
     first_ext_params.push_back(first_data_array);
 
-    std::string first_rawtx = createrawsendfrom(first_ext_params, fHelp).get_str();
-
-    //2nd part: write to purchaseoffertransactions stream the exchange offer - offering the amount from 
-
-    Array offer_transaction_params;
-    Object offer_transaction_data;
-
-    offer_transaction_data.push_back(Pair("raw-exchange-offer", params[5]));
-    offer_transaction_data.push_back(Pair("service-name", params[5]));
-    offer_transaction_data.push_back(Pair("quantity", params[4]));
-    offer_transaction_data.push_back(Pair("asset-holder", asset_holder));
-    offer_transaction_data.push_back(Pair("asset-receiver", assets_receiver));
-    offer_transaction_data.push_back(Pair("funds-receiver", funds_receiver));
-    offer_transaction_data.push_back(Pair("amount", params[3]));
-    offer_transaction_data.push_back(Pair("buyer-address", params[0]));
-
-    const Value& json_offer_transaction_data = offer_transaction_data;
-    const std::string string_offer_transaction_data = write_string(json_offer_transaction_data, false);
-
-    std::string hex_offer_transaction_data = HexStr(string_offer_transaction_data.begin(), string_offer_transaction_data.end());
-
-    offer_transaction_params.push_back(STREAM_PURCHASEOFFERTRANSACTIONS);
-    offer_transaction_params.push_back(publisher);
-    offer_transaction_params.push_back(hex_data);
-
-    publish(offer_transaction_params, false);
-    return first_rawtx;
+    return createrawsendfrom(first_ext_params, fHelp).get_str();
 }
 
 // param1 - from-address
