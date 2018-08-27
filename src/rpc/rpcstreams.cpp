@@ -3030,12 +3030,13 @@ Value removeservicequantity(const Array& params, bool fHelp)
     
 }
 
-// param1 - from-address
-// param2 - Service TXID 
-// param3 - JSON details
+// param0 - from-address
+// param1 - ROOT TXID 
+// param2 - JSON details
+// param3 - 'true' to sign the rawtransaction, from-address must be a multisig address
 Value updatepurchasestatus(const Array& params, bool fHelp)
 {
-    if (fHelp || params.size() != 3)
+    if (fHelp || params.size() < 3)
         throw runtime_error("Help message not found\n");
 
     Object content;
@@ -3046,13 +3047,187 @@ Value updatepurchasestatus(const Array& params, bool fHelp)
     
     std::string hex_data = HexStr(string_data.begin(), string_data.end());
 
+
+    Object raw_data;
+    raw_data.push_back(Pair("for", STREAM_PURCHASESTATUS));
+    raw_data.push_back(Pair("key", params[1])); // Root TXID
+    raw_data.push_back(Pair("data", hex_data));
+
     Array ext_params;
 
-    ext_params.push_back(params[0]); //stream of txid
-    ext_params.push_back(STREAM_PURCHASESTATUS); // stream
-    ext_params.push_back(params[1]); //stream of txid
-    ext_params.push_back(hex_data); // data hex
+    Object addresses;
+    Array dataArray;
+    dataArray.push_back(raw_data);
+    ext_params.push_back(params[0]); // from-address
+    ext_params.push_back(addresses); // addresses
+    ext_params.push_back(dataArray); // data array
 
-    return publishfrom(ext_params, fHelp);
+    if(params.size() == 4  && strcmp(params[3].get_str().c_str(),"true"))
+        ext_params.push_back("sign"); // sign the rawtx
+    
+     
+    return createrawsendfrom(ext_params, fHelp);
+}
+
+// param0 - escrowaddress
+// param1 - ROOT TXID  
+// param2 - Quantity of asset
+// param3 - vendor-address
+// param4 - Amount to pay vendor
+// paaram5 - JSON Details
+
+Value completepurchase(const Array& params, bool fHelp)
+{   
+    if (fHelp || params.size() != 6)
+        throw runtime_error("Help message not found\n");
+
+    // Get info for burnaddress
+    Array getinfo_params;
+    Object info = getinfo(getinfo_params,false).get_obj();
+
+    Object addresses;
+    // UNCOMMENT when ready
+    // Object burn_data;
+    // // Transfer 
+
+    // // asset escrow -> burnaddress
+    // // pushback(asset id, quantity)
+    // burn_data.push_back(Pair(params[1].get_str(),atoi(params[2].get_str().c_str()))); 
+    // addresses.push_back(Pair(info[9].value_.get_str(),burn_data)); //burnaddress
+
+    // // money escrow -> vendor 
+    // // pushback (vendor address, amount to pay vendor)
+    // addresses.push_back(Pair(params[3].get_str(),atoi(params[4].get_str().c_str())));
+
+    // Convert data to Hex
+    Object content;
+    content.push_back(Pair("data",params[5]));
+    const Value& json_data = content;
+    const std::string string_data = write_string(json_data, false);
+    std::string hex_data = HexStr(string_data.begin(), string_data.end());
+
+    // Publish to Stream
+    Object raw_data;
+    raw_data.push_back(Pair("for", STREAM_PURCHASESTATUS));
+    raw_data.push_back(Pair("key", params[1])); // Root TXID
+    raw_data.push_back(Pair("data", hex_data));
+    Array dataArray;
+    dataArray.push_back(raw_data);
+    
+    Array ext_params;
+    ext_params.push_back(params[0]); // escrowaddress
+    ext_params.push_back(addresses); // address and issuemore data
+    ext_params.push_back(dataArray); // data array
+    return createrawsendfrom(ext_params, fHelp);
+    
+}
+
+// param0 - escrowaddress
+// param1 - Asset Issue TXID 
+// param2 - Quantity of asset
+// param3 - vendor-address
+// param4 - Amount to pay vendor
+// param5 - buyer-address
+// param6 - Amount to pay buyer
+// param7 - Json Details
+Value refundpurchase(const Array& params, bool fHelp)
+{
+   
+    
+    if (fHelp || params.size() != 8)
+        throw runtime_error("Help message not found\n");
+    
+    Object addresses;
+    Object vendor_data;
+    // Transfer 
+    // Uncomment
+    // // asset escrow -> vendor
+    // // pushback(asset id, quantity)
+    // vendor_data.push_back(Pair(params[1].get_str(),atoi(params[2].get_str().c_str()))); //asset issuetxid, amount to burn 
+    // addresses.push_back(Pair(params[3].get_str(),vendor_data));
+    // // money escrow -> vendor 
+    // // pushback (vendor address, amount to pay vendor)
+    // addresses.push_back(Pair(params[3].get_str(),atoi(params[4].get_str().c_str())));
+
+    // // money escrow -> buyer 
+    // // pushback (buyer address, amount to pay buyer)
+    // addresses.push_back(Pair(params[5].get_str(),atoi(params[6].get_str().c_str())));
+
+
+    // Convert data to Hex
+    Object content;
+    content.push_back(Pair("data",params[7]));
+    const Value& json_data = content;
+    const std::string string_data = write_string(json_data, false);
+    std::string hex_data = HexStr(string_data.begin(), string_data.end());
+
+    // Publish to Stream
+    Object raw_data;
+    raw_data.push_back(Pair("for", STREAM_PURCHASESTATUS));
+    raw_data.push_back(Pair("key", params[1])); // ROOT TXID
+    raw_data.push_back(Pair("data", hex_data));
+    Array dataArray;
+    dataArray.push_back(raw_data);
+    
+    Array ext_params;
+    ext_params.push_back(params[0]); // escrowaddress
+    ext_params.push_back(addresses); // address and issuemore data
+    ext_params.push_back(dataArray); // data array
+    return createrawsendfrom(ext_params, fHelp);
+    
+}
+
+// param0 - escrowaddress
+// param1 - Asset Issue TXID 
+// param2 - Quantity of asset
+// param3 - vendor-address
+// param4 - Amount to pay vendor
+// param5 - Json Details
+Value expirepurchase(const Array& params, bool fHelp)
+{   
+    if (fHelp || params.size() != 6)
+        throw runtime_error("Help message not found\n");
+
+    // Get info for burnaddress
+    Array getinfo_params;
+    Object info = getinfo(getinfo_params,false).get_obj();
+   
+    Object addresses;
+    // UNCOMMENT 
+    // Object burn_data;
+    // // Transfer 
+    // // asset escrow -> burnaddress
+    // // pushback(asset id, quantity)
+    // burn_data.push_back(Pair(params[1].get_str(),atoi(params[2].get_str().c_str()))); //asset issuetxid, amount to burn 
+    // addresses.push_back(Pair(info[9].value_.get_str(),burn_data));
+
+   
+    // // Transfer 
+    // // money escrow -> vendor 
+    // // pushback (vendor address, amount to pay vendor)
+    // addresses.push_back(Pair(params[3].get_str(),atoi(params[4].get_str().c_str())));
+
+
+    // Convert data to Hex
+    Object content;
+    content.push_back(Pair("data",params[7]));
+    const Value& json_data = content;
+    const std::string string_data = write_string(json_data, false);
+    std::string hex_data = HexStr(string_data.begin(), string_data.end());
+
+    // Publish to Stream
+    Object raw_data;
+    raw_data.push_back(Pair("for", STREAM_PURCHASESTATUS));
+    raw_data.push_back(Pair("key", params[1])); // ROOT TXID
+    raw_data.push_back(Pair("data", hex_data));
+    Array dataArray;
+    dataArray.push_back(raw_data);
+    
+    Array ext_params;
+    ext_params.push_back(params[0]); // escrowaddress
+    ext_params.push_back(addresses); // address and issuemore data
+    ext_params.push_back(dataArray); // data array
+    return createrawsendfrom(ext_params, fHelp);
+    
 }
 /* AMB END */
