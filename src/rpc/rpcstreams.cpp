@@ -3114,18 +3114,18 @@ Value completepurchase(const Array& params, bool fHelp)
     Object info = getinfo(getinfo_params,false).get_obj();
 
     Object addresses;
-    // UNCOMMENT when ready
-    // Object burn_data;
-    // // Transfer 
+    
+    Object burn_data;
+    // Transfer 
 
-    // // asset escrow -> burnaddress
-    // // pushback(asset id, quantity)
-    // burn_data.push_back(Pair(params[1].get_str(),atoi(params[2].get_str().c_str()))); 
-    // addresses.push_back(Pair(info[9].value_.get_str(),burn_data)); //burnaddress
+    // asset escrow -> burnaddress
+    // pushback(asset id, quantity)
+    burn_data.push_back(Pair(params[1].get_str(),atoi(params[2].get_str().c_str()))); 
+    addresses.push_back(Pair(info[9].value_.get_str(),burn_data)); //burnaddress
 
-    // // money escrow -> vendor 
-    // // pushback (vendor address, amount to pay vendor)
-    // addresses.push_back(Pair(params[3].get_str(),atoi(params[4].get_str().c_str())));
+    // money escrow -> vendor 
+    // pushback (vendor address, amount to pay vendor)
+    addresses.push_back(Pair(params[3].get_str(),atoi(params[4].get_str().c_str())));
 
     // Convert data to Hex
     Object content;
@@ -3167,19 +3167,18 @@ Value refundpurchase(const Array& params, bool fHelp)
     
     Object addresses;
     Object vendor_data;
-    // Transfer 
-    // Uncomment
-    // // asset escrow -> vendor
-    // // pushback(asset id, quantity)
-    // vendor_data.push_back(Pair(params[1].get_str(),atoi(params[2].get_str().c_str()))); //asset issuetxid, amount to burn 
-    // addresses.push_back(Pair(params[3].get_str(),vendor_data));
-    // // money escrow -> vendor 
-    // // pushback (vendor address, amount to pay vendor)
-    // addresses.push_back(Pair(params[3].get_str(),atoi(params[4].get_str().c_str())));
 
-    // // money escrow -> buyer 
-    // // pushback (buyer address, amount to pay buyer)
-    // addresses.push_back(Pair(params[5].get_str(),atoi(params[6].get_str().c_str())));
+    // asset escrow -> vendor
+    // pushback(asset id, quantity)
+    vendor_data.push_back(Pair(params[1].get_str(),atoi(params[2].get_str().c_str()))); //asset issuetxid, amount to burn 
+    addresses.push_back(Pair(params[3].get_str(),vendor_data));
+    // money escrow -> vendor 
+    // pushback (vendor address, amount to pay vendor)
+    addresses.push_back(Pair(params[3].get_str(),atoi(params[4].get_str().c_str())));
+
+    // money escrow -> buyer 
+    // pushback (buyer address, amount to pay buyer)
+    addresses.push_back(Pair(params[5].get_str(),atoi(params[6].get_str().c_str())));
 
 
     // Convert data to Hex
@@ -3221,19 +3220,19 @@ Value expirepurchase(const Array& params, bool fHelp)
     Object info = getinfo(getinfo_params,false).get_obj();
    
     Object addresses;
-    // UNCOMMENT 
-    // Object burn_data;
-    // // Transfer 
-    // // asset escrow -> burnaddress
-    // // pushback(asset id, quantity)
-    // burn_data.push_back(Pair(params[1].get_str(),atoi(params[2].get_str().c_str()))); //asset issuetxid, amount to burn 
-    // addresses.push_back(Pair(info[9].value_.get_str(),burn_data));
+
+    Object burn_data;
+    // Transfer 
+    // asset escrow -> burnaddress
+    // pushback(asset id, quantity)
+    burn_data.push_back(Pair(params[1].get_str(),atoi(params[2].get_str().c_str()))); //asset issuetxid, amount to burn 
+    addresses.push_back(Pair(info[9].value_.get_str(),burn_data));
 
    
-    // // Transfer 
-    // // money escrow -> vendor 
-    // // pushback (vendor address, amount to pay vendor)
-    // addresses.push_back(Pair(params[3].get_str(),atoi(params[4].get_str().c_str())));
+    // Transfer 
+    // money escrow -> vendor 
+    // pushback (vendor address, amount to pay vendor)
+    addresses.push_back(Pair(params[3].get_str(),atoi(params[4].get_str().c_str())));
 
 
     // Convert data to Hex
