@@ -2765,18 +2765,23 @@ Value purchasenonconsumableservice(const Array& params, bool fHelp)
     std::string assets_receiver = burn_address;
 
     Object purchase_data;
-    purchase_data.push_back(Pair("service-name", params[2]));
-    purchase_data.push_back(Pair("service-txid", params[1]));
+    purchase_data.push_back(Pair("servicetxid", params[1]));
+    purchase_data.push_back(Pair("servicename", params[2]));
+
+    purchase_data.push_back(Pair("selleraddress", publisher));
+    purchase_data.push_back(Pair("buyeraddress", params[0]));
 
     if (is_escrow)
     {
         std::string escrow_address = params[4].get_str();
         funds_receiver = escrow_address;
         assets_receiver = escrow_address;
+        purchase_data.push_back(Pair("multisigaddress", escrow_address));
         purchase_data.push_back(Pair("status", "in escrow"));
     }
     else
     {
+        purchase_data.push_back(Pair("multisigaddress", "none"));
         purchase_data.push_back(Pair("status", "completed"));
     }
 
@@ -2786,7 +2791,7 @@ Value purchasenonconsumableservice(const Array& params, bool fHelp)
 
     addresses.push_back(Pair(funds_receiver, params[3]));
 
-    purchase_data.push_back(Pair("to-address", funds_receiver));
+    purchase_data.push_back(Pair("toaddress", funds_receiver));
 
     const Value& json_data = purchase_data;
     const std::string string_data = write_string(json_data, false);
@@ -2845,15 +2850,20 @@ Value purchaseconsumableservice(const Array& params, bool fHelp)
     purchase_data.push_back(Pair("service-name", params[2]));
     purchase_data.push_back(Pair("service-txid", params[1]));
 
+    purchase_data.push_back(Pair("selleraddress", publisher));
+    purchase_data.push_back(Pair("buyeraddress", params[0]));
+
     if (is_escrow)
     {
         std::string escrow_address = params[5].get_str();
         funds_receiver = escrow_address;
         assets_receiver = escrow_address;
+        purchase_data.push_back(Pair("multisigaddress", escrow_address));
         purchase_data.push_back(Pair("status", "in escrow"));
     }
     else
     {
+        purchase_data.push_back(Pair("multisigaddress", "none"));
         purchase_data.push_back(Pair("status", "completed"));
     }
 
@@ -2868,7 +2878,7 @@ Value purchaseconsumableservice(const Array& params, bool fHelp)
     Array first_data_array;
     Array first_ext_params;
 
-    purchase_data.push_back(Pair("to-address", funds_receiver));
+    purchase_data.push_back(Pair("toaddress", funds_receiver));
 
     const Value& first_json_data = purchase_data;
     const std::string first_string_data = write_string(first_json_data, false);
