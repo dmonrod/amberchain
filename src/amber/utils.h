@@ -69,7 +69,6 @@ struct StreamConsts
         mine_streams.push_back(STREAM_ISSUEDBADGES);
         mine_streams.push_back(STREAM_ISSUEBADGEREQUESTS);
         mine_streams.push_back(STREAM_PROCESSISSUEBADGEREQUESTS);
-        mine_streams.push_back(STREAM_PURCHASEOFFERTRANSACTIONS);
 		m["mine"] = mine_streams;		
         return m;
     }
