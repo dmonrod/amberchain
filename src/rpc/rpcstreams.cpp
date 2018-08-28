@@ -3230,4 +3230,27 @@ Value expirepurchase(const Array& params, bool fHelp)
     return createrawsendfrom(ext_params, fHelp);
     
 }
+
+// param1 - multisigaddress
+// param2 - data (pubkeys of signatories and sigsrequired)
+Value writemultisigdetails(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() < 2)
+        throw runtime_error("Help message not found\n");
+
+    Array ext_params;
+    Object data = params[1].get_obj();
+
+    const Value& json_data = data;
+    const std::string string_data = write_string(json_data, false);
+
+    std::string hex_data = HexStr(string_data.begin(), string_data.end());
+
+    ext_params.push_back(STREAM_MULTISIGS); // stream for multisig details
+    ext_params.push_back(params[0]); // multisigaddress as key
+    ext_params.push_back(hex_data);
+
+    return publish(ext_params, fHelp);
+
+}
 /* AMB END */

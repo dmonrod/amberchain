@@ -1184,20 +1184,39 @@ Value getauthmultisigaddress(const Array& params, bool fHelp)
         auth_pubkeys.push_back(auth_pubkey);
     }
 
+    int truesigsrequired = sigsrequired;
     // CREATE MULTISIG WALLET
     if (auth_pubkeys.size() < sigsrequired)
     {
-        multisig_params.push_back(auth_pubkeys.size());
+        truesigsrequired = auth_pubkeys.size();
     }
-    else
-    {
-        multisig_params.push_back(sigsrequired);
-    }
+
+    multisig_params.push_back(truesigsrequired);
     multisig_params.push_back(auth_pubkeys);
 
-    return addmultisigaddress(multisig_params, false).get_str();
+    std::string multisig = addmultisigaddress(multisig_params, false).get_str();
+
+    Array stream_params;
+    stream_params.push_back(STREAM_MULTISIGS);
+    stream_params.push_back(multisig);
+
+    Array results = liststreamkeyitems(stream_params, false).get_array();
+
+    if (results.size() == 0)
+    {
+        Object data;
+        data.push_back(Pair("pubkeys", auth_pubkeys));
+        data.push_back(Pair("sigsrequired", truesigsrequired));
+
+        Array publish_params;
+        publish_params.push_back(multisig);
+        publish_params.push_back(data);
+
+        writemultisigdetails(publish_params, false);
+    }
+
+    return multisig;
 }
-/*AMB END*/
 
 struct tallyitem
 {
