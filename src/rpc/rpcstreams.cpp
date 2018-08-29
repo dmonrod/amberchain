@@ -3011,17 +3011,18 @@ Value addservicequantity(const Array& params, bool fHelp)
     
 }
 
-// param1 - from-address (asset holder)
+// param1 - service creator
+// param2 - asset holder
 // param2 - Asset Issue TXID
 // param3 - Quantity to remove from the service
 Value removeservicequantity(const Array& params, bool fHelp)
 {
-    if (fHelp || params.size() != 3)
+    if (fHelp || params.size() != 4)
         throw runtime_error("Help message not found\n");
 
     Array pub_params;
     pub_params.push_back(STREAM_SERVICES);
-    pub_params.push_back(params[1]);
+    pub_params.push_back(params[2]);
     Object result = getstreamitem(pub_params, false).get_obj();
 
     if (result.size() > 0) {
@@ -3035,11 +3036,11 @@ Value removeservicequantity(const Array& params, bool fHelp)
     
     Object address;
     Object address_data;
-    address_data.push_back(Pair(params[1].get_str(),atoi(params[2].get_str().c_str()))); //asset issuetxid, amount to burn 
+    address_data.push_back(Pair(params[2].get_str(),atoi(params[3].get_str().c_str()))); //asset issuetxid, amount to burn
     address.push_back(Pair(info[9].value_.get_str(),address_data));
 
     Array ext_params;
-    ext_params.push_back(params[0]); // from-address
+    ext_params.push_back(params[1]); // from-address
     ext_params.push_back(address); // address and issuemore data
     return createrawsendfrom(ext_params, fHelp);
     
