@@ -2974,16 +2974,17 @@ Value sharetxn(const Array& params, bool fHelp)
 }
 
 // param1 - from-address
-// param2 - Asset Issue TXID 
-// param3 - Quantity to add from the service
+// param2 - to-address (asset holder)
+// param3 - Asset Issue TXID
+// param4 - Quantity to add from the service
 Value addservicequantity(const Array& params, bool fHelp)
 {
-    if (fHelp || params.size() != 3)
+    if (fHelp || params.size() != 4)
         throw runtime_error("Help message not found\n");
 
     Array pub_params;
     pub_params.push_back(STREAM_SERVICES);
-    pub_params.push_back(params[1]);
+    pub_params.push_back(params[2]);
     Object result = getstreamitem(pub_params, false).get_obj();
   
     if (result.size() > 0) {
@@ -2997,10 +2998,10 @@ Value addservicequantity(const Array& params, bool fHelp)
     Object address_data;
     Object issuemore_data;
 
-    issuemore_data.push_back(Pair("asset", params[1]));
-    issuemore_data.push_back(Pair("raw", atoi(params[2].get_str().c_str())));
+    issuemore_data.push_back(Pair("asset", params[2]));
+    issuemore_data.push_back(Pair("raw", atoi(params[3].get_str().c_str())));
     address_data.push_back(Pair("issuemore",issuemore_data));
-    address.push_back(Pair(params[0].get_str(),address_data));
+    address.push_back(Pair(params[1].get_str(),address_data)); // issue the asset to the asset holder
  
     Array ext_params;
     ext_params.push_back(params[0]); // from-address
@@ -3010,8 +3011,8 @@ Value addservicequantity(const Array& params, bool fHelp)
     
 }
 
-// param1 - from-address
-// param2 - Asset Issue TXID 
+// param1 - from-address (asset holder)
+// param2 - Asset Issue TXID
 // param3 - Quantity to remove from the service
 Value removeservicequantity(const Array& params, bool fHelp)
 {
