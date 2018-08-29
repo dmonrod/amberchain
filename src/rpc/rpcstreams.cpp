@@ -2770,6 +2770,8 @@ Value purchasenonconsumableservice(const Array& params, bool fHelp)
 
     purchase_data.push_back(Pair("selleraddress", publisher));
     purchase_data.push_back(Pair("buyeraddress", params[0]));
+    purchase_data.push_back(Pair("amount", params[3]));
+    purchase_data.push_back(Pair("quantity", "0"));
 
     if (is_escrow)
     {
@@ -2847,11 +2849,13 @@ Value purchaseconsumableservice(const Array& params, bool fHelp)
     std::string assets_receiver = burn_address;
 
     Object purchase_data;
-    purchase_data.push_back(Pair("service-name", params[2]));
     purchase_data.push_back(Pair("service-txid", params[1]));
+    purchase_data.push_back(Pair("service-name", params[2]));
 
     purchase_data.push_back(Pair("selleraddress", publisher));
-    purchase_data.push_back(Pair("buyeraddress", params[0]));
+    purchase_data.push_back(Pair("buyeraddress", params[3]));
+    purchase_data.push_back(Pair("amount", params[3]));
+    purchase_data.push_back(Pair("quantity", params[4]));
 
     if (is_escrow)
     {
