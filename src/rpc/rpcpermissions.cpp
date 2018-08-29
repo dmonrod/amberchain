@@ -496,6 +496,34 @@ bool haspermission(std::string address, std::string permission)
         return true;
     return false;
 }
+
+bool multisighaspermission(std::string address, std::string permission)
+{
+    Array params;
+    params.push_back(address);
+    Object results = validateaddress(params, false).get_obj();
+    BOOST_FOREACH(const Pair& d, results) 
+    {
+        if (d.name_ == "addresses") {
+            Array multisigAddresses = d.value_.get_array();
+
+            BOOST_FOREACH(const Value subAddress, multisigAddresses) 
+            {
+                // if at least one of the multisigs has the required permission, we return true
+                if (haspermission(subAddress.get_str(), permission)) 
+                {
+                    return true;
+                }
+            }
+            // no need to check any other pairs
+            break;
+        }
+    }
+
+    return false;
+}
+
+
 /* AMB END */
 
 Value grantcmd(const Array& params, bool fHelp)
