@@ -4498,7 +4498,7 @@ bool AcceptBlock(CBlock& block, CValidationState& state, CBlockIndex** ppindex, 
                             }
                         }
                     }
-                    if (adminFee > 0)
+                    if (txFee > 0 && adminFee > 0)
                     {
                         double expectedRatio = (1-adminFeeRatio)/adminFeeRatio;
                         double actualRatio = txFee/adminFee;

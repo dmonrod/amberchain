@@ -555,7 +555,7 @@ bool txsenderisminer(const CTransaction& tx)
         {
             std::string address = CBitcoinAddress(addr).ToString();
             // all input addresses must be miners or multisig with miner participation
-            if (!haspermission(address, "mine") || !multisighaspermission(address, "mine")) 
+            if (!haspermission(address, "mine") && !multisighaspermission(address, "mine")) 
             {
                 return false;
             }

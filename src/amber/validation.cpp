@@ -184,6 +184,7 @@ vector<CBitcoinAddress> scriptPubKey2Addresses(const CScript& scriptPubKey)
     return addressesOut;
 }
 
+// TODO: Merge this with txsenderisminer
 bool IsMinerTx(const CTransaction& tx) 
 {
     if (tx.IsCoinBase()) 
@@ -202,14 +203,14 @@ bool IsMinerTx(const CTransaction& tx)
         CScript scriptPubKey = prevTx.vout[txin.prevout.n].scriptPubKey;
         BOOST_FOREACH(const CBitcoinAddress address, scriptPubKey2Addresses(scriptPubKey))
         {
-            if (haspermission(address.ToString(), "mine") || multisighaspermission(address.ToString(), "mine")) {
-                // if at least one from address is a miner
-                return true;
+            if (!haspermission(address.ToString(), "mine") && !multisighaspermission(address.ToString(), "mine")) {
+                // all from address must be miners or a multisig with one of the signers is a miner
+                return false;
             }
         }
     }
 
-    return false;
+    return true;
 }
 
 /* AMB END */
