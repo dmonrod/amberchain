@@ -2764,6 +2764,7 @@ Value purchasenonconsumableservice(const Array& params, bool fHelp)
     std::string funds_receiver = publisher;
     std::string assets_receiver = burn_address;
 
+    Object final_purchase_data;
     Object purchase_data;
     purchase_data.push_back(Pair("servicetxid", params[1]));
     purchase_data.push_back(Pair("servicename", params[2]));
@@ -2794,8 +2795,9 @@ Value purchasenonconsumableservice(const Array& params, bool fHelp)
     addresses.push_back(Pair(funds_receiver, params[3]));
 
     purchase_data.push_back(Pair("toaddress", funds_receiver));
+    final_purchase_data.push_back(Pair("data", purchase_data));
 
-    const Value& json_data = purchase_data;
+    const Value& json_data = final_purchase_data;
     const std::string string_data = write_string(json_data, false);
 
     std::string hex_data = HexStr(string_data.begin(), string_data.end());
@@ -2848,6 +2850,7 @@ Value purchaseconsumableservice(const Array& params, bool fHelp)
     std::string funds_receiver = publisher;
     std::string assets_receiver = burn_address;
 
+    Object final_purchase_data;
     Object purchase_data;
     purchase_data.push_back(Pair("service-txid", params[1]));
     purchase_data.push_back(Pair("service-name", params[2]));
@@ -2883,8 +2886,9 @@ Value purchaseconsumableservice(const Array& params, bool fHelp)
     Array first_ext_params;
 
     purchase_data.push_back(Pair("toaddress", funds_receiver));
+    final_purchase_data.push_back(Pair("data", purchase_data));
 
-    const Value& first_json_data = purchase_data;
+    const Value& first_json_data = final_purchase_data;
     const std::string first_string_data = write_string(first_json_data, false);
 
     std::string first_hex_data = HexStr(first_string_data.begin(), first_string_data.end());
