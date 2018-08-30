@@ -3112,9 +3112,11 @@ Value completepurchase(const Array& params, bool fHelp)
 
     // asset escrow -> burnaddress
     // pushback(asset id, quantity)
-    burn_data.push_back(Pair(params[1].get_str(),atoi(params[2].get_str().c_str()))); 
-    addresses.push_back(Pair(info[9].value_.get_str(),burn_data)); //burnaddress
-
+    if (atoi(params[2].get_str().c_str()) != 0 ){
+        burn_data.push_back(Pair(params[1].get_str(),atoi(params[2].get_str().c_str()))); 
+        addresses.push_back(Pair(info[9].value_.get_str(),burn_data)); //burnaddress
+    }
+    
     // money escrow -> vendor 
     // pushback (vendor address, amount to pay vendor)
     addresses.push_back(Pair(params[3].get_str(),atoi(params[4].get_str().c_str())));
@@ -3162,8 +3164,12 @@ Value refundpurchase(const Array& params, bool fHelp)
 
     // asset escrow -> vendor
     // pushback(asset id, quantity)
-    vendor_data.push_back(Pair(params[1].get_str(),atoi(params[2].get_str().c_str()))); //asset issuetxid, amount to burn 
-    addresses.push_back(Pair(params[3].get_str(),vendor_data));
+    if (atoi(params[2].get_str().c_str()) != 0 ){
+        vendor_data.push_back(Pair(params[1].get_str(),atoi(params[2].get_str().c_str()))); //asset issuetxid, amount to burn 
+        addresses.push_back(Pair(params[3].get_str(),vendor_data));
+    }
+       
+
     // money escrow -> vendor 
     // pushback (vendor address, amount to pay vendor)
     addresses.push_back(Pair(params[3].get_str(),atoi(params[4].get_str().c_str())));
@@ -3217,9 +3223,10 @@ Value expirepurchase(const Array& params, bool fHelp)
     // Transfer 
     // asset escrow -> burnaddress
     // pushback(asset id, quantity)
-    burn_data.push_back(Pair(params[1].get_str(),atoi(params[2].get_str().c_str()))); //asset issuetxid, amount to burn 
-    addresses.push_back(Pair(info[9].value_.get_str(),burn_data));
-
+    if (atoi(params[2].get_str().c_str()) != 0 ){
+        burn_data.push_back(Pair(params[1].get_str(),atoi(params[2].get_str().c_str()))); //asset issuetxid, amount to burn 
+        addresses.push_back(Pair(info[9].value_.get_str(),burn_data));
+    }
    
     // Transfer 
     // money escrow -> vendor 
