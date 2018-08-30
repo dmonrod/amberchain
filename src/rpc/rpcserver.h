@@ -11,6 +11,7 @@
 #include "structs/amount.h"
 #include "rpc/rpcprotocol.h"
 #include "structs/uint256.h"
+#include "primitives/transaction.h"
 
 #include <list>
 #include <map>
@@ -23,6 +24,7 @@
 
 class CBlockIndex;
 class CNetAddr;
+class CTransaction;
 
 class AcceptedConnection
 {
@@ -203,6 +205,7 @@ extern json_spirit::Value revokerecord(const json_spirit::Array& params, bool fH
 extern json_spirit::Value writerecord(const json_spirit::Array& params, bool fHelp);
 extern bool haspermission(std::string address, std::string permission);
 extern bool multisighaspermission(std::string address, std::string permission);
+extern bool txsenderisminer(const CTransaction& tx);
 extern bool doesassetexist(std::string assetname);
 extern json_spirit::Value annotatebadge(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value createbadge(const json_spirit::Array& params, bool fHelp);
