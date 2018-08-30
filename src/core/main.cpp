@@ -4502,7 +4502,11 @@ bool AcceptBlock(CBlock& block, CValidationState& state, CBlockIndex** ppindex, 
                     {
                         double expectedRatio = (1-adminFeeRatio)/adminFeeRatio;
                         double actualRatio = txFee/adminFee;
-                        if (expectedRatio != actualRatio) {
+                        // 0.00000001 -> 8 decimal places = AMTC precision
+                        if (fabs(expectedRatio - actualRatio) > 0.00000001) {
+                            LogPrintf("adminFee: %s\n", adminFee);
+                            LogPrintf("expectedRatio: %s\n", expectedRatio);
+                            LogPrintf("actualRatio: %s\n", actualRatio);
                             LogInvalidBlock(block, pindex, "AcceptBlock(): FAIL. Ratio of admin fee to tx fee is incorrect.\n");
                             return false;
                         }

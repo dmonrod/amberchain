@@ -200,10 +200,9 @@ bool IsMinerTx(const CTransaction& tx)
             return false;
         }
         CScript scriptPubKey = prevTx.vout[txin.prevout.n].scriptPubKey;
-        LogPrintf("IsMinerTx(): scriptPubKey: %s\n", scriptPubKey.ToString());
         BOOST_FOREACH(const CBitcoinAddress address, scriptPubKey2Addresses(scriptPubKey))
         {
-            if (haspermission(address.ToString(), "mine")) {
+            if (haspermission(address.ToString(), "mine") || multisighaspermission(address.ToString(), "mine")) {
                 // if at least one from address is a miner
                 return true;
             }
