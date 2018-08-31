@@ -1,5 +1,3 @@
-/* AMB START */
-
 // Amberchain code distributed under the GPLv3 license, see COPYING file.
 
 #include <sstream>
@@ -213,5 +211,13 @@ bool IsMinerTx(const CTransaction& tx)
     return true;
 }
 
-/* AMB END */
-
+// custom transaction validation entry point, for future customisation support
+bool custom_accept_transacton(const CTransaction& tx, 
+                              const CCoinsViewCache &inputs,
+                              int offset,
+                              bool accept,
+                              string& reason,
+                              uint32_t *replay)
+{
+    return true;
+}
