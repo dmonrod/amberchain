@@ -3119,7 +3119,7 @@ Value completepurchase(const Array& params, bool fHelp)
     
     // money escrow -> vendor 
     // pushback (vendor address, amount to pay vendor)
-    addresses.push_back(Pair(params[3].get_str(),atoi(params[4].get_str().c_str())));
+    addresses.push_back(Pair(params[3].get_str(),atof(params[4].get_str().c_str())));
 
     // Convert data to Hex
     Object content;
@@ -3172,11 +3172,11 @@ Value refundpurchase(const Array& params, bool fHelp)
 
     // money escrow -> vendor 
     // pushback (vendor address, amount to pay vendor)
-    addresses.push_back(Pair(params[3].get_str(),atoi(params[4].get_str().c_str())));
+    addresses.push_back(Pair(params[3].get_str(),atof(params[4].get_str().c_str())));
 
     // money escrow -> buyer 
     // pushback (buyer address, amount to pay buyer)
-    addresses.push_back(Pair(params[5].get_str(),atoi(params[6].get_str().c_str())));
+    addresses.push_back(Pair(params[5].get_str(),atof(params[6].get_str().c_str())));
 
 
     // Convert data to Hex
@@ -3231,15 +3231,16 @@ Value expirepurchase(const Array& params, bool fHelp)
     // Transfer 
     // money escrow -> vendor 
     // pushback (vendor address, amount to pay vendor)
-    addresses.push_back(Pair(params[3].get_str(),atoi(params[4].get_str().c_str())));
+    addresses.push_back(Pair(params[3].get_str(),atof(params[4].get_str().c_str())));
 
 
     // Convert data to Hex
     Object content;
-    content.push_back(Pair("data",params[7]));
+    content.push_back(Pair("data",params[5]));
     const Value& json_data = content;
     const std::string string_data = write_string(json_data, false);
     std::string hex_data = HexStr(string_data.begin(), string_data.end());
+
 
     // Publish to Stream
     Object raw_data;
