@@ -64,7 +64,7 @@ static const mc_OneMultichainParam MultichainParamArray[] =
                    "anyonecanissue","",
                    "Anyone can create new streams."},
     { "anyonecanissue"                    , "anyone-can-issue"                  ,
-                   MC_PRM_BOOLEAN | MC_PRM_USER | MC_PRM_CLONE                  , -1,         0,          0,         0, 0.0, 10001, 0, "-mc-anyonecanissue",
+                   MC_PRM_BOOLEAN | MC_PRM_USER | MC_PRM_CLONE                  , -1,         1,          0,         0, 0.0, 10001, 0, "-mc-anyonecanissue",
                    "anyonecanmine","",
                    "Anyone can issue new native assets."},
     { "anyonecanmine"                     , "anyone-can-mine"                   ,

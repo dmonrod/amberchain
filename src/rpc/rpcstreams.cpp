@@ -2826,12 +2826,12 @@ Value purchasenonconsumableservice(const Array& params, bool fHelp)
 // param6 - escrow address (optional)
 Value purchaseconsumableservice(const Array& params, bool fHelp)
 {
-    if (fHelp || params.size() < 4)
+    if (fHelp || params.size() < 5)
         throw runtime_error("Help message not found\n");
 
     bool is_escrow = false;
 
-    if (params.size() > 6)
+    if (params.size() > 5)
     {
         is_escrow = true;
     }
@@ -2857,7 +2857,7 @@ Value purchaseconsumableservice(const Array& params, bool fHelp)
     purchase_data.push_back(Pair("service-name", params[2]));
 
     purchase_data.push_back(Pair("selleraddress", publisher));
-    purchase_data.push_back(Pair("buyeraddress", params[3]));
+    purchase_data.push_back(Pair("buyeraddress", params[0]));
     purchase_data.push_back(Pair("amount", params[3]));
     purchase_data.push_back(Pair("quantity", params[4]));
 
@@ -2874,13 +2874,6 @@ Value purchaseconsumableservice(const Array& params, bool fHelp)
         purchase_data.push_back(Pair("multisigaddress", "none"));
         purchase_data.push_back(Pair("status", "completed"));
     }
-
-    std::string hex_data = service_result[2].value_.get_str();
-    std::string json_data = HexToStr(hex_data);
-    Value data;
-    read_string(json_data, data);
-    Object data_object = data.get_obj();
-    std::string asset_holder = data_object[2].value_.get_str();
 
     Object first_addresses;
     Array first_data_array;
