@@ -68,7 +68,6 @@ struct StreamConsts
         mine_streams.push_back(STREAM_BADGEISSUERS);
         mine_streams.push_back(STREAM_ANNOTATEDBADGES);
         mine_streams.push_back(STREAM_ISSUEDBADGES);
-        mine_streams.push_back(STREAM_ISSUEBADGEREQUESTS);
         mine_streams.push_back(STREAM_PROCESSISSUEBADGEREQUESTS);
 		m["mine"] = mine_streams;
         return m;

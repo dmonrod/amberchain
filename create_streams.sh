@@ -19,13 +19,13 @@ chainName="$1"
 ./amberchain-cli $chainName create stream records                   true
 ./amberchain-cli $chainName create stream multisigs                 true
 ./amberchain-cli $chainName create stream services                  true
+./amberchain-cli $chainName create stream issuebadgerequests        true
 
 ./amberchain-cli $chainName create stream authoritynodes            false
 ./amberchain-cli $chainName create stream transactionparams         false
 ./amberchain-cli $chainName create stream annotatedrecords          false
 ./amberchain-cli $chainName create stream badges                    false
 ./amberchain-cli $chainName create stream issuedbadges              false
-./amberchain-cli $chainName create stream issuebadgerequests        false
 ./amberchain-cli $chainName create stream badgeissuers              false
 ./amberchain-cli $chainName create stream annotatedbadges           false
 ./amberchain-cli $chainName create stream categories                false
