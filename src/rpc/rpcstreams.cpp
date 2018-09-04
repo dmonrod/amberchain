@@ -9,7 +9,8 @@
 #include "rpc/rpcwallet.h"
 #include "amber/utils.h"
 #include "amber/strencodings.h"
-
+#include "amber/streamutils.h"
+#include <sstream>
 #include "utils/util.h"
 
 Value createupgradefromcmd(const Array& params, bool fHelp);
@@ -3112,7 +3113,7 @@ Value completepurchase(const Array& params, bool fHelp)
     
     // money escrow -> vendor 
     // pushback (vendor address, amount to pay vendor)
-    addresses.push_back(Pair(params[3].get_str(),atoi(params[4].get_str().c_str())));
+    addresses.push_back(Pair(params[3].get_str(),atof(params[4].get_str().c_str())));
 
     // Convert data to Hex
     Object content;
@@ -3133,7 +3134,12 @@ Value completepurchase(const Array& params, bool fHelp)
     ext_params.push_back(params[0]); // escrowaddress
     ext_params.push_back(addresses); // address and issuemore data
     ext_params.push_back(dataArray); // data array
-    return createrawsendfrom(ext_params, fHelp);
+    std::string rawtx = createrawsendfrom(ext_params, fHelp).get_str();
+
+    Array ext_params2;
+    ext_params2.push_back(rawtx); // rawtx
+    ext_params2.push_back(params[5]); // buyer address
+    return appendrawsendfrom(ext_params2, fHelp);
     
 }
 
@@ -3147,8 +3153,6 @@ Value completepurchase(const Array& params, bool fHelp)
 // param7 - Json Details
 Value refundpurchase(const Array& params, bool fHelp)
 {
-   
-    
     if (fHelp || params.size() != 8)
         throw runtime_error("Help message not found\n");
     
@@ -3165,11 +3169,11 @@ Value refundpurchase(const Array& params, bool fHelp)
 
     // money escrow -> vendor 
     // pushback (vendor address, amount to pay vendor)
-    addresses.push_back(Pair(params[3].get_str(),atoi(params[4].get_str().c_str())));
+    addresses.push_back(Pair(params[3].get_str(),atof(params[4].get_str().c_str())));
 
     // money escrow -> buyer 
     // pushback (buyer address, amount to pay buyer)
-    addresses.push_back(Pair(params[5].get_str(),atoi(params[6].get_str().c_str())));
+    addresses.push_back(Pair(params[5].get_str(),atof(params[6].get_str().c_str())));
 
 
     // Convert data to Hex
@@ -3191,8 +3195,83 @@ Value refundpurchase(const Array& params, bool fHelp)
     ext_params.push_back(params[0]); // escrowaddress
     ext_params.push_back(addresses); // address and issuemore data
     ext_params.push_back(dataArray); // data array
-    return createrawsendfrom(ext_params, fHelp);
+    std::string rawtx = createrawsendfrom(ext_params, fHelp).get_str();
+
+    Array ext_params2;
+    ext_params2.push_back(rawtx); // rawtx
+    ext_params2.push_back(params[5]); // buyer address
+    return appendrawsendfrom(ext_params2, fHelp);
+
+}
+
+// param0 - rawtx
+// param1 - from-address
+Value appendrawsendfrom(const Array& params, bool fHelp)
+{   
+    if (fHelp || params.size() < 2 || params.size() > 5) 
+        throw runtime_error("Help message not found\n");    
+
+    Array addressesArray;
+    addressesArray.push_back(params[1]);
+
+    Array listunspent_params;
+    listunspent_params.push_back(1); // min confirmations
+    listunspent_params.push_back(9999999); // max confirmations
+    listunspent_params.push_back(addressesArray); // addresses array
+    Array unspentItems = listunspent(listunspent_params, fHelp).get_array();
+
+    std::string rawtx = params[0].get_str();
+    unsigned int nSize = rawtx.length();
+
+    // estimate the needed tx fee
+    unsigned int minRelayTxFee = StreamUtils::GetMinimumRelayTxFee();
+    unsigned int estFee = minRelayTxFee*nSize / 1000;
     
+    // look for an unspent item that covers the needed fee
+    BOOST_FOREACH(const Value& data, unspentItems)
+    {
+        Object results = data.get_obj();
+        std::string txid;
+        int vout = 0;
+        bool amountFound = false;
+        BOOST_FOREACH(const Pair& d, results) 
+        {
+            if (d.name_ == "txid") {
+                txid = d.value_.get_str();
+            }
+            if (d.name_ == "vout") {
+                vout = d.value_.get_int();
+            }
+            if (d.name_ == "amount") {
+                // convert amount to satoshis
+                unsigned int satoshis = d.value_.get_real()*10000000; // multiplier is fixed for amberchain
+                if (satoshis >= estFee) {
+                    amountFound = true;
+                }
+            }
+        }        
+        if (amountFound) {
+            // build a raw transaction from the chosen txid and vout
+            Array transactionsArr;
+            Object transactionObj;
+            transactionObj.push_back(Pair("txid", txid));
+            transactionObj.push_back(Pair("vout", vout));
+            transactionsArr.push_back(transactionObj);
+            
+            Array ext_params;
+            ext_params.push_back(rawtx); // rawtx
+            ext_params.push_back(transactionsArr); // UTXOs
+            std::string appendedrawtx = appendrawtransaction(ext_params, fHelp).get_str();
+
+            Array ext_params2;
+            ext_params2.push_back(appendedrawtx); // rawtx
+            ext_params2.push_back(params[1]); // change address
+            return appendrawchange(ext_params2, fHelp);
+        }
+    }    
+    
+    // we can't find any valid UTXOs to spend, return error
+    throw JSONRPCError(RPC_INVALID_PARAMETER, "Insufficient funds.");
 }
 
 // param0 - escrowaddress
@@ -3224,15 +3303,16 @@ Value expirepurchase(const Array& params, bool fHelp)
     // Transfer 
     // money escrow -> vendor 
     // pushback (vendor address, amount to pay vendor)
-    addresses.push_back(Pair(params[3].get_str(),atoi(params[4].get_str().c_str())));
+    addresses.push_back(Pair(params[3].get_str(),atof(params[4].get_str().c_str())));
 
 
     // Convert data to Hex
     Object content;
-    content.push_back(Pair("data",params[7]));
+    content.push_back(Pair("data",params[5]));
     const Value& json_data = content;
     const std::string string_data = write_string(json_data, false);
     std::string hex_data = HexStr(string_data.begin(), string_data.end());
+
 
     // Publish to Stream
     Object raw_data;
