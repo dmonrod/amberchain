@@ -3095,11 +3095,12 @@ Value updatepurchasestatus(const Array& params, bool fHelp)
 // param2 - Quantity of asset
 // param3 - vendor-address
 // param4 - Amount to pay vendor
-// paaram5 - JSON Details
+// param5 - buyeraddress
+// param6 - JSON Details
 
 Value completepurchase(const Array& params, bool fHelp)
 {   
-    if (fHelp || params.size() != 6)
+    if (fHelp || params.size() != 7)
         throw runtime_error("Help message not found\n");
 
     // Get info for burnaddress
@@ -3124,7 +3125,7 @@ Value completepurchase(const Array& params, bool fHelp)
 
     // Convert data to Hex
     Object content;
-    content.push_back(Pair("data",params[5]));
+    content.push_back(Pair("data",params[6]));
     const Value& json_data = content;
     const std::string string_data = write_string(json_data, false);
     std::string hex_data = HexStr(string_data.begin(), string_data.end());
