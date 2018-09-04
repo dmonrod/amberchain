@@ -63,7 +63,7 @@ struct StreamConsts
 		m["admin"] = admin_streams;
 
 		vector<string> mine_streams;
-        mine_streams.push_back(STREAM_RECORDS);
+        mine_streams.push_back(STREAM_SERVICES);
         mine_streams.push_back(STREAM_BADGES);
         mine_streams.push_back(STREAM_BADGEISSUERS);
         mine_streams.push_back(STREAM_ANNOTATEDBADGES);

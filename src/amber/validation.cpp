@@ -1,5 +1,3 @@
-/* AMB START */
-
 // Amberchain code distributed under the GPLv3 license, see COPYING file.
 
 #include <sstream>
@@ -184,6 +182,7 @@ vector<CBitcoinAddress> scriptPubKey2Addresses(const CScript& scriptPubKey)
     return addressesOut;
 }
 
+// TODO: Merge this with txsenderisminer
 bool IsMinerTx(const CTransaction& tx) 
 {
     if (tx.IsCoinBase()) 
@@ -200,18 +199,25 @@ bool IsMinerTx(const CTransaction& tx)
             return false;
         }
         CScript scriptPubKey = prevTx.vout[txin.prevout.n].scriptPubKey;
-        LogPrintf("IsMinerTx(): scriptPubKey: %s\n", scriptPubKey.ToString());
         BOOST_FOREACH(const CBitcoinAddress address, scriptPubKey2Addresses(scriptPubKey))
         {
-            if (haspermission(address.ToString(), "mine")) {
-                // if at least one from address is a miner
-                return true;
+            if (!haspermission(address.ToString(), "mine") && !multisighaspermission(address.ToString(), "mine")) {
+                // all from address must be miners or a multisig with one of the signers is a miner
+                return false;
             }
         }
     }
 
-    return false;
+    return true;
 }
 
-/* AMB END */
-
+// custom transaction validation entry point, for future customisation support
+bool custom_accept_transacton(const CTransaction& tx, 
+                              const CCoinsViewCache &inputs,
+                              int offset,
+                              bool accept,
+                              string& reason,
+                              uint32_t *replay)
+{
+    return true;
+}

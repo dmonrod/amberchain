@@ -18,6 +18,7 @@ chainName="$1"
 ./amberchain-cli $chainName create stream addresskeys               true
 ./amberchain-cli $chainName create stream records                   true
 ./amberchain-cli $chainName create stream multisigs                 true
+./amberchain-cli $chainName create stream services                  true
 
 ./amberchain-cli $chainName create stream authoritynodes            false
 ./amberchain-cli $chainName create stream transactionparams         false
@@ -30,6 +31,5 @@ chainName="$1"
 ./amberchain-cli $chainName create stream categories                false
 ./amberchain-cli $chainName create stream updatecategories          false
 ./amberchain-cli $chainName create stream recordtypes               false
-./amberchain-cli $chainName create stream services                  false
 ./amberchain-cli $chainName create stream activities                false
 ./amberchain-cli $chainName create stream processissuebadgerequests false

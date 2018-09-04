@@ -1434,7 +1434,8 @@ bool AcceptToMemoryPool(CTxMemPool& pool, CValidationState &state, const CTransa
 
 
         // Require that free transactions have sufficient priority to be mined in the next block.
-        if (GetBoolArg("-relaypriority", true) && nFees < ::minRelayTxFee.GetFee(nSize) && !AllowFree(view.GetPriority(tx, chainActive.Height() + 1))) {
+        // AMB: Ignore this check if the sender is a miner
+        if (GetBoolArg("-relaypriority", true) && !txsenderisminer(tx) && nFees < ::minRelayTxFee.GetFee(nSize) && !AllowFree(view.GetPriority(tx, chainActive.Height() + 1))) {
             return state.DoS(0, false, REJECT_INSUFFICIENTFEE, "insufficient priority");
         }
 
@@ -4497,11 +4498,15 @@ bool AcceptBlock(CBlock& block, CValidationState& state, CBlockIndex** ppindex, 
                             }
                         }
                     }
-                    if (adminFee > 0)
+                    if (txFee > 0 && adminFee > 0)
                     {
                         double expectedRatio = (1-adminFeeRatio)/adminFeeRatio;
                         double actualRatio = txFee/adminFee;
-                        if (expectedRatio != actualRatio) {
+                        // 0.00000001 -> 8 decimal places = AMTC precision
+                        if (fabs(expectedRatio - actualRatio) > 0.00000001) {
+                            LogPrintf("adminFee: %s\n", adminFee);
+                            LogPrintf("expectedRatio: %s\n", expectedRatio);
+                            LogPrintf("actualRatio: %s\n", actualRatio);
                             LogInvalidBlock(block, pindex, "AcceptBlock(): FAIL. Ratio of admin fee to tx fee is incorrect.\n");
                             return false;
                         }

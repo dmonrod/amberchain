@@ -1808,9 +1808,8 @@ CAmount BuildAssetTransaction(CWallet *lpWallet,                                
         }
         
         /* AMB START */
-        CBitcoinAddress address(change_address);
-        // also check multisig addresses
-        if (haspermission(address.ToString(), "mine") || multisighaspermission(address.ToString(), "mine")) {
+        if (txsenderisminer(wtxNew))
+        {
             nFeeNeeded = 0;
             nFeeRet = 0;
         }

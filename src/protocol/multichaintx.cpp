@@ -8,6 +8,7 @@
 #include "utils/util.h"
 #include "multichain/multichain.h"
 #include "structs/base58.h"
+#include "amber/validation.h"
 
 using namespace std;
 
@@ -1878,7 +1879,8 @@ bool AcceptMultiChainTransaction(const CTransaction& tx,
         }
     }
     
-    
+    fReject=!custom_accept_transacton(tx,inputs,offset,accept,reason,replay);
+
 exitlbl:
                                     
     if(accept)

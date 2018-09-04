@@ -523,6 +523,47 @@ bool multisighaspermission(std::string address, std::string permission)
     return false;
 }
 
+// check that all of the tx inputs must be either from miners or from multisig where at least 1 signatory is a miner
+bool txsenderisminer(const CTransaction& tx)
+{
+    BOOST_FOREACH(const CTxIn& txin, tx.vin)
+    {
+        uint256 prevTxHash = txin.prevout.hash;
+        int64_t prevTxOut = (int64_t)txin.prevout.n;
+
+        // Get the previous transaction 
+        CTransaction tx;
+        uint256 hashBlock = 0; 
+        if (!GetTransaction(prevTxHash, tx, hashBlock, true))
+        {   
+            LogPrintf("\ntxsenderisminer: nCould not find prevtx with id %s", prevTxHash.GetHex());
+            return false;
+        }
+        
+        // get the specific vout
+        const CTxOut& txout = tx.vout[prevTxOut];
+        const CScript& scriptPubKey = txout.scriptPubKey;
+        txnouttype type;
+        vector<CTxDestination> addresses;
+        int nRequired;
+        if (!ExtractDestinations(scriptPubKey, type, addresses, nRequired)) {
+            LogPrintf("\ntxsenderisminer: nCould not get input addresses for prevtx with id %s", prevTxHash.GetHex());
+            return false;
+        }
+
+        BOOST_FOREACH(const CTxDestination& addr, addresses)
+        {
+            std::string address = CBitcoinAddress(addr).ToString();
+            // all input addresses must be miners or multisig with miner participation
+            if (!haspermission(address, "mine") && !multisighaspermission(address, "mine")) 
+            {
+                return false;
+            }
+        }
+
+    }
+    return true;    
+}
 
 /* AMB END */
 
