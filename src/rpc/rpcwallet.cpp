@@ -1158,6 +1158,7 @@ Value addmultisigaddress(const Array& params, bool fHelp)
 }
 
 /*AMB START*/
+// primary use: asset holder when service creator is not an authority node
 // param1 - sigsrequired
 Value getauthmultisigaddress(const Array& params, bool fHelp)
 {
@@ -1217,6 +1218,74 @@ Value getauthmultisigaddress(const Array& params, bool fHelp)
 
     return multisig;
 }
+
+// primary use: escrow address for the buyer when service has an expirationperiod
+// param1 - sigsrequired
+// param2 - buyer address
+Value getescrowmultisigaddress(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() < 2)
+        throw runtime_error("Help message not found\n");
+
+    Array multisig_params;
+    Array pubkeys;
+    Array liststreamkeys_params;
+    int sigsrequired = atoi(params[0].get_str().c_str());
+
+    // GET ALL AUTHORITY ENTRIES IN STREAM OF AUTHORITY NODES
+    liststreamkeys_params.push_back(STREAM_AUTHNODES);
+    Value list_auth = liststreamkeys(liststreamkeys_params, false);
+
+    // LOOP THROUGH THE STREAM ITEMS AND THEN EXTRACT ONLY THE ADDRESSES
+    for(int i = 0; i < list_auth.get_array().size(); i++)
+    {
+        std::string auth_address = list_auth.get_array()[i].get_obj()[0].value_.get_str();
+
+        Array pubkey_params;
+        pubkey_params.push_back(auth_address);
+        std::string auth_pubkey = getpubkeyforaddress(pubkey_params, false).get_str();
+        pubkeys.push_back(auth_pubkey);
+    }
+
+    Array buyer_pubkey_params;
+    buyer_pubkey_params.push_back(params[1]);
+    std::string buyer_pubkey = getpubkeyforaddress(buyer_pubkey_params, false).get_str();
+    pubkeys.push_back(buyer_pubkey);
+
+    int truesigsrequired = sigsrequired;
+    // CREATE MULTISIG WALLET
+    if (pubkeys.size() < sigsrequired)
+    {
+        truesigsrequired = pubkeys.size();
+    }
+
+    multisig_params.push_back(truesigsrequired);
+    multisig_params.push_back(pubkeys);
+
+    std::string multisig = addmultisigaddress(multisig_params, false).get_str();
+
+    Array stream_params;
+    stream_params.push_back(STREAM_MULTISIGS);
+    stream_params.push_back(multisig);
+
+    Array results = liststreamkeyitems(stream_params, false).get_array();
+
+    if (results.size() == 0)
+    {
+        Object data;
+        data.push_back(Pair("pubkeys", pubkeys));
+        data.push_back(Pair("sigsrequired", truesigsrequired));
+
+        Array publish_params;
+        publish_params.push_back(multisig);
+        publish_params.push_back(data);
+
+        writemultisigdetails(publish_params, false);
+    }
+
+    return multisig;
+}
+/*AMB END*/
 
 struct tallyitem
 {
