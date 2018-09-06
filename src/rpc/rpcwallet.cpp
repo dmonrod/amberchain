@@ -1247,17 +1247,17 @@ Value getescrowmultisigaddress(const Array& params, bool fHelp)
         pubkeys.push_back(auth_pubkey);
     }
 
-    Array buyer_pubkey_params;
-    buyer_pubkey_params.push_back(params[1]);
-    std::string buyer_pubkey = getpubkeyforaddress(buyer_pubkey_params, false).get_str();
-    pubkeys.push_back(buyer_pubkey);
-
     int truesigsrequired = sigsrequired;
     // CREATE MULTISIG WALLET
     if (pubkeys.size() < sigsrequired)
     {
         truesigsrequired = pubkeys.size();
     }
+
+    Array buyer_pubkey_params;
+    buyer_pubkey_params.push_back(params[1]);
+    std::string buyer_pubkey = getpubkeyforaddress(buyer_pubkey_params, false).get_str();
+    pubkeys.push_back(buyer_pubkey);
 
     multisig_params.push_back(truesigsrequired);
     multisig_params.push_back(pubkeys);
