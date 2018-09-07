@@ -2907,6 +2907,8 @@ Value purchasenonconsumableservice(const Array& params, bool fHelp)
 // param4 - total amount
 // param5 - quantity
 // param6 - escrow address (optional)
+// param7 - badge notes, encrypted for badge creator (optional)
+// param8 - badge notes, encrypted for seller (optional)
 Value purchaseconsumableservice(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() < 5)
@@ -2914,7 +2916,7 @@ Value purchaseconsumableservice(const Array& params, bool fHelp)
 
     bool is_escrow = false;
 
-    if (params.size() > 5)
+    if (params.size() > 5 && params[5].get_str().length() > 0)
     {
         is_escrow = true;
     }
@@ -2943,6 +2945,12 @@ Value purchaseconsumableservice(const Array& params, bool fHelp)
     purchase_data.push_back(Pair("buyeraddress", params[0]));
     purchase_data.push_back(Pair("amount", params[3]));
     purchase_data.push_back(Pair("quantity", params[4]));
+    if (params.size() > 6) {
+        purchase_data.push_back(Pair("badgenotescreator", params[6]));
+    }
+    if (params.size() > 7) {
+        purchase_data.push_back(Pair("badgenotesseller", params[7]));
+    }
 
     if (is_escrow)
     {
