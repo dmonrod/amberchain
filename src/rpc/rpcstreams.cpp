@@ -2736,7 +2736,7 @@ Value delistservice(const Array& params, bool fHelp)
 Value hexStrToJson(Value v_str) {
     std::vector<unsigned char> vucJson(ParseHex(v_str.get_str().c_str()));
     std::stringstream ss;
-    for(int i=0;i<vucJson.size();++i) {
+    for(unsigned int i=0;i<vucJson.size();++i) {
         ss << vucJson[i];
     }
     Value val;
@@ -2779,6 +2779,33 @@ Value getservice(const Array& params, bool fHelp)
     return getstreamitem(service_params, false).get_obj();    
 }
 
+// get Value in service data by name
+Value getservicedata(Value service_id, std::string name)
+{
+    Array service_params;
+    service_params.push_back(service_id);
+    Object service_result = getservice(service_params, false).get_obj();
+    BOOST_FOREACH(const Pair& d, service_result) 
+    {
+        if (d.name_ == "data") {
+            BOOST_FOREACH(const Pair& subpair, d.value_.get_obj()) 
+            {
+                if (subpair.name_ == name) {
+                    return subpair.value_;
+                }
+            }
+        }
+    }  
+    return "";
+}
+
+bool is_number(const std::string& s)
+{
+    std::string::const_iterator it = s.begin();
+    while (it != s.end() && std::isdigit(*it)) ++it;
+    return !s.empty() && it == s.end();
+}
+
 // param1 - from-address (buyer's address)
 // param2 - service txid
 // param3 - name of service
@@ -2789,11 +2816,15 @@ Value purchasenonconsumableservice(const Array& params, bool fHelp)
     if (fHelp || params.size() < 4)
         throw runtime_error("Help message not found\n");
 
-    bool is_escrow = false;
-
-    if (params.size() > 4)
+    // support either string or number for param4
+    double amount = 0.0;
+    if (params[3].type() == str_type) 
     {
-        is_escrow = true;
+        amount = atof(params[3].get_str().c_str());
+    }
+    if (params[3].type() == real_type) 
+    {
+        amount = params[3].get_real();
     }
 
     Array service_params;
@@ -2803,13 +2834,7 @@ Value purchasenonconsumableservice(const Array& params, bool fHelp)
 
     std::string publisher = service_result[0].value_.get_array().back().get_str();
 
-    Array getinfo_params;
-    Object info = getinfo(getinfo_params,false).get_obj();
-
-    std::string burn_address = info[9].value_.get_str();
-
     std::string funds_receiver = publisher;
-    std::string assets_receiver = burn_address;
 
     Object final_purchase_data;
     Object purchase_data;
@@ -2818,14 +2843,19 @@ Value purchasenonconsumableservice(const Array& params, bool fHelp)
 
     purchase_data.push_back(Pair("selleraddress", publisher));
     purchase_data.push_back(Pair("buyeraddress", params[0]));
-    purchase_data.push_back(Pair("amount", params[3]));
+    purchase_data.push_back(Pair("amount", amount));
     purchase_data.push_back(Pair("quantity", "0"));
 
+    // automatically derive escrow status and escrow address
+    Value exp_period = getservicedata(params[1], "expirationperiod");
+    bool is_escrow = is_number(exp_period.get_str());
     if (is_escrow)
     {
-        std::string escrow_address = params[4].get_str();
+        Array escrow_params;
+        escrow_params.push_back("3"); // TODO: Constant
+        escrow_params.push_back(params[0]);
+        std::string escrow_address = getescrowmultisigaddress(escrow_params, false).get_str();
         funds_receiver = escrow_address;
-        assets_receiver = escrow_address;
         purchase_data.push_back(Pair("multisigaddress", escrow_address));
         purchase_data.push_back(Pair("status", "in escrow"));
     }
@@ -2839,7 +2869,7 @@ Value purchasenonconsumableservice(const Array& params, bool fHelp)
     Array data_array;
     Array ext_params;
 
-    addresses.push_back(Pair(funds_receiver, params[3]));
+    addresses.push_back(Pair(funds_receiver, amount));
 
     purchase_data.push_back(Pair("toaddress", funds_receiver));
     final_purchase_data.push_back(Pair("data", purchase_data));

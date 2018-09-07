@@ -894,7 +894,7 @@ Value getpubkeyforaddress(const Array& params, bool fHelp)
         }
     }
 
-    throw JSONRPCError(RPC_INVALID_PARAMETER, "No valid pubkey is registered for the given address.");
+    throw JSONRPCError(RPC_INVALID_PARAMETER, "No valid pubkey is registered for the given address. " + addressStr);
 }
 
 
