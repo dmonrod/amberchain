@@ -3280,10 +3280,12 @@ Value appendrawsendfrom(const Array& params, bool fHelp)
 // param2 - Quantity of asset
 // param3 - vendor-address
 // param4 - Amount to pay vendor
-// param5 - Json Details
+// param5 - buyer-address
+// param6 - Amount to pay buyer
+// param7 - Json Details
 Value expirepurchase(const Array& params, bool fHelp)
 {   
-    if (fHelp || params.size() != 6)
+    if (fHelp || params.size() != 8)
         throw runtime_error("Help message not found\n");
 
     // Get info for burnaddress
@@ -3306,10 +3308,14 @@ Value expirepurchase(const Array& params, bool fHelp)
     // pushback (vendor address, amount to pay vendor)
     addresses.push_back(Pair(params[3].get_str(),atof(params[4].get_str().c_str())));
 
+    // money escrow -> buyer 
+    // pushback (buyer address, amount to pay buyer)
+    addresses.push_back(Pair(params[5].get_str(),atof(params[6].get_str().c_str())));
+
 
     // Convert data to Hex
     Object content;
-    content.push_back(Pair("data",params[5]));
+    content.push_back(Pair("data",params[7]));
     const Value& json_data = content;
     const std::string string_data = write_string(json_data, false);
     std::string hex_data = HexStr(string_data.begin(), string_data.end());
