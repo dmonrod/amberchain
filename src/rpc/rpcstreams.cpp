@@ -3090,10 +3090,10 @@ Value updatepurchasestatus(const Array& params, bool fHelp)
 // param4 - Amount to pay vendor
 // param5 - buyeraddress
 // param6 - JSON Details
-
+// param7 - triggeraddress
 Value completepurchase(const Array& params, bool fHelp)
 {   
-    if (fHelp || params.size() != 7)
+    if (fHelp || params.size() != 8)
         throw runtime_error("Help message not found\n");
 
     // Get info for burnaddress
@@ -3139,7 +3139,7 @@ Value completepurchase(const Array& params, bool fHelp)
 
     Array ext_params2;
     ext_params2.push_back(rawtx); // rawtx
-    ext_params2.push_back(params[5]); // buyer address
+    ext_params2.push_back(params[7]); // triggeraddress
     return appendrawsendfrom(ext_params2, fHelp);
     
 }
@@ -3152,9 +3152,10 @@ Value completepurchase(const Array& params, bool fHelp)
 // param5 - buyer-address
 // param6 - Amount to pay buyer
 // param7 - Json Details
+// param8 - triggeraddress
 Value refundpurchase(const Array& params, bool fHelp)
 {
-    if (fHelp || params.size() != 8)
+    if (fHelp || params.size() != 9)
         throw runtime_error("Help message not found\n");
     
     Object addresses;
@@ -3200,7 +3201,7 @@ Value refundpurchase(const Array& params, bool fHelp)
 
     Array ext_params2;
     ext_params2.push_back(rawtx); // rawtx
-    ext_params2.push_back(params[5]); // buyer address
+    ext_params2.push_back(params[8]); // triggeraddress
     return appendrawsendfrom(ext_params2, fHelp);
 
 }
