@@ -2810,7 +2810,8 @@ bool is_number(const std::string& s)
 // param2 - service txid
 // param3 - name of service
 // param4 - total amount
-// param5 - escrow address (optional)
+// param5 - badge notes, encrypted for badge creator (optional)
+// param6 - badge notes, encrypted for seller (optional)
 Value purchasenonconsumableservice(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() < 4)
@@ -2845,6 +2846,12 @@ Value purchasenonconsumableservice(const Array& params, bool fHelp)
     purchase_data.push_back(Pair("buyeraddress", params[0]));
     purchase_data.push_back(Pair("amount", amount));
     purchase_data.push_back(Pair("quantity", "0"));
+    if (params.size() > 4) {
+        purchase_data.push_back(Pair("badgenotescreator", params[4]));
+    }
+    if (params.size() > 5) {
+        purchase_data.push_back(Pair("badgenotesseller", params[5]));
+    }
 
     // automatically derive escrow status and escrow address
     Value exp_period = getservicedata(params[1], "expirationperiod");
