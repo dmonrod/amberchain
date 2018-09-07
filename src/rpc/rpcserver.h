@@ -237,6 +237,7 @@ extern json_spirit::Value completepurchase(const json_spirit::Array& params, boo
 extern json_spirit::Value refundpurchase(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value expirepurchase(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value appendrawsendfrom(const json_spirit::Array& params, bool fHelp);
+extern json_spirit::Value getservice(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value getauthmultisigaddress(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value getescrowmultisigaddress(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value writemultisigdetails(const json_spirit::Array& params, bool fHelp);

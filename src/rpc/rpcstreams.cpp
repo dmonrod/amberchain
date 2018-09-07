@@ -2733,6 +2733,52 @@ Value delistservice(const Array& params, bool fHelp)
     return writeannotatedservice(ext_params, fHelp);
 }
 
+Value hexStrToJson(Value v_str) {
+    std::vector<unsigned char> vucJson(ParseHex(v_str.get_str().c_str()));
+    std::stringstream ss;
+    for(int i=0;i<vucJson.size();++i) {
+        ss << vucJson[i];
+    }
+    Value val;
+    read_string(ss.str(), val);
+    return val;
+}
+
+// param1 - service txid
+Value getservice(const Array& params, bool fHelp)
+{
+    Array service_params;
+    service_params.push_back(STREAM_SERVICES);
+    service_params.push_back(params[0]);
+    Object service_result = getstreamitem(service_params, fHelp).get_obj();    
+
+    BOOST_FOREACH(const Pair& d, service_result) 
+    {
+        if (d.name_ == "data") {
+            if (d.value_.type() == obj_type) {
+                int vout = 0;
+                BOOST_FOREACH(const Pair& subpair, d.value_.get_obj()) 
+                {
+                    if (subpair.name_ == "vout") {
+                        vout = subpair.value_.get_int();
+                    }
+                }
+                Array txout_params;
+                txout_params.push_back(params[0]); // the txid should be the same as the stream item itself
+                txout_params.push_back(vout);
+                Value v = gettxoutdata(txout_params, fHelp);
+                return hexStrToJson(v);
+            }
+            else {
+                // only other option is string
+                return hexStrToJson(d.value_);
+            }
+        }
+    }  
+
+    return getstreamitem(service_params, false).get_obj();    
+}
+
 // param1 - from-address (buyer's address)
 // param2 - service txid
 // param3 - name of service
