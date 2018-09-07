@@ -2855,7 +2855,7 @@ Value purchasenonconsumableservice(const Array& params, bool fHelp)
 
     // automatically derive escrow status and escrow address
     Value exp_period = getservicedata(params[1], "expirationperiod");
-    bool is_escrow = is_number(exp_period.get_str());
+    bool is_escrow = is_number(exp_period.get_str()) && strcmp(exp_period.get_str().c_str(), "0") != 0;
     if (is_escrow)
     {
         Array escrow_params;
