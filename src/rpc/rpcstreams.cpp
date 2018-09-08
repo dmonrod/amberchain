@@ -2958,8 +2958,8 @@ Value purchaseconsumableservice(const Array& params, bool fHelp)
 
     Object final_purchase_data;
     Object purchase_data;
-    purchase_data.push_back(Pair("service-txid", params[1]));
-    purchase_data.push_back(Pair("service-name", params[2]));
+    purchase_data.push_back(Pair("servicetxid", params[1]));
+    purchase_data.push_back(Pair("servicename", params[2]));
 
     purchase_data.push_back(Pair("selleraddress", publisher));
     purchase_data.push_back(Pair("buyeraddress", params[0]));
