@@ -1734,7 +1734,15 @@ Value createbadge(const Array& params, bool fHelp)
         ext_params.push_back("rootbadges"); // key for all badges
         ext_params.push_back(hex_data);
 
-        return publishfrom(ext_params, fHelp);
+        std::string badge_txid = publishfrom(ext_params, fHelp).get_str();
+
+        Array issuer_params;
+        issuer_params.push_back(params[0]);
+        issuer_params.push_back(badge_txid);
+        issuer_params.push_back(params[0]);
+
+        grantbadgeissuerpermission(issuer_params, fHelp);
+        return badge_txid;
     }
     else
     {
