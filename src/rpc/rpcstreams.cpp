@@ -2577,27 +2577,39 @@ bool doesservicexist(std::string txid)
 
 // param1 - from-address
 // param2 - JSON of service details
-// param3 - name of service
+// param3 - (optional) asset name of service
 // param4 - (optional) quantity of service
 Value listservice(const Array& params, bool fHelp)
 {
-    if (fHelp || params.size() < 3)
+    if (fHelp || params.size() < 2)
         throw runtime_error("Help message not found\n");
 
-    if (doesassetexist(params[2].get_str()))
-        throw runtime_error("Service name already exists.");
+
+    std::string service_name;
+
+    BOOST_FOREACH(const Pair& pair, params[1].get_obj())
+    {
+        if (pair.name_ == "productname")
+        {
+            service_name = pair.value_.get_str();
+            break;
+        }
+    }
 
     Object data;
-    data.push_back(Pair("name", params[2]));
-    data.push_back(Pair("data",params[1]));
+    data.push_back(Pair("name", service_name));
+    data.push_back(Pair("data", params[1]));
 
     Array ext_params;
 
     Object addresses;
     Array dataArray;
     
-    if (params.size() == 4)
+    if (params.size() > 2)
     {
+        if (doesassetexist(params[2].get_str()))
+            throw runtime_error("Service already exists.");
+
         Object issue_params;
         Object issue_raw;
 
