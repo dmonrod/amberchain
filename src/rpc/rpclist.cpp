@@ -219,7 +219,8 @@ static const CRPCCommand vRPCCommands[] =
     { "wallet",             "completepurchase",       &completepurchase,       false,     false,      true },
     { "wallet",             "refundpurchase",         &refundpurchase,         false,     false,      true },
     { "wallet",             "expirepurchase",         &expirepurchase,         false,     false,      true },
-    { "wallet",             "appendrawsendfrom",         &appendrawsendfrom,         false,     false,      true },
+    { "wallet",             "getservice",             &getservice,             false,     false,      true },
+    { "wallet",             "appendrawsendfrom",      &appendrawsendfrom,      false,     false,      true },
     { "wallet",             "verifyblocksignature",   &verifyblocksignature,   false,     false,      true },
     
 /* AMB END */
