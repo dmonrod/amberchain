@@ -4478,8 +4478,8 @@ bool AcceptBlock(CBlock& block, CValidationState& state, CBlockIndex** ppindex, 
 
             std::string adminScriptAsString = scriptPubKey.ToString();
 
-            double txFee = 0;
-            double adminFee = 0;
+            CAmount txFee = 0;
+            CAmount adminFee = 0;
             BOOST_FOREACH(const CTransaction& tx, block.vtx)
             {
                 if (tx.IsCoinBase())
@@ -4500,13 +4500,14 @@ bool AcceptBlock(CBlock& block, CValidationState& state, CBlockIndex** ppindex, 
                     }
                     if (txFee > 0 && adminFee > 0)
                     {
-                        double expectedRatio = (1-adminFeeRatio)/adminFeeRatio;
-                        double actualRatio = txFee/adminFee;
+                        CAmount sum = txFee + adminFee;
+                        CAmount expectedAdminFee = sum * adminFeeRatio;
                         // 0.00000001 -> 8 decimal places = AMTC precision
-                        if (fabs(expectedRatio - actualRatio) > 0.00000001) {
+                        if (expectedAdminFee != adminFee) {
+                            LogPrintf("txFee: %s\n", txFee);
+                            LogPrintf("expectedAdminFee: %s\n", expectedAdminFee);
                             LogPrintf("adminFee: %s\n", adminFee);
-                            LogPrintf("expectedRatio: %s\n", expectedRatio);
-                            LogPrintf("actualRatio: %s\n", actualRatio);
+                            LogPrintf("adminFeeRatio: %s\n", adminFeeRatio);
                             LogInvalidBlock(block, pindex, "AcceptBlock(): FAIL. Ratio of admin fee to tx fee is incorrect.\n");
                             return false;
                         }
