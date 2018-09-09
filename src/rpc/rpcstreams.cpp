@@ -3202,9 +3202,10 @@ Value updatepurchasestatus(const Array& params, bool fHelp)
 // param5 - buyeraddress
 // param6 - JSON Details
 // param7 - triggeraddress
+// param8 - Asset Issue TXID 
 Value completepurchase(const Array& params, bool fHelp)
 {   
-    if (fHelp || params.size() != 8)
+    if (fHelp || params.size() != 9)
         throw runtime_error("Help message not found\n");
 
     // Get info for burnaddress
@@ -3219,7 +3220,7 @@ Value completepurchase(const Array& params, bool fHelp)
     // asset escrow -> burnaddress
     // pushback(asset id, quantity)
     if (atoi(params[2].get_str().c_str()) != 0 ){
-        burn_data.push_back(Pair(params[1].get_str(),atoi(params[2].get_str().c_str()))); 
+        burn_data.push_back(Pair(params[8].get_str(),atoi(params[2].get_str().c_str()))); 
         addresses.push_back(Pair(info[9].value_.get_str(),burn_data)); //burnaddress
     }
     
@@ -3256,7 +3257,7 @@ Value completepurchase(const Array& params, bool fHelp)
 }
 
 // param0 - escrowaddress
-// param1 - Asset Issue TXID 
+// param1 - root txid
 // param2 - Quantity of asset
 // param3 - vendor-address
 // param4 - Amount to pay vendor
@@ -3264,9 +3265,10 @@ Value completepurchase(const Array& params, bool fHelp)
 // param6 - Amount to pay buyer
 // param7 - Json Details
 // param8 - triggeraddress
+// param9 - Asset Issue TXID 
 Value refundpurchase(const Array& params, bool fHelp)
 {
-    if (fHelp || params.size() != 9)
+    if (fHelp || params.size() != 10)
         throw runtime_error("Help message not found\n");
     
     Object addresses;
@@ -3275,7 +3277,7 @@ Value refundpurchase(const Array& params, bool fHelp)
     // asset escrow -> vendor
     // pushback(asset id, quantity)
     if (atoi(params[2].get_str().c_str()) != 0 ){
-        vendor_data.push_back(Pair(params[1].get_str(),atoi(params[2].get_str().c_str()))); //asset issuetxid, amount to burn 
+        vendor_data.push_back(Pair(params[9].get_str(),atoi(params[2].get_str().c_str()))); //asset issuetxid, amount to burn 
         addresses.push_back(Pair(params[3].get_str(),vendor_data));
     }
        
@@ -3388,16 +3390,17 @@ Value appendrawsendfrom(const Array& params, bool fHelp)
 }
 
 // param0 - escrowaddress
-// param1 - Asset Issue TXID 
+// param1 - Root TXID 
 // param2 - Quantity of asset
 // param3 - vendor-address
 // param4 - Amount to pay vendor
 // param5 - buyer-address
 // param6 - Amount to pay buyer
 // param7 - Json Details
+// param8 - Asset Issue TXID 
 Value expirepurchase(const Array& params, bool fHelp)
 {   
-    if (fHelp || params.size() != 8)
+    if (fHelp || params.size() != 9)
         throw runtime_error("Help message not found\n");
 
     // Get info for burnaddress
@@ -3411,7 +3414,7 @@ Value expirepurchase(const Array& params, bool fHelp)
     // asset escrow -> burnaddress
     // pushback(asset id, quantity)
     if (atoi(params[2].get_str().c_str()) != 0 ){
-        burn_data.push_back(Pair(params[1].get_str(),atoi(params[2].get_str().c_str()))); //asset issuetxid, amount to burn 
+        burn_data.push_back(Pair(params[8].get_str(),atoi(params[2].get_str().c_str()))); //asset issuetxid, amount to burn 
         addresses.push_back(Pair(info[9].value_.get_str(),burn_data));
     }
    
