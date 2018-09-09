@@ -4512,11 +4512,12 @@ bool AcceptBlock(CBlock& block, CValidationState& state, CBlockIndex** ppindex, 
                             return false;
                         }
                     }
-                    else if (txFee > 0 && adminFeeRatio > 0)
-                    {
-                        LogInvalidBlock(block, pindex, "AcceptBlock(): FAIL.  Block should have an admin fee in the coinbase tx if there is a tx fee.\n");
-                        return false;
-                    }
+                    // remove this check temporarily, as it was causing problems
+                    // else if (txFee > 0 && adminFeeRatio > 0)
+                    // {
+                    //     LogInvalidBlock(block, pindex, "AcceptBlock(): FAIL.  Block should have an admin fee in the coinbase tx if there is a tx fee.\n");
+                    //     return false;
+                    // }
                 }
             }
         }
