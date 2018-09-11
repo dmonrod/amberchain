@@ -3266,9 +3266,10 @@ Value completepurchase(const Array& params, bool fHelp)
 // param7 - Json Details
 // param8 - triggeraddress
 // param9 - Asset Issue TXID 
+// param10 - asset holder
 Value refundpurchase(const Array& params, bool fHelp)
 {
-    if (fHelp || params.size() != 10)
+    if (fHelp || params.size() != 11)
         throw runtime_error("Help message not found\n");
     
     Object addresses;
@@ -3278,7 +3279,7 @@ Value refundpurchase(const Array& params, bool fHelp)
     // pushback(asset id, quantity)
     if (atoi(params[2].get_str().c_str()) != 0 ){
         vendor_data.push_back(Pair(params[9].get_str(),atoi(params[2].get_str().c_str()))); //asset issuetxid, amount to burn 
-        addresses.push_back(Pair(params[3].get_str(),vendor_data));
+        addresses.push_back(Pair(params[10].get_str(),vendor_data));
     }
        
 
@@ -3398,9 +3399,10 @@ Value appendrawsendfrom(const Array& params, bool fHelp)
 // param6 - Amount to pay buyer
 // param7 - Json Details
 // param8 - Asset Issue TXID 
+// param9 - asset holder
 Value expirepurchase(const Array& params, bool fHelp)
 {   
-    if (fHelp || params.size() != 9)
+    if (fHelp || params.size() != 10)
         throw runtime_error("Help message not found\n");
 
     // Get info for burnaddress
@@ -3415,7 +3417,7 @@ Value expirepurchase(const Array& params, bool fHelp)
     // pushback(asset id, quantity)
     if (atoi(params[2].get_str().c_str()) != 0 ){
         burn_data.push_back(Pair(params[8].get_str(),atoi(params[2].get_str().c_str()))); //asset issuetxid, amount to burn 
-        addresses.push_back(Pair(info[9].value_.get_str(),burn_data));
+        addresses.push_back(Pair(params[9].get_str(),burn_data));
     }
    
     // Transfer 
