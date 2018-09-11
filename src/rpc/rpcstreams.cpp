@@ -3336,8 +3336,8 @@ Value appendrawsendfrom(const Array& params, bool fHelp)
     Array unspentItems = listunspent(listunspent_params, fHelp).get_array();
 
     std::string rawtx = params[0].get_str();
-    // we estimate that this function will add around 250 bytes to the TX (generous allowance)
-    unsigned int nSize = rawtx.length() + 250;
+    // we estimate that this function will add around 500 bytes to the TX (generous allowance)
+    unsigned int nSize = rawtx.length() + 500;
 
     // estimate the needed tx fee
     unsigned int minRelayTxFee = StreamUtils::GetMinimumRelayTxFee();
