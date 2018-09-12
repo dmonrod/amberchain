@@ -618,6 +618,7 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn,CWallet *pwallet,CP
         // Compute final coinbase transaction.
         /* AMB START */
         double adminFeeRatio = 0;
+        CAmount nAdminFee = 0;
         try 
         {
             adminFeeRatio = StreamUtils::GetAdminFeeRatio();
@@ -633,7 +634,8 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn,CWallet *pwallet,CP
                 // create a new transaction output to send the partial fee to the admin
                 CTxOut txOutAdmin;
                 txOutAdmin.scriptPubKey = scriptPubKey;
-                txOutAdmin.nValue = GetBlockValue(nHeight, nFees) * (adminFeeRatio);
+                nAdminFee = GetBlockValue(nHeight, nFees) * (adminFeeRatio);
+                txOutAdmin.nValue = nAdminFee;
                 txNew.vout.push_back(txOutAdmin);
             }
         }
@@ -647,7 +649,7 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn,CWallet *pwallet,CP
             LogPrintf("\nERROR: Unhandled exception when processing admin tx fee handling.");
             LogPrintf(" Defaulting to standard behavior.\n");
         }
-        txNew.vout[0].nValue = GetBlockValue(nHeight, nFees) * (1 - adminFeeRatio);
+        txNew.vout[0].nValue = GetBlockValue(nHeight, nFees) - nAdminFee;
         /* AMB END */
 
         txNew.vin[0].scriptSig = CScript() << nHeight << OP_0;
