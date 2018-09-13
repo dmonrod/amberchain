@@ -15,3 +15,33 @@ AmberChain is based on the popular open source [MultiChain](http://www.multichai
 ## Setup instructions
 
 Refer to the original multichain instructions [here](multichain-README.md)
+
+
+### Linux Build Notes (on Ubuntu 14.04 x64)
+=================
+
+Install dependencies
+--------------------
+
+    sudo apt-get update
+    sudo apt-get install build-essential libtool autotools-dev automake pkg-config libssl-dev libevent-dev bsdmainutils
+    sudo apt-get install libboost-all-dev
+    sudo apt-get install git
+    sudo apt-get install software-properties-common
+    sudo add-apt-repository ppa:bitcoin/bitcoin
+    sudo apt-get update
+    sudo apt-get install libdb4.8-dev libdb4.8++-dev
+
+Compile Amberchain for Ubuntu (64-bit)
+-----------------------------
+
+    ./autogen.sh
+    ./configure
+    make
+
+Notes
+-----
+
+* This will build `amberchaind`, `amberchain-cli` and `amberchain-util` in the `src` directory.
+
+* The release is built with GCC after which `strip amberchaind` strings the debug symbols, which reduces the executable size by about 90%.
