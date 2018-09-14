@@ -12,6 +12,10 @@ AmberChain is based on the popular open source [MultiChain](http://www.multichai
     Portions copyright (c) 2009-2016 The Bitcoin Core developers
     Portions copyright many others - see individual files
 
+## Documentation
+
+Details on the API calls developed for AmberTime Blockhain can be found [here](https://github.com/ambertime/amberchain/blob/amber-dev/docs/AmberTime%20Blockchain%20Documentation_v1.0.pdf).
+
 ## Setup instructions
 
 Refer to the original multichain instructions [here](multichain-README.md)
@@ -21,7 +25,7 @@ Refer to the original multichain instructions [here](multichain-README.md)
 ### Linux Build Notes (on Ubuntu 14.04 x64)
 
 
-1. Clone a the Amberchain repository on your local directory
+1. Clone the AmberChain repository on your local directory
     ```python
     # if git is not installed
     sudo apt-get install git
@@ -51,7 +55,8 @@ Refer to the original multichain instructions [here](multichain-README.md)
 
 * The release is built with GCC after which `strip amberchaind` strings the debug symbols, which reduces the executable size by about 90%.
 
-4. Connect to the amber testnet 
+4. Connect to the AmberChain testnet 
+
     **To connect to the currently deployed amber-testnet chain, run any of the following:*
     *   `./amberchaind amber-testnet@13.250.176.149:7362`
     *   `./amberchaind amber-testnet@13.124.35.92:7362`
