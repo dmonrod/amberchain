@@ -71,6 +71,11 @@ Refer to the original multichain instructions [here](multichain-README.md)
     *   *set port*
     *   *set chain name*
 
+    **To connect to the currently deployed amber-testnet chain, run any of the following:*
+    *   `./amberchaind amber-testnet@13.250.176.149:7362`
+    *   `./amberchaind amber-testnet@13.124.35.92:7362`
+    *   `./amberchaind amber-testnet@47.75.251.94:7362`
+
 5. Run the Chain CLI
     ```python
     # amberchain/src >
@@ -80,7 +85,7 @@ Refer to the original multichain instructions [here](multichain-README.md)
     * You can run the _help_ command in the CLI to see a list of APIs
     * help <API name> shows a detailed description of th API and parameters
     ```python
-    # amber-testchain > 
+    # amber-testchain >
     help
     help listaddresses 
     ```
@@ -95,7 +100,7 @@ Refer to the original multichain instructions [here](multichain-README.md)
     ```
     * Inside the CLI 
     ```python
-    # amber-testchain > 
+    # amber-testchain >
     stop
     bye
     ```
