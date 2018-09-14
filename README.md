@@ -50,27 +50,8 @@ Refer to the original multichain instructions [here](multichain-README.md)
 * This will build `amberchaind`, `amberchain-cli` and `amberchain-util` in the `src` directory.
 
 * The release is built with GCC after which `strip amberchaind` strings the debug symbols, which reduces the executable size by about 90%.
-    
-    ```python
-    # Initialize and create the Amber Chain run in amberchain folder
-   
-    ./initialize_blockchain_and_streams.sh <chain name>
 
-    # ie. ./initialize_blockchain_and_streams.sh amber-testchain
-    ```
-
-4. Start a Chain 
-    ```python
-    # amberchain/src >
-    # -daemon flag runs the chain in the background
-    ./amberchaind <chain name> -daemon 
-    # ie: ./amberchaind amber-testchain -daemon
-    ```
-    **When creating an application that connects to the API of a new chain* 
-    *   *copy credentials from multichain.conf*
-    *   *set port*
-    *   *set chain name*
-
+4. Connect to the amber testnet 
     **To connect to the currently deployed amber-testnet chain, run any of the following:*
     *   `./amberchaind amber-testnet@13.250.176.149:7362`
     *   `./amberchaind amber-testnet@13.124.35.92:7362`
@@ -104,11 +85,3 @@ Refer to the original multichain instructions [here](multichain-README.md)
     stop
     bye
     ```
-
-7. Delete the Chain
-    ```python
-    rm -rf ~/.multichain/<chain name>
-    # ie. rm -rf ~/.multichain/amber-testchain
-    ```
-
-
