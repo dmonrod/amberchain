@@ -3151,7 +3151,12 @@ Value removeservicequantity(const Array& params, bool fHelp)
     Array ext_params;
     ext_params.push_back(params[1]); // from-address
     ext_params.push_back(address); // address and issuemore data
-    return createrawsendfrom(ext_params, fHelp);
+    std::string rawtx = createrawsendfrom(ext_params, fHelp).get_str();
+
+    Array ext_params2;
+    ext_params2.push_back(rawtx); // rawtx
+    ext_params2.push_back(params[0]); // triggeraddress
+    return appendrawsendfrom(ext_params2, fHelp);
     
 }
 
