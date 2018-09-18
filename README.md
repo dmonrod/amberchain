@@ -12,6 +12,10 @@ AmberChain is based on the popular open source [MultiChain](http://www.multichai
     Portions copyright (c) 2009-2016 The Bitcoin Core developers
     Portions copyright many others - see individual files
 
+## Documentation
+
+Details on the API calls developed for AmberTime Blockhain can be found [here](https://github.com/ambertime/amberchain/blob/amber-dev/docs/AmberTime%20Blockchain%20Documentation_v1.0.pdf).
+
 ## Setup instructions
 
 Refer to the original multichain instructions [here](multichain-README.md)
@@ -21,7 +25,7 @@ Refer to the original multichain instructions [here](multichain-README.md)
 ### Linux Build Notes (on Ubuntu 14.04 x64)
 
 
-1. Clone a the Amberchain repository on your local directory
+1. Clone the AmberChain repository on your local directory
     ```python
     # if git is not installed
     sudo apt-get install git
@@ -50,26 +54,13 @@ Refer to the original multichain instructions [here](multichain-README.md)
 * This will build `amberchaind`, `amberchain-cli` and `amberchain-util` in the `src` directory.
 
 * The release is built with GCC after which `strip amberchaind` strings the debug symbols, which reduces the executable size by about 90%.
-    
-    ```python
-    # Initialize and create the Amber Chain run in amberchain folder
-   
-    ./initialize_blockchain_and_streams.sh <chain name>
 
-    # ie. ./initialize_blockchain_and_streams.sh amber-testchain
-    ```
+4. Connect to the AmberChain testnet 
 
-4. Start a Chain 
-    ```python
-    # amberchain/src >
-    # -daemon flag runs the chain in the background
-    ./amberchaind <chain name> -daemon 
-    # ie: ./amberchaind amber-testchain -daemon
-    ```
-    **When creating an application that connects to the API of a new chain* 
-    *   *copy credentials from multichain.conf*
-    *   *set port*
-    *   *set chain name*
+    **To connect to the currently deployed amber-testnet chain, run any of the following:*
+    *   `./amberchaind amber-testnet@13.250.176.149:7362`
+    *   `./amberchaind amber-testnet@13.124.35.92:7362`
+    *   `./amberchaind amber-testnet@47.75.251.94:7362`
 
 5. Run the Chain CLI
     ```python
@@ -80,7 +71,7 @@ Refer to the original multichain instructions [here](multichain-README.md)
     * You can run the _help_ command in the CLI to see a list of APIs
     * help <API name> shows a detailed description of th API and parameters
     ```python
-    # amber-testchain > 
+    # amber-testchain >
     help
     help listaddresses 
     ```
@@ -95,15 +86,7 @@ Refer to the original multichain instructions [here](multichain-README.md)
     ```
     * Inside the CLI 
     ```python
-    # amber-testchain > 
+    # amber-testchain >
     stop
     bye
     ```
-
-7. Delete the Chain
-    ```python
-    rm -rf ~/.multichain/<chain name>
-    # ie. rm -rf ~/.multichain/amber-testchain
-    ```
-
-
