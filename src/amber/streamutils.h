@@ -22,6 +22,7 @@ namespace StreamUtils {
     unsigned int GetMinimumRelayTxFee();
     string GetAdminPublicKey();
     double GetAdminFeeRatio();
+    bool IsPublicAccount(string address);
     bool IsStreamExisting(string streamName);
 }
 

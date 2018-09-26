@@ -9,7 +9,7 @@
 #include "rpc/rpcwallet.h"
 #include "utils/utilstrencodings.h"
 #include "amber/utils.h"
-
+#include "amber/streamutils.h"
 
 string AllowedPermissions()
 {
@@ -524,8 +524,13 @@ bool multisighaspermission(std::string address, std::string permission)
 }
 
 // check that all of the tx inputs must be either from miners or from multisig where at least 1 signatory is a miner
+// this is used to determine if the tx should be charged a tx fee
 bool txsenderisminer(const CTransaction& tx)
 {
+    if (tx.IsCoinBase()) 
+    {
+        return false;
+    }
     BOOST_FOREACH(const CTxIn& txin, tx.vin)
     {
         uint256 prevTxHash = txin.prevout.hash;
@@ -555,7 +560,7 @@ bool txsenderisminer(const CTransaction& tx)
         {
             std::string address = CBitcoinAddress(addr).ToString();
             // all input addresses must be miners or multisig with miner participation
-            if (!haspermission(address, "mine") && !multisighaspermission(address, "mine")) 
+            if (!haspermission(address, "mine") && !multisighaspermission(address, "mine") && !StreamUtils::IsPublicAccount(address)) 
             {
                 return false;
             }
