@@ -2832,6 +2832,7 @@ bool is_number(const std::string& s)
 // param4 - total amount
 // param5 - badge notes, encrypted for badge creator (optional)
 // param6 - badge notes, encrypted for seller (optional)
+// param7 - user-defined quantity (optional)
 Value purchasenonconsumableservice(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() < 4)
@@ -2846,6 +2847,20 @@ Value purchasenonconsumableservice(const Array& params, bool fHelp)
     if (params[3].type() == real_type) 
     {
         amount = params[3].get_real();
+    }
+
+    // support either string or number for param7
+    int qty = 1;
+    if (params.size() > 6)
+    {
+        if (params[7].type() == str_type)
+        {
+            qty = atoi(params[7].get_str().c_str());
+        }
+        if (params[7].type() == int_type
+        {
+            qty = params[7].get_int();
+        }
     }
 
     Array service_params;
@@ -2865,7 +2880,8 @@ Value purchasenonconsumableservice(const Array& params, bool fHelp)
     purchase_data.push_back(Pair("selleraddress", publisher));
     purchase_data.push_back(Pair("buyeraddress", params[0]));
     purchase_data.push_back(Pair("amount", amount));
-    purchase_data.push_back(Pair("quantity", "0"));
+    purchase_data.push_back(Pair("quantity", "0")); // identifier in purchase completion if service is a nonconsumable service
+    purchase_data.push_back(Pair("userdefined_quantity", qty)); // record the number of instances purchased
     if (params.size() > 4) {
         purchase_data.push_back(Pair("badgenotescreator", params[4]));
     }

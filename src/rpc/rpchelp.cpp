@@ -4125,6 +4125,35 @@ void mc_InitRPCHelpMap17()
         "\nExample:\n"
         + HelpExampleCli("addservicequantity", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd 5d06edd7a0dbd0d83478c25fbf30cf3f07ceac45d9ced1591f6bd982fb878647 100")
     ));
+    mapHelpStrings.insert(std::make_pair("purchasenonconsumableservice",
+        "purchasenonconsumableservice\n"
+        "\nSends the amount to the receiver (escrow or seller), and records the purchase in purchasestatus stream.\n"
+        "\nArguments:\n"
+        "1. \"from-address\"                (string, required) Address, must be address of service buyer\n"
+        "2. \"txid\"                        (string, required) Transaction ID of the service being purchased\n"
+        "3. \"service-name\"                (string, required) Name of the service\n"
+        "4. \"amount\"                      (string, required) The total amount that the buyer has to pay in order to purchase the service\n"
+        "5. \"badge-notes-creator\"         (string, optional) Badge notes that is encrypted for the badge creator\n"
+        "6. \"badge-notes-seller\"          (string, optional) Badge notes that is encrypted for the badge seller\n"
+        "7. \"quantity\"                    (string, optional) Quantity, if buyer is purchasing multiple instances of the service \n"
+        "\nExample:\n"
+        + HelpExampleCli("purchasenonconsumableservice", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd 5d06edd7a0dbd0d83478c25fbf30cf3f07ceac45d9ced1591f6bd982fb878647 servicename 1000 '' '' 1")
+    ));
+    mapHelpStrings.insert(std::make_pair("purchaseconsumableservice",
+        "purchaseconsumableservice\n"
+        "\Records the purchase to the purchasestatus stream.\n"
+        "\nArguments:\n"
+        "1. \"from-address\"                (string, required) Address, must be address of service buyer\n"
+        "2. \"txid\"                        (string, required) Transaction ID of the service being purchased\n"
+        "3. \"service-name\"                (string, required) Name of the service\n"
+        "4. \"amount\"                      (string, required) The total amount that the buyer has to pay in order to purchase the service\n"
+        "5. \"quantity\"                    (string, optional) The quantity of service being purchased\n"
+        "6. \"escrow-address\"              (string, optional) Escrow address, if service has an expiration date defined\n"
+        "7. \"badge-notes-creator\"         (string, optional) Badge notes that is encrypted for the badge creator\n"
+        "8. \"badge-notes-seller\"          (string, optional) Badge notes that is encrypted for the badge seller\n"
+        "\nExample:\n"
+        + HelpExampleCli("purchaseconsumableservice", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd 5d06edd7a0dbd0d83478c25fbf30cf3f07ceac45d9ced1591f6bd982fb878647 servicename 1000 5 1AN7chsRuUyEtQGgZEDJs3eNBrAapzY2Ab'' '' 0")
+    ));
     mapHelpStrings.insert(std::make_pair("updatepurchasestatus",
         "updatepurchasestatus\n"
         "\nWrites the purchase status to the purchase status stream.\n"
