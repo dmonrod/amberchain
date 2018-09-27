@@ -48,6 +48,8 @@ Refer to the original multichain instructions [here](multichain-README.md)
     Compile Amberchain for Ubuntu (64-bit)
     ```python
     # amberchain/src >
+    ./autogen.sh
+    ./configure
     make
     # this will take a few minutes  to build the chain
     ```
