@@ -3167,7 +3167,12 @@ Value removeservicequantity(const Array& params, bool fHelp)
     Array ext_params;
     ext_params.push_back(params[1]); // from-address
     ext_params.push_back(address); // address and issuemore data
-    return createrawsendfrom(ext_params, fHelp);
+    std::string rawtx = createrawsendfrom(ext_params, fHelp).get_str();
+
+    Array ext_params2;
+    ext_params2.push_back(rawtx); // rawtx
+    ext_params2.push_back(params[0]); // triggeraddress
+    return appendrawsendfrom(ext_params2, fHelp);
     
 }
 
@@ -3355,10 +3360,20 @@ Value appendrawsendfrom(const Array& params, bool fHelp)
     std::string rawtx = params[0].get_str();
     // we estimate that this function will add around 500 bytes to the TX (generous allowance)
     unsigned int nSize = rawtx.length() + 500;
+    char msg[3000];
 
     // estimate the needed tx fee
     unsigned int minRelayTxFee = StreamUtils::GetMinimumRelayTxFee();
     unsigned int estFee = minRelayTxFee*nSize / 1000;
+    std::string address = params[1].get_str();
+    if (haspermission(address, "mine") || multisighaspermission(address, "mine")) 
+    {
+        // miners dont need no fee
+        estFee = 0;
+    }
+
+    Array accumulatedTransactionsArr;
+    unsigned int accumulatedAmount = 0;
     
     // look for an unspent item that covers the needed fee
     BOOST_FOREACH(const Value& data, unspentItems)
@@ -3367,23 +3382,46 @@ Value appendrawsendfrom(const Array& params, bool fHelp)
         std::string txid;
         int vout = 0;
         bool amountFound = false;
+        bool smallerAmountFound = false;
         BOOST_FOREACH(const Pair& d, results) 
         {
-            if (d.name_ == "txid") {
+            if (d.name_ == "txid") 
+            {
                 txid = d.value_.get_str();
             }
-            if (d.name_ == "vout") {
+            if (d.name_ == "vout") 
+            {
                 vout = d.value_.get_int();
             }
-            if (d.name_ == "amount") {
+            if (d.name_ == "amount") 
+            {
                 // convert amount to satoshis
                 unsigned int satoshis = d.value_.get_real()*10000000; // multiplier is fixed for amberchain
-                if (satoshis >= estFee) {
+                if (satoshis >= estFee) 
+                {
                     amountFound = true;
+                } 
+                else 
+                {
+                    // accumulate smaller amounts if possible
+                    if (accumulatedAmount < estFee) 
+                    {
+                        accumulatedAmount += satoshis;
+                        smallerAmountFound = true;
+                    }
                 }
             }
         }        
-        if (amountFound) {
+        if (smallerAmountFound) 
+        {
+            sprintf(msg+strlen(msg),"\naccumulating an input!: %s.",txid.c_str());
+            Object transactionObj;
+            transactionObj.push_back(Pair("txid", txid));
+            transactionObj.push_back(Pair("vout", vout));
+            accumulatedTransactionsArr.push_back(transactionObj);
+        }
+        if (amountFound) 
+        {
             // build a raw transaction from the chosen txid and vout
             Array transactionsArr;
             Object transactionObj;
@@ -3402,6 +3440,25 @@ Value appendrawsendfrom(const Array& params, bool fHelp)
             return appendrawchange(ext_params2, fHelp);
         }
     }    
+
+    // we exited the loop without finding a single input that satisfies the est fee
+    // let's see if we have accumulated smaller inputs instead
+    sprintf(msg+strlen(msg),"\naccumulatedAmount: %d.",accumulatedAmount);
+    if (accumulatedAmount >= estFee)
+    {
+        Array ext_params;
+        ext_params.push_back(rawtx); // rawtx
+        ext_params.push_back(accumulatedTransactionsArr); // UTXOs
+        std::string appendedrawtx = appendrawtransaction(ext_params, fHelp).get_str();
+
+        Array ext_params2;
+        ext_params2.push_back(appendedrawtx); // rawtx
+        ext_params2.push_back(params[1]); // change address
+        return appendrawchange(ext_params2, fHelp);
+    }
+
+    sprintf(msg+strlen(msg),"\nInsufficient funds (appendrawsendfrom): %d.",estFee);
+    LogPrintf(msg);
     
     // we can't find any valid UTXOs to spend, return error
     throw JSONRPCError(RPC_INVALID_PARAMETER, "Insufficient funds.");

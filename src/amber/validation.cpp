@@ -185,30 +185,7 @@ vector<CBitcoinAddress> scriptPubKey2Addresses(const CScript& scriptPubKey)
 // TODO: Merge this with txsenderisminer
 bool IsMinerTx(const CTransaction& tx) 
 {
-    if (tx.IsCoinBase()) 
-    {
-        return false;
-    }
-    BOOST_FOREACH(const CTxIn& txin, tx.vin) 
-    {
-        CTransaction prevTx;
-        uint256 hashBlock = 0;
-        if (!GetTransaction(txin.prevout.hash, prevTx, hashBlock, true))
-        {
-            LogPrintf("IsMinerTx(): Previous transaction could not be retrieved.\n");
-            return false;
-        }
-        CScript scriptPubKey = prevTx.vout[txin.prevout.n].scriptPubKey;
-        BOOST_FOREACH(const CBitcoinAddress address, scriptPubKey2Addresses(scriptPubKey))
-        {
-            if (!haspermission(address.ToString(), "mine") && !multisighaspermission(address.ToString(), "mine")) {
-                // all from address must be miners or a multisig with one of the signers is a miner
-                return false;
-            }
-        }
-    }
-
-    return true;
+    return txsenderisminer(tx);
 }
 
 // custom transaction validation entry point, for future customisation support
