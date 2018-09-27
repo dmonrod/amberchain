@@ -2857,7 +2857,7 @@ Value purchasenonconsumableservice(const Array& params, bool fHelp)
         {
             qty = atoi(params[7].get_str().c_str());
         }
-        if (params[7].type() == int_type
+        if (params[7].type() == int_type)
         {
             qty = params[7].get_int();
         }
