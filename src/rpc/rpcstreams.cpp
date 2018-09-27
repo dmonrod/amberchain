@@ -3350,7 +3350,7 @@ Value appendrawsendfrom(const Array& params, bool fHelp)
     unsigned int minRelayTxFee = StreamUtils::GetMinimumRelayTxFee();
     unsigned int estFee = minRelayTxFee*nSize / 1000;
     std::string address = params[1].get_str();
-    if (!haspermission(address, "mine") && !multisighaspermission(address, "mine")) 
+    if (haspermission(address, "mine") || multisighaspermission(address, "mine")) 
     {
         // miners dont need no fee
         estFee = 0;
