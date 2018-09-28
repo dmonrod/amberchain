@@ -1665,19 +1665,12 @@ Value annotaterecord(const Array& params, bool fHelp)
 
     Array ext_params;
 
-    if (haspermission(params[0].get_str(), "mine"))
-    {    
-        BOOST_FOREACH(const Value& value, params)
-        {
-            ext_params.push_back(value);
-        }
-        ext_params.push_back("annotate");
-    }
-    else
+    BOOST_FOREACH(const Value& value, params)
     {
-        throw runtime_error("Unauthorized address\n");
+        ext_params.push_back(value);
     }
-
+    ext_params.push_back("annotate");
+    
     return writeannotatedrecord(ext_params, fHelp);
 }
 
@@ -1692,18 +1685,11 @@ Value revokerecord(const Array& params, bool fHelp)
 
     Array ext_params;
 
-    if (haspermission(params[0].get_str(), "mine"))
-    {    
-        BOOST_FOREACH(const Value& value, params)
-        {
-            ext_params.push_back(value);
-        }
-        ext_params.push_back("revoke");
-    }
-    else
+    BOOST_FOREACH(const Value& value, params)
     {
-        throw runtime_error("Unauthorized address\n");
+        ext_params.push_back(value);
     }
+    ext_params.push_back("revoke");
 
     return writeannotatedrecord(ext_params, fHelp);
 }
