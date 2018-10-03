@@ -1178,11 +1178,13 @@ Value getauthmultisigaddress(const Array& params, bool fHelp)
     for(int i = 0; i < list_auth.get_array().size(); i++)
     {
         std::string auth_address = list_auth.get_array()[i].get_obj()[0].value_.get_str();
-
-        Array pubkey_params;
-        pubkey_params.push_back(auth_address);
-        std::string auth_pubkey = getpubkeyforaddress(pubkey_params, false).get_str();
-        auth_pubkeys.push_back(auth_pubkey);
+        if (haspermission(auth_address, "mine"))
+        {
+            Array pubkey_params;
+            pubkey_params.push_back(auth_address);
+            std::string auth_pubkey = getpubkeyforaddress(pubkey_params, false).get_str();
+            auth_pubkeys.push_back(auth_pubkey);
+        }
     }
 
     int truesigsrequired = sigsrequired;
@@ -1240,11 +1242,13 @@ Value getescrowmultisigaddress(const Array& params, bool fHelp)
     for(int i = 0; i < list_auth.get_array().size(); i++)
     {
         std::string auth_address = list_auth.get_array()[i].get_obj()[0].value_.get_str();
-
-        Array pubkey_params;
-        pubkey_params.push_back(auth_address);
-        std::string auth_pubkey = getpubkeyforaddress(pubkey_params, false).get_str();
-        pubkeys.push_back(auth_pubkey);
+        if (haspermission(auth_address, "mine"))
+        {
+            Array pubkey_params;
+            pubkey_params.push_back(auth_address);
+            std::string auth_pubkey = getpubkeyforaddress(pubkey_params, false).get_str();
+            pubkeys.push_back(auth_pubkey);
+        }
     }
 
     int truesigsrequired = sigsrequired;

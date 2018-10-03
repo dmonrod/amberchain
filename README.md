@@ -14,7 +14,7 @@ AmberChain is based on the popular open source [MultiChain](http://www.multichai
 
 ## Documentation
 
-Details on the API calls developed for AmberTime Blockhain can be found [here](https://github.com/ambertime/amberchain/blob/amber-dev/docs/AmberTime%20Blockchain%20Documentation_v1.0.pdf).
+Details on the API calls developed for AmberTime Blockhain can be found [here](https://github.com/ambertime/amberchain/blob/amber-dev/docs/AmberTime%20Blockchain%20Documentation_v1.3.pdf).
 
 ## Setup instructions
 
@@ -48,6 +48,8 @@ Refer to the original multichain instructions [here](multichain-README.md)
     Compile Amberchain for Ubuntu (64-bit)
     ```python
     # amberchain/src >
+    ./autogen.sh
+    ./configure
     make
     # this will take a few minutes  to build the chain
     ```

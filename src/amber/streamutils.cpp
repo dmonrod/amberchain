@@ -87,6 +87,30 @@ namespace StreamUtils {
         return adminFeeRatioValue;
     }
 
+    bool IsPublicAccount(string address) {
+        if (!IsStreamExisting(STREAM_TRANSACTIONPARAMS)) {
+            return false;
+        }
+
+        Array streamParams;
+        streamParams.push_back(STREAM_TRANSACTIONPARAMS);
+        streamParams.push_back(KEY_PUBLICACCOUNT);
+        Array streamItems = liststreamkeyitems(streamParams, false).get_array();
+        
+        if (streamItems.size() == 0) {
+            // return PermissionUtils::GetFirstAdminPublicKeyFromPermissions();
+            return false;
+        }
+
+        Object latestEntry = streamItems.back().get_obj();
+        string latestValueString = HexToStr(latestEntry[2].value_.get_str());
+        
+        LogPrint("ambr", "ambr-test: public-account HEXTOSTR(%s) \n", latestValueString);
+
+        return strcmp(latestValueString.c_str(), address.c_str()) == 0;
+    }
+
+
     bool IsStreamExisting(string streamName) {
         try {
             Array streamParams;

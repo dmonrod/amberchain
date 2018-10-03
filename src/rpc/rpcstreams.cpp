@@ -2818,6 +2818,7 @@ bool is_number(const std::string& s)
 // param4 - total amount
 // param5 - badge notes, encrypted for badge creator (optional)
 // param6 - badge notes, encrypted for seller (optional)
+// param7 - user-defined quantity (optional)
 Value purchasenonconsumableservice(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() < 4)
@@ -2832,6 +2833,20 @@ Value purchasenonconsumableservice(const Array& params, bool fHelp)
     if (params[3].type() == real_type) 
     {
         amount = params[3].get_real();
+    }
+
+    // support either string or number for param7
+    int qty = 1;
+    if (params.size() > 6)
+    {
+        if (params[7].type() == str_type)
+        {
+            qty = atoi(params[7].get_str().c_str());
+        }
+        if (params[7].type() == int_type)
+        {
+            qty = params[7].get_int();
+        }
     }
 
     Array service_params;
@@ -2851,7 +2866,8 @@ Value purchasenonconsumableservice(const Array& params, bool fHelp)
     purchase_data.push_back(Pair("selleraddress", publisher));
     purchase_data.push_back(Pair("buyeraddress", params[0]));
     purchase_data.push_back(Pair("amount", amount));
-    purchase_data.push_back(Pair("quantity", "0"));
+    purchase_data.push_back(Pair("quantity", "0")); // identifier in purchase completion if service is a nonconsumable service
+    purchase_data.push_back(Pair("userdefined_quantity", qty)); // record the number of instances purchased
     if (params.size() > 4) {
         purchase_data.push_back(Pair("badgenotescreator", params[4]));
     }
@@ -3330,10 +3346,20 @@ Value appendrawsendfrom(const Array& params, bool fHelp)
     std::string rawtx = params[0].get_str();
     // we estimate that this function will add around 500 bytes to the TX (generous allowance)
     unsigned int nSize = rawtx.length() + 500;
+    char msg[3000];
 
     // estimate the needed tx fee
     unsigned int minRelayTxFee = StreamUtils::GetMinimumRelayTxFee();
     unsigned int estFee = minRelayTxFee*nSize / 1000;
+    std::string address = params[1].get_str();
+    if (haspermission(address, "mine") || multisighaspermission(address, "mine")) 
+    {
+        // miners dont need no fee
+        estFee = 0;
+    }
+
+    Array accumulatedTransactionsArr;
+    unsigned int accumulatedAmount = 0;
     
     // look for an unspent item that covers the needed fee
     BOOST_FOREACH(const Value& data, unspentItems)
@@ -3342,23 +3368,46 @@ Value appendrawsendfrom(const Array& params, bool fHelp)
         std::string txid;
         int vout = 0;
         bool amountFound = false;
+        bool smallerAmountFound = false;
         BOOST_FOREACH(const Pair& d, results) 
         {
-            if (d.name_ == "txid") {
+            if (d.name_ == "txid") 
+            {
                 txid = d.value_.get_str();
             }
-            if (d.name_ == "vout") {
+            if (d.name_ == "vout") 
+            {
                 vout = d.value_.get_int();
             }
-            if (d.name_ == "amount") {
+            if (d.name_ == "amount") 
+            {
                 // convert amount to satoshis
                 unsigned int satoshis = d.value_.get_real()*10000000; // multiplier is fixed for amberchain
-                if (satoshis >= estFee) {
+                if (satoshis >= estFee) 
+                {
                     amountFound = true;
+                } 
+                else 
+                {
+                    // accumulate smaller amounts if possible
+                    if (accumulatedAmount < estFee) 
+                    {
+                        accumulatedAmount += satoshis;
+                        smallerAmountFound = true;
+                    }
                 }
             }
         }        
-        if (amountFound) {
+        if (smallerAmountFound) 
+        {
+            sprintf(msg+strlen(msg),"\naccumulating an input!: %s.",txid.c_str());
+            Object transactionObj;
+            transactionObj.push_back(Pair("txid", txid));
+            transactionObj.push_back(Pair("vout", vout));
+            accumulatedTransactionsArr.push_back(transactionObj);
+        }
+        if (amountFound) 
+        {
             // build a raw transaction from the chosen txid and vout
             Array transactionsArr;
             Object transactionObj;
@@ -3377,6 +3426,25 @@ Value appendrawsendfrom(const Array& params, bool fHelp)
             return appendrawchange(ext_params2, fHelp);
         }
     }    
+
+    // we exited the loop without finding a single input that satisfies the est fee
+    // let's see if we have accumulated smaller inputs instead
+    sprintf(msg+strlen(msg),"\naccumulatedAmount: %d.",accumulatedAmount);
+    if (accumulatedAmount >= estFee)
+    {
+        Array ext_params;
+        ext_params.push_back(rawtx); // rawtx
+        ext_params.push_back(accumulatedTransactionsArr); // UTXOs
+        std::string appendedrawtx = appendrawtransaction(ext_params, fHelp).get_str();
+
+        Array ext_params2;
+        ext_params2.push_back(appendedrawtx); // rawtx
+        ext_params2.push_back(params[1]); // change address
+        return appendrawchange(ext_params2, fHelp);
+    }
+
+    sprintf(msg+strlen(msg),"\nInsufficient funds (appendrawsendfrom): %d.",estFee);
+    LogPrintf(msg);
     
     // we can't find any valid UTXOs to spend, return error
     throw JSONRPCError(RPC_INVALID_PARAMETER, "Insufficient funds.");
