@@ -14,7 +14,7 @@ AmberChain is based on the popular open source [MultiChain](http://www.multichai
 
 ## Documentation
 
-Details on the API calls developed for AmberTime Blockhain can be found [here](https://github.com/ambertime/amberchain/blob/amber-dev/docs/AmberTime%20Blockchain%20Documentation_v1.3.pdf).
+Details on the API calls developed for AmberTime Blockhain can be found [here](https://github.com/ambertime/amberchain/blob/amber-dev/docs/AmberTime%20Blockchain%20Documentation_v1.4.pdf).
 
 ## Setup instructions
 
