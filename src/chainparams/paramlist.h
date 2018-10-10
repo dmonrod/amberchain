@@ -109,7 +109,7 @@ static const mc_OneMultichainParam MultichainParamArray[] =
                    "adminconsensusadmin","",
                    "<admin-consensus-upgrade>*<active admins> needed to upgrade the chain."},
     { "adminconsensusadmin"               , "admin-consensus-admin"               , 
-                   MC_PRM_UINT32  | MC_PRM_USER | MC_PRM_CLONE | MC_PRM_DECIMAL , -1,    500000,          0,   1000000, 0.0, 10001, 0, "-mc-adminconsensusadmin",
+                   MC_PRM_UINT32  | MC_PRM_USER | MC_PRM_CLONE | MC_PRM_DECIMAL , -1,    600000,          0,   1000000, 0.0, 10001, 0, "-mc-adminconsensusadmin",
                    "adminconsensusactivate","",
                    "<admin-consensus-admin>*<active admins> needed to change admin perms."},
     { "adminconsensusactivate"                , "admin-consensus-activate"              , 

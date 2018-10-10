@@ -320,7 +320,7 @@ Value grantoperation(const Array& params)
 
         for(std::vector<std::string>::iterator it = streams.begin(); it != streams.end(); ++it) {
             std::string stream_name = *it;
-            permissions.push_back(stream_name + ".write");            
+            permissions.push_back(stream_name + ".admin");
         }
 
         streams = StreamConsts::streamsPerPermission.at("mine");
