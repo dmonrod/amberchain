@@ -109,3 +109,25 @@ Refer to the original multichain instructions [here](multichain-README.md)
     stop
     bye
     ```
+
+### Deploy the Cron Job
+
+* To automatically restart the `ambertime` chain, follow the steps below.
+* If setting this up for `amber-testnet`, please replace `ambertime` to `amber-testnet` in `restart_chain.sh`.
+* `check_chain.sh` assumes that there is only one amberchaind process running on your machine.
+* These steps assume that the `amberchain` directory is under your `$HOME|~` folder.
+
+1. Create the `cron_logs` directory under `$HOME`
+   ```
+   mkdir ~/cron_logs
+   ```
+2. Install the cron job
+   * Run command below
+   ```
+   crontab -e
+   ```
+   * Append your entry at the end of the file
+   * (Note that the command below runs the `check_chain.sh` script every 5 minutes)
+   ```
+   */5 * * * * $HOME/amberchain/check_chain.sh
+   ```
