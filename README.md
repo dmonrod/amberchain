@@ -14,7 +14,7 @@ AmberChain is based on the popular open source [MultiChain](http://www.multichai
 
 ## Documentation
 
-Details on the API calls developed for AmberTime Blockhain can be found [here](https://github.com/ambertime/amberchain/blob/amber-dev/docs/AmberTime%20Blockchain%20Documentation_v1.3.pdf).
+Details on the API calls developed for AmberTime Blockhain can be found [here](https://github.com/ambertime/amberchain/blob/amber-dev/docs/AmberTime%20Blockchain%20Documentation_v1.4.pdf).
 
 ## Setup instructions
 
@@ -57,12 +57,29 @@ Refer to the original multichain instructions [here](multichain-README.md)
 
 * The release is built with GCC after which `strip amberchaind` strings the debug symbols, which reduces the executable size by about 90%.
 
-4. Connect to the AmberChain testnet 
+4. Connect to the AmberChain testnet or AmberChain mainnet
 
     **To connect to the currently deployed amber-testnet chain, run any of the following:*
     *   `./amberchaind amber-testnet@13.250.176.149:7362`
     *   `./amberchaind amber-testnet@13.124.35.92:7362`
     *   `./amberchaind amber-testnet@47.75.251.94:7362`
+
+    **To connect to the currently deployed ambertime (mainnet) chain, run any of the following:*
+    *   `./amberchaind ambertime@13.251.21.213:7362`
+    *   `./amberchaind ambertime@52.220.101.207:7362`
+    *   `./amberchaind ambertime@13.114.69.248:7362`
+    *   `./amberchaind ambertime@52.78.32.33:7362`
+    *   `./amberchaind ambertime@52.79.183.164:7362`
+    *   `./amberchaind ambertime@47.88.220.28:7362`
+    *   `./amberchaind ambertime@47.244.33.129:7362`
+    *   `./amberchaind ambertime@47.91.17.246:7362`
+    *   `./amberchaind ambertime@47.74.181.39:7362`
+    *   `./amberchaind ambertime@149.129.223.190:7362`
+    *   `./amberchaind ambertime@137.116.137.133:7362`
+    *   `./amberchaind ambertime@40.115.176.120:7362`
+    *   `./amberchaind ambertime@52.231.158.148:7362`
+    *   `./amberchaind ambertime@13.76.197.197:7362`
+    *   `./amberchaind ambertime@52.231.76.73:7362`
 
 5. Run the Chain CLI
     ```python
@@ -92,3 +109,25 @@ Refer to the original multichain instructions [here](multichain-README.md)
     stop
     bye
     ```
+
+### Deploy the Cron Job
+
+* To automatically restart the `ambertime` chain, follow the steps below.
+* If setting this up for `amber-testnet`, please replace `ambertime` to `amber-testnet` in `restart_chain.sh`.
+* `check_chain.sh` assumes that there is only one amberchaind process running on your machine.
+* These steps assume that the `amberchain` directory is under your `$HOME|~` folder.
+
+1. Create the `cron_logs` directory under `$HOME`
+   ```
+   mkdir ~/cron_logs
+   ```
+2. Install the cron job
+   * Run command below
+   ```
+   crontab -e
+   ```
+   * Append your entry at the end of the file
+   * (Note that the command below runs the `check_chain.sh` script every 5 minutes)
+   ```
+   */5 * * * * $HOME/amberchain/check_chain.sh
+   ```
