@@ -2819,6 +2819,7 @@ bool is_number(const std::string& s)
 // param5 - badge notes, encrypted for badge creator (optional)
 // param6 - badge notes, encrypted for seller (optional)
 // param7 - user-defined quantity (optional)
+// param8 - conversion rate
 Value purchasenonconsumableservice(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() < 4)
@@ -2839,14 +2840,25 @@ Value purchasenonconsumableservice(const Array& params, bool fHelp)
     int qty = 1;
     if (params.size() > 6)
     {
-        if (params[7].type() == str_type)
+        if (params[6].type() == str_type)
         {
-            qty = atoi(params[7].get_str().c_str());
+            qty = atoi(params[6].get_str().c_str());
         }
-        if (params[7].type() == int_type)
+        if (params[6].type() == int_type)
         {
-            qty = params[7].get_int();
+            qty = params[6].get_int();
         }
+    }
+
+    // support either string or number for param8
+    double conversion_rate = 1.0;
+    if (params[7].type() == str_type)
+    {
+        conversion_rate = atof(params[7].get_str().c_str());
+    }
+    if (params[7].type() == real_type)
+    {
+        conversion_rate = params[7].get_real();
     }
 
     Array service_params;
@@ -2868,6 +2880,7 @@ Value purchasenonconsumableservice(const Array& params, bool fHelp)
     purchase_data.push_back(Pair("amount", amount));
     purchase_data.push_back(Pair("quantity", "0")); // identifier in purchase completion if service is a nonconsumable service
     purchase_data.push_back(Pair("userdefined_quantity", qty)); // record the number of instances purchased
+    purchase_data.push_back(Pair("conversion_rate", conversion_rate)); // record conversion rate at the time of purchase
     if (params.size() > 4) {
         purchase_data.push_back(Pair("badgenotescreator", params[4]));
     }
@@ -2931,6 +2944,7 @@ Value purchasenonconsumableservice(const Array& params, bool fHelp)
 // param6 - escrow address (optional)
 // param7 - badge notes, encrypted for badge creator (optional)
 // param8 - badge notes, encrypted for seller (optional)
+// param9 - conversion rate
 Value purchaseconsumableservice(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() < 5)
@@ -2958,6 +2972,17 @@ Value purchaseconsumableservice(const Array& params, bool fHelp)
     std::string funds_receiver = publisher;
     std::string assets_receiver = burn_address;
 
+     // support either string or number for param9
+    double conversion_rate = 1.0;
+    if (params[8].type() == str_type)
+    {
+        conversion_rate = atof(params[8].get_str().c_str());
+    }
+    if (params[8].type() == real_type)
+    {
+        conversion_rate = params[8].get_real();
+    }
+
     Object final_purchase_data;
     Object purchase_data;
     purchase_data.push_back(Pair("servicetxid", params[1]));
@@ -2967,6 +2992,7 @@ Value purchaseconsumableservice(const Array& params, bool fHelp)
     purchase_data.push_back(Pair("buyeraddress", params[0]));
     purchase_data.push_back(Pair("amount", params[3]));
     purchase_data.push_back(Pair("quantity", params[4]));
+    purchase_data.push_back(Pair("conversion_rate", conversion_rate)); // record conversion rate at the time of purchase
     if (params.size() > 6) {
         purchase_data.push_back(Pair("badgenotescreator", params[6]));
     }
