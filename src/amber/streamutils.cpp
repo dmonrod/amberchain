@@ -110,6 +110,44 @@ namespace StreamUtils {
         return strcmp(latestValueString.c_str(), address.c_str()) == 0;
     }
 
+	bool IsAuthority(string address) { 
+	    
+		bool isAuthority = haspermission(address,"mine");
+		if (isAuthority || !IsStreamExisting(STREAM_AUTHNODES) ) return isAuthority;
+
+		Array params;
+		params.push_back(STREAM_AUTHNODES);
+        std::string AUTH_ID = string(ID_AUTHORITY);
+		params.push_back(AUTH_ID+"_"+address);
+		//get all entries from the badgeissuer stream with the key specific to the address to be checked
+		Array results = liststreamkeyitems(params, false).get_array();
+		
+		if (results.size() > 0) {
+			
+			BOOST_FOREACH(const Value& authority, results) {
+				Object authorityObject = authority.get_obj();
+
+				std::string hex_data = authorityObject[2].value_.get_str();
+				std::string json_data = HexToStr(hex_data);
+				Value data;
+				read_string(json_data, data);
+				Object dataObject = data.get_obj();
+				
+				std::string authorityPermission = dataObject[0].value_.get_str();
+				// LogPrint("ambr", "ambr-test: admin-address HEXTOSTR(%s) \n", latestAdminPublicKeyValueString);
+				if (strcmp(authorityPermission.c_str(), "grant") == 0) {
+					isAuthority = true;
+				}
+				else {
+					isAuthority = false;
+				}
+			}
+		}	
+        return isAuthority;
+	}	
+	
+	
+	
 
     bool IsStreamExisting(string streamName) {
         try {
