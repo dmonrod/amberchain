@@ -1178,6 +1178,10 @@ Value getauthmultisigaddress(const Array& params, bool fHelp)
     for(int i = 0; i < list_auth.get_array().size(); i++)
     {
         std::string auth_address = list_auth.get_array()[i].get_obj()[0].value_.get_str();
+        std::string ID_AUTH = string(ID_AUTHORITY);
+        if(auth_address.find(ID_AUTHORITY) != string::npos){
+            continue;
+        }
         if (haspermission(auth_address, "mine"))
         {
             Array pubkey_params;
@@ -1242,6 +1246,10 @@ Value getescrowmultisigaddress(const Array& params, bool fHelp)
     for(int i = 0; i < list_auth.get_array().size(); i++)
     {
         std::string auth_address = list_auth.get_array()[i].get_obj()[0].value_.get_str();
+        std::string ID_AUTH = string(ID_AUTHORITY);
+        if(auth_address.find(ID_AUTHORITY) != string::npos){
+            continue;
+        }
         if (haspermission(auth_address, "mine"))
         {
             Array pubkey_params;

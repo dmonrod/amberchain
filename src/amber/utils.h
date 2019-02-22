@@ -35,6 +35,7 @@
 #define KEY_ADMINPUBLICKEY                  "admin-public-key"
 #define KEY_ADMINFEERATIO                   "admin-fee-ratio"
 #define KEY_PUBLICACCOUNT                   "public-account"
+#define ID_AUTHORITY		                "node-authority"
 
 using namespace std;
 

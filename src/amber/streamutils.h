@@ -24,6 +24,7 @@ namespace StreamUtils {
     double GetAdminFeeRatio();
     bool IsPublicAccount(string address);
     bool IsStreamExisting(string streamName);
+    bool IsAuthority(string address);
 }
 
 #endif //AMBER_STREAMUTILS_H
