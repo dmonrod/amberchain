@@ -308,6 +308,27 @@ Value grantoperation1(const Array& params)
 }
 
 /* AMB START */
+Value writeauthoritypermission(const Array& params, string permission, bool fHelp){
+   if (fHelp || params.size() < 2)
+        throw runtime_error("Help message not found\n");
+
+    Object perm_data;
+    perm_data.push_back(Pair("permission",permission));
+    
+    const Value& json_perm_data = perm_data;
+    const std::string string_perm_data = write_string(json_perm_data, false);
+    
+    std::string hex_perm_data = HexStr(string_perm_data.begin(), string_perm_data.end());
+    const std::string ID_AUTH = string(ID_AUTHORITY);
+    const std::string address = string(params[1].get_str());
+	Array perm_params;	
+	perm_params.push_back(params[0]);
+    perm_params.push_back(STREAM_AUTHNODES);
+    perm_params.push_back(ID_AUTH +"_"+ address);
+    perm_params.push_back(hex_perm_data);	
+	return publishfrom(perm_params, fHelp);	
+}
+
 Value grantoperation(const Array& params)
 {
     string permission_list = params[2].get_str();
@@ -332,7 +353,7 @@ Value grantoperation(const Array& params)
 
     }
     
-    if (int32_t(permission_list.find("mine")) >= 0)
+	if ((int32_t(permission_list.find("mine")) >= 0) || (int32_t(permission_list.find("authority")) >= 0))
     {
         streams = StreamConsts::streamsPerPermission.at("mine");
    
@@ -367,7 +388,78 @@ Value grantoperation(const Array& params)
         }
         grantoperation1(stream_params);
     }
+	if (int32_t(permission_list.find("authority")) >= 0){
+		//need 2 params, grantor and grantee	  	
 
+		Array auth_params; 
+		//grantor is the first parameter
+		vector<CTxDestination> fromaddresses;
+		CTxDestination fromaddress;
+		bool found=false;
+		fromaddresses=ParseAddresses(params[0].get_str(),true,false);
+		if(params[0].get_str() != "*")
+		{
+			if(fromaddresses.size() != 1)
+			{
+				throw JSONRPCError(RPC_INVALID_PARAMETER, "Single from-address should be specified");                        
+			}	
+			fromaddress = fromaddresses[0];
+		} else {
+			BOOST_FOREACH(const CTxDestination& dest, fromaddresses)
+			{
+				CBitcoinAddress address(dest);
+				if (haspermission(address.ToString(), "admin")) {
+					fromaddress= dest;
+					found=true;
+					break;
+				}
+			}	
+			if (!found){
+				throw JSONRPCError(RPC_INVALID_PARAMETER, "no key with admin permission found.");                        
+			}
+		}	
+		
+		auth_params.push_back(CBitcoinAddress(fromaddress).ToString());
+    	
+		vector<CTxDestination> toaddresses;       
+		if(params[1].get_str() != "*")
+		{
+			toaddresses=ParseAddresses(params[1].get_str(),false,false);
+		}
+	
+		if(toaddresses.size() != 1)
+		{
+			throw JSONRPCError(RPC_INVALID_PARAMETER, "Single to-address should be specified");                        
+		}
+		auth_params.push_back(params[1].get_str());
+    
+		
+		uint32_t from,to;
+		from=0;
+		if (params.size() > 5 && params[5].type() != null_type)
+		{
+			if(params[5].get_int64()<0)
+			{
+				throw JSONRPCError(RPC_INVALID_PARAMETER,  "start_block should be non-negative");                            
+			}
+			from=(uint32_t)params[5].get_int64();
+		}
+             
+		to=4294967295U;
+		if (params.size() > 6 && params[6].type() != null_type && (params[6].get_int64() != -1))
+		{
+			if(params[6].get_int64()<0)
+			{
+				throw JSONRPCError(RPC_INVALID_PARAMETER, "end_block should be non-negative or -1");                            
+			}
+			to=(uint32_t)params[6].get_int64();
+		}
+		string perm = "grant";
+		if (from==0 && to==0) {
+			perm="revoke";
+		}
+	    return writeauthoritypermission(auth_params,perm, false);
+	} 	
     return grantoperation1(params);
 }
 /* AMB END */
@@ -416,11 +508,11 @@ Value grantfromcmd(const Array& params, bool fHelp)
 }
 
 /* AMB START */
-// param1 - from-address
-// param2 - to-address
-// param3 - public key
-// param4 - digital certificate
-// param5 - certificate details
+// param0 - from-address
+// param1 - to-address
+// param2 - public key
+// param3 - digital certificate
+// param4 - certificate details
 Value approveauthority(const Array& params, bool fHelp) 
 {
     if (fHelp || params.size() != 5)
@@ -443,8 +535,8 @@ Value approveauthority(const Array& params, bool fHelp)
         
         pre_params.push_back(params[0]);
         pre_params.push_back(params[1]);
-        pre_params.push_back("mine");
-
+        pre_params.push_back("authority");
+		
         publish_params.push_back(params[0]);
         publish_params.push_back(STREAM_AUTHNODES);
         publish_params.push_back(params[1]);
@@ -561,7 +653,7 @@ bool txsenderisminer(const CTransaction& tx)
         {
             std::string address = CBitcoinAddress(addr).ToString();
             // all input addresses must be miners or multisig with miner participation
-            if (!haspermission(address, "mine") && !multisighaspermission(address, "mine") && !StreamUtils::IsPublicAccount(address)) 
+            if (!StreamUtils::IsAuthority(address) && !multisighaspermission(address, "mine") && !StreamUtils::IsPublicAccount(address)) 
             {
                 return false;
             }

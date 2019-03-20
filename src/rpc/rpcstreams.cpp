@@ -1694,8 +1694,8 @@ Value revokerecord(const Array& params, bool fHelp)
     return writeannotatedrecord(ext_params, fHelp);
 }
 
-// param1 - badge creator
-// param2 - badge data
+// param0 - badge creator
+// param1 - badge data
 // key of all badges = rootbadges
 
 Value createbadge(const Array& params, bool fHelp)
@@ -1703,7 +1703,7 @@ Value createbadge(const Array& params, bool fHelp)
     if (fHelp || params.size() != 2)
         throw runtime_error("Help message not found\n");
 
-    if (haspermission(params[0].get_str(), "mine"))
+    if (StreamUtils::IsAuthority(params[0].get_str()))
     {
         Array ext_params;
         Object data;
@@ -1753,6 +1753,7 @@ bool isbadgecreator(std::string address, std::string transaction_id)
     return false;
 }
 
+
 // param1 - badge creator
 // param2 - badge transaction id found in rootbadges
 // param3 - badge data
@@ -1762,7 +1763,7 @@ Value updatebadge(const Array& params, bool fHelp)
     if (fHelp || params.size() != 3)
         throw runtime_error("Help message not found\n");
 
-    if (haspermission(params[0].get_str(), "mine") && isbadgecreator(params[0].get_str(), params[1].get_str()))
+    if (StreamUtils::IsAuthority(params[0].get_str()) && isbadgecreator(params[0].get_str(), params[1].get_str()))
     {
         Array ext_params;
         Object data;
@@ -1850,7 +1851,7 @@ Value issuebadge(const Array& params, bool fHelp)
 
     Array ext_params;
 
-    if (haspermission(params[0].get_str(), "mine") && isbadgecreator(params[0].get_str(), params[2].get_str()))
+    if (StreamUtils::IsAuthority(params[0].get_str()) && isbadgecreator(params[0].get_str(), params[2].get_str()))
     {
         BOOST_FOREACH(const Value& value, params)
         {
@@ -1878,7 +1879,7 @@ Value revokebadge(const Array& params, bool fHelp)
 
     Array ext_params;
 
-    if (haspermission(params[0].get_str(), "mine") && isbadgecreator(params[0].get_str(), params[2].get_str()))
+    if (StreamUtils::IsAuthority(params[0].get_str()) && isbadgecreator(params[0].get_str(), params[2].get_str()))
     {
         BOOST_FOREACH(const Value& value, params)
         {
@@ -2088,17 +2089,18 @@ Value processrequestissuebadge(const Array& params, bool fHelp)
     return Value::null;
 }
 
-// param1 - badge creator
-// param2 - badge transaction id found in rootbadges
-// param3 - address of badge issuer
-// param4 - badge issuer permission
+
+// param0 - badge creator
+// param1 - badge transaction id found in rootbadges
+// param2 - address of badge issuer
+// param3 - badge issuer permission
 
 Value writebadgeissuerpermission(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() != 4)
         throw runtime_error("Help message not found\n");
 
-    if (haspermission(params[0].get_str(), "mine") && isbadgecreator(params[0].get_str(), params[1].get_str()))
+	if (StreamUtils::IsAuthority(params[0].get_str()) && isbadgecreator(params[0].get_str(), params[1].get_str()))    
     {
         Array keyBadgeParams;
         Array keyAddressParams;
@@ -2152,7 +2154,7 @@ Value grantbadgeissuerpermission(const Array& params, bool fHelp)
     if (fHelp || params.size() != 3)
         throw runtime_error("Help message not found\n");
 
-    if (haspermission(params[0].get_str(), "mine") && isbadgecreator(params[0].get_str(), params[1].get_str()))
+    if (StreamUtils::IsAuthority(params[0].get_str()) && isbadgecreator(params[0].get_str(), params[1].get_str()))
     {
         Array ext_params;
         Object data;
@@ -2182,7 +2184,7 @@ Value revokebadgeissuerpermission(const Array& params, bool fHelp)
     if (fHelp || params.size() != 3)
         throw runtime_error("Help message not found\n");
 
-    if (haspermission(params[0].get_str(), "mine") && isbadgecreator(params[0].get_str(), params[1].get_str()))
+    if (StreamUtils::IsAuthority(params[0].get_str()) && isbadgecreator(params[0].get_str(), params[1].get_str()))
     {
         Array ext_params;
         Object data;
@@ -2213,7 +2215,7 @@ Value writeannotatedbadge(const Array& params, bool fHelp)
     if (fHelp || params.size() != 4)
         throw runtime_error("Help message not found\n");
 
-    if (haspermission(params[0].get_str(), "mine") && isbadgecreator(params[0].get_str(), params[1].get_str())) 
+    if (StreamUtils::IsAuthority(params[0].get_str()) && isbadgecreator(params[0].get_str(), params[1].get_str())) 
     {
 
         Array ext_params;
@@ -2251,7 +2253,7 @@ Value annotatebadge(const Array& params, bool fHelp)
 
     Array ext_params;
 
-    if (haspermission(params[0].get_str(), "mine")  && isbadgecreator(params[0].get_str(), params[1].get_str()))
+    if (StreamUtils::IsAuthority(params[0].get_str()) && isbadgecreator(params[0].get_str(), params[1].get_str()))
     {
         BOOST_FOREACH(const Value& value, params)
         {
@@ -3378,7 +3380,7 @@ Value appendrawsendfrom(const Array& params, bool fHelp)
     unsigned int minRelayTxFee = StreamUtils::GetMinimumRelayTxFee();
     unsigned int estFee = minRelayTxFee*nSize / 1000;
     std::string address = params[1].get_str();
-    if (haspermission(address, "mine") || multisighaspermission(address, "mine")) 
+    if (StreamUtils::IsAuthority(address) || multisighaspermission(address, "mine")) 
     {
         // miners dont need no fee
         estFee = 0;
