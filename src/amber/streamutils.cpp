@@ -119,6 +119,8 @@ namespace StreamUtils {
 		params.push_back(STREAM_AUTHNODES);
         std::string AUTH_ID = string(ID_AUTHORITY);
 		params.push_back(AUTH_ID+"_"+address);
+		params.push_back(false);
+		params.push_back(99999);
 		//get all entries from the badgeissuer stream with the key specific to the address to be checked
 		Array results = liststreamkeyitems(params, false).get_array();
 		
