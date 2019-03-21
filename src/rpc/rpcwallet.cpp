@@ -1172,6 +1172,9 @@ Value getauthmultisigaddress(const Array& params, bool fHelp)
 
     // GET ALL AUTHORITY ENTRIES IN STREAM OF AUTHORITY NODES
     liststreamkeys_params.push_back(STREAM_AUTHNODES);
+    liststreamkeys_params.push_back("*");
+    liststreamkeys_params.push_back(false);
+    liststreamkeys_params.push_back(99999);
     Value list_auth = liststreamkeys(liststreamkeys_params, false);
 
     // LOOP THROUGH THE STREAM ITEMS AND THEN EXTRACT ONLY THE ADDRESSES
@@ -1206,6 +1209,8 @@ Value getauthmultisigaddress(const Array& params, bool fHelp)
     Array stream_params;
     stream_params.push_back(STREAM_MULTISIGS);
     stream_params.push_back(multisig);
+    stream_params.push_back(false);
+    stream_params.push_back(99999);
 
     Array results = liststreamkeyitems(stream_params, false).get_array();
 
@@ -1240,6 +1245,9 @@ Value getescrowmultisigaddress(const Array& params, bool fHelp)
 
     // GET ALL AUTHORITY ENTRIES IN STREAM OF AUTHORITY NODES
     liststreamkeys_params.push_back(STREAM_AUTHNODES);
+    liststreamkeys_params.push_back("*");
+    liststreamkeys_params.push_back(false);
+    liststreamkeys_params.push_back(99999);
     Value list_auth = liststreamkeys(liststreamkeys_params, false);
 
     // LOOP THROUGH THE STREAM ITEMS AND THEN EXTRACT ONLY THE ADDRESSES
@@ -1279,6 +1287,8 @@ Value getescrowmultisigaddress(const Array& params, bool fHelp)
     Array stream_params;
     stream_params.push_back(STREAM_MULTISIGS);
     stream_params.push_back(multisig);
+    stream_params.push_back(false);
+    stream_params.push_back(99999);
 
     Array results = liststreamkeyitems(stream_params, false).get_array();
 
