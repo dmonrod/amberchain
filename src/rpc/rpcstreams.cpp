@@ -1899,6 +1899,8 @@ bool isbadgeissuer(std::string creator_address, std::string issuer_address, std:
     Array params;
     params.push_back(STREAM_BADGEISSUERS);
     params.push_back(issuer_address);
+    params.push_back(false);
+    params.push_back(99999);
     Array results = liststreamkeyitems(params, false).get_array();
 
     bool isBadgeIssuer = false;
@@ -1986,6 +1988,8 @@ bool isbadgerequestproccessed(std::string creator_address, std::string request_t
     Array params;
     params.push_back(STREAM_PROCESSISSUEBADGEREQUESTS);
     params.push_back(request_txid);
+    params.push_back(true);
+    params.push_back(99999);
     Array results = liststreamkeyitems(params, false).get_array();
 
     bool processed = false;
@@ -2018,6 +2022,8 @@ Value processrequestissuebadge(const Array& params, bool fHelp)
     Array badge_params;
     badge_params.push_back(STREAM_BADGES);
     badge_params.push_back(params[0].get_str());
+    badge_params.push_back(false);
+    badge_params.push_back(99999);
     Array badge_results = liststreampublisheritems(badge_params, false).get_array();
 
     BOOST_FOREACH(const Value& badge_value, badge_results)
@@ -2031,6 +2037,8 @@ Value processrequestissuebadge(const Array& params, bool fHelp)
             Array issuebadgerequest_params;
             issuebadgerequest_params.push_back(STREAM_ISSUEBADGEREQUESTS);
             issuebadgerequest_params.push_back(badge_identifier);
+            issuebadgerequest_params.push_back(false);
+            issuebadgerequest_params.push_back(99999);
 
             Array issuebadgerequest_results = liststreamkeyitems(issuebadgerequest_params, false).get_array();
 
