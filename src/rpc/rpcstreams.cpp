@@ -2707,6 +2707,7 @@ Value listofficialasset(const Array& params, bool fHelp)
     Object data;
     data.push_back(Pair("name", service_name));
     data.push_back(Pair("asset-owner", asset_owner));
+    data.push_back(Pair("quantity", quantity));
     if (!haspermission(params[0].get_str(), "admin"))
     {
         throw runtime_error("Address doesn't have permission to create asset\n");
