@@ -5,7 +5,6 @@
 // Copyright (c) 2018 Apsaras Group Ltd
 // Amberchain code distributed under the GPLv3 license, see COPYING file.
 
-
 #include "rpc/rpcwallet.h"
 #include "amber/utils.h"
 #include "amber/strencodings.h"
@@ -2652,6 +2651,88 @@ Value listservice(const Array& params, bool fHelp)
     Object raw_data;
     raw_data.push_back(Pair("for", STREAM_SERVICES));
     raw_data.push_back(Pair("key", "service"));
+    raw_data.push_back(Pair("data", hex_data));
+
+    dataArray.push_back(raw_data);
+
+    ext_params.push_back(params[0]); // from-address
+    ext_params.push_back(addresses); // addresses
+    ext_params.push_back(dataArray); // data array
+
+    return createrawsendfrom(ext_params, fHelp);
+}
+
+// param0 - address that will create the asset
+// param1 - name of asset
+// param2 - quantity of asset
+// param3 - owner of the asset (will receive all the asset initially)
+// param4 - (optional) JSON of asset details
+// TODO: fix setting of asset details
+Value listofficialasset(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() < 4)
+        throw runtime_error("Help message not found\n");
+
+    if (doesassetexist(params[1].get_str()))
+        throw runtime_error("Asset already exists\n");
+
+    std::string service_name = params[1].get_str();
+    std::string asset_owner = params[3].get_str();
+
+    Array ext_params;
+
+    Object addresses;
+    Array dataArray;
+
+    Object issue_params;
+    Object issue_raw;
+
+    int quantity = params[2].get_int();
+
+    issue_raw.push_back(Pair("raw", quantity));
+    const Value& value_issue_raw = issue_raw;
+    issue_params.push_back(Pair("issue", value_issue_raw));
+    const Value& value_issue_params = issue_params;
+
+    Object asset_metadata;
+    if(params.size() > 4)
+    {
+        BOOST_FOREACH(const Pair& pair, params[4].get_obj())
+        {
+            asset_metadata.push_back(Pair(pair.name_, pair.value_.get_str()));
+        }
+    }
+
+    
+    Object data;
+    data.push_back(Pair("name", service_name));
+    data.push_back(Pair("asset-owner", asset_owner));
+    if (!haspermission(params[0].get_str(), "admin"))
+    {
+        throw runtime_error("Address doesn't have permission to create asset\n");
+    }
+
+    data.push_back(Pair("asset-creator", params[0]));
+    addresses.push_back(Pair(asset_owner, value_issue_params));    
+    asset_metadata.push_back(Pair("owner", asset_owner));
+    const Value& value_asset_metadata = asset_metadata;
+
+    Object asset_data;
+    asset_data.push_back(Pair("create", "asset"));
+    asset_data.push_back(Pair("name", params[1].get_str()));
+    asset_data.push_back(Pair("open", true));
+    asset_data.push_back(Pair("details", value_asset_metadata));
+
+    dataArray.push_back(asset_data);
+
+    const Value& json_data = data;
+    const std::string string_data = write_string(json_data, false);
+
+    std::string hex_data = HexStr(string_data.begin(), string_data.end());
+
+    Object raw_data;
+    raw_data.push_back(Pair("for", STREAM_OFFICIALASSETS));
+    raw_data.push_back(Pair("key", "asset"));
     raw_data.push_back(Pair("data", hex_data));
 
     dataArray.push_back(raw_data);

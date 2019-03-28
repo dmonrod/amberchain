@@ -242,6 +242,7 @@ extern json_spirit::Value getauthmultisigaddress(const json_spirit::Array& param
 extern json_spirit::Value getescrowmultisigaddress(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value writemultisigdetails(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value verifyblocksignature(const json_spirit::Array& params, bool fHelp);
+extern json_spirit::Value listofficialasset(const json_spirit::Array& params, bool fHelp);
 
 // extern void loginvalidblock(const CBlockIndex* pindex, const CWallet pwalletMain);
 /* AMB END */

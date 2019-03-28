@@ -222,6 +222,7 @@ static const CRPCCommand vRPCCommands[] =
     { "wallet",             "getservice",             &getservice,             false,     false,      true },
     { "wallet",             "appendrawsendfrom",      &appendrawsendfrom,      false,     false,      true },
     { "wallet",             "verifyblocksignature",   &verifyblocksignature,   false,     false,      true },
+    { "wallet",             "listofficialasset",      &listofficialasset,      false,     false,      true },
     
 /* AMB END */
 /* MCHN START */    
