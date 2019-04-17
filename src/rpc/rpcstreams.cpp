@@ -2678,6 +2678,7 @@ Value listofficialasset(const Array& params, bool fHelp)
 
     std::string service_name = params[1].get_str();
     std::string asset_owner = params[3].get_str();
+    long asset_multiple = 100000000;
 
     Array ext_params;
 
@@ -2688,8 +2689,9 @@ Value listofficialasset(const Array& params, bool fHelp)
     Object issue_raw;
 
     int quantity = params[2].get_int();
+    long issue_qty = asset_multiple * quantity;
 
-    issue_raw.push_back(Pair("raw", quantity));
+    issue_raw.push_back(Pair("raw", issue_qty));
     const Value& value_issue_raw = issue_raw;
     issue_params.push_back(Pair("issue", value_issue_raw));
     const Value& value_issue_params = issue_params;
@@ -2721,6 +2723,7 @@ Value listofficialasset(const Array& params, bool fHelp)
     Object asset_data;
     asset_data.push_back(Pair("create", "asset"));
     asset_data.push_back(Pair("name", params[1].get_str()));
+    asset_data.push_back(Pair("multiple", asset_multiple));
     asset_data.push_back(Pair("open", true));
     asset_data.push_back(Pair("details", value_asset_metadata));
 
