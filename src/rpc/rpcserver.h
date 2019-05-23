@@ -243,6 +243,12 @@ extern json_spirit::Value getescrowmultisigaddress(const json_spirit::Array& par
 extern json_spirit::Value writemultisigdetails(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value verifyblocksignature(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value listofficialasset(const json_spirit::Array& params, bool fHelp);
+extern json_spirit::Value createbulletinboard(const json_spirit::Array& params, bool fHelp);
+extern json_spirit::Value grantboardaccess(const json_spirit::Array& params, bool fHelp);
+extern json_spirit::Value revokeboardaccess(const json_spirit::Array& params, bool fHelp);
+extern json_spirit::Value createboardpost(const json_spirit::Array& params, bool fHelp);
+extern json_spirit::Value createpostcomment(const json_spirit::Array& params, bool fHelp);
+extern json_spirit::Value getboardforpost(const json_spirit::Array& params, bool fHelp);
 
 // extern void loginvalidblock(const CBlockIndex* pindex, const CWallet pwalletMain);
 /* AMB END */

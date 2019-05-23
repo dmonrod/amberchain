@@ -4225,6 +4225,69 @@ void mc_InitRPCHelpMap17()
         "\nExample:\n"
         + HelpExampleCli("listofficialasset", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd asset1 1000 1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd {'fee':'20 units', 'maturity-date': '01-2-12'}")
     ));
+    mapHelpStrings.insert(std::make_pair("createbulletinboard",
+        "createbulletinboard\n"
+        "\nCreates a new bulletin board where creator can make posts\n"
+        "\nArguments:\n"
+        "1. \"from-address\"                (string, required) Address of the board creator\n"
+        "2. \"data\"                        (string, required) details of the board in JSON format\n"
+        "3. \"is-private\"                  (boolean, required) Flag if the board is private or not\n"
+        "4. \"secret-key\"                  (string, optional) The key used to encode/decode a private board's contents.\n"
+        "\nExample:\n"
+        + HelpExampleCli("createbulletinboard", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd '{\"title\":\"Test Title\"}' false")
+        + HelpExampleCli("createbulletinboard", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd '{\"title\":\"Test Title\"}' true 53ACA9A565D7CBC9")
+    ));
+    mapHelpStrings.insert(std::make_pair("grantboardaccess",
+        "grantboardaccess\n"
+        "\nGrant a wallet address permission to access a bulletin board\n"
+        "\nArguments:\n"
+        "1. \"from-address\"                (string, required) Address of the board creator or board admin\n"
+        "2. \"board-txid\"                  (string, required) Transaction ID of board on creation, found in bulletinboards stream\n"
+        "3. \"board-accessor-address\"      (string, required) Address to be granted board access\n"
+        "4. \"step-no\"                     (number, required) Step number in granting of permission\n"
+        "5. \"board-secret-key\"            (string, required) The board's secret key\n"
+        "\nExample:\n"
+        + HelpExampleCli("grantboardaccess", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd 5d06edd7a0dbd0d83478c25fbf30cf3f07ceac45d9ced1591f6bd982fb878647 144hgKYSWTCXrn889jRvc1MERgdebwChJxdUdG 53ACA9A565D7CBC9 1")
+    ));
+    mapHelpStrings.insert(std::make_pair("revokeboardaccess",
+        "revokeboardaccess\n"
+        "\nRevokes a wallet address permission to access a bulletin board\n"
+        "\nArguments:\n"
+        "1. \"from-address\"                (string, required) Address of the board creator or board admin\n"
+        "2. \"board-txid\"                  (string, required) Transaction ID of board on creation, found in bulletinboards stream\n"
+        "3. \"board-accessor-address\"      (string, required) Address to be revoked board access\n"
+        "4. \"step-no\"                     (number, required) Step number in revoking of permission\n"
+        "\nExample:\n"
+        + HelpExampleCli("revokeboardaccess", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd 5d06edd7a0dbd0d83478c25fbf30cf3f07ceac45d9ced1591f6bd982fb878647 144hgKYSWTCXrn889jRvc1MERgdebwChJxdUdG 1")
+    ));
+    mapHelpStrings.insert(std::make_pair("createboardpost",
+        "createboardpost\n"
+        "\nAdds a new post to the bulletin board\n"
+        "\nArguments:\n"
+        "1. \"from-address\"                (string, required) Address of the post creator\n"
+        "2. \"board-txid\"                  (string, required) Transaction ID of board on creation, found in bulletinboards stream\n"
+        "3. \"data\"                        (string, required) Data of the post. Can be an encrypted string or a JSON string.\n"
+        "\nExample:\n"
+        + HelpExampleCli("createboardpost", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd 5d06edd7a0dbd0d83478c25fbf30cf3f07ceac45d9ced1591f6bd982fb878647 '{'content': 'This is a post'}'")
+    ));
+    mapHelpStrings.insert(std::make_pair("createpostcomment",
+        "createpostcomment\n"
+        "\nAdds a new comment to a post in a bulletin board\n"
+        "\nArguments:\n"
+        "1. \"from-address\"                (string, required) Address of the comment creator. Requires access to the board.\n"
+        "2. \"post-txid\"                   (string, required) Transaction ID of post on creation, found in bulletinboards stream\n"
+        "3. \"data\"                        (string, required) Data of the comment. Can be an encrypted string or a JSON string.\n"
+        "\nExample:\n"
+        + HelpExampleCli("createpostcomment", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd 5d06edd7a0dbd0d83478c25fbf30cf3f07ceac45d9ced1591f6bd982fb878647 '{'content': 'This is a comment'}'")
+    ));
+    mapHelpStrings.insert(std::make_pair("getboardforpost",
+        "getboardforpost\n"
+        "\Retrieves the board transaction ID given a post\n"
+        "\nArguments:\n"
+        "1. \"post-txid\"                   (string, required) Transaction ID of the post.\n"
+        "\nExample:\n"
+        + HelpExampleCli("getboardforpost", "5d06edd7a0dbd0d83478c25fbf30cf3f07ceac45d9ced1591f6bd982fb878647")
+    ));
 }
 
 void mc_InitRPCLogParamCountMap()

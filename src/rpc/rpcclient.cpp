@@ -269,6 +269,12 @@ static const CRPCConvertParam vRPCConvertParams[] =
     { "estimatepriority", 0 },
     { "prioritisetransaction", 1 },
     { "prioritisetransaction", 2 },
+    // AMB Start
+    { "createbulletinboard", 2 },
+    { "grantboardaccess", 3 },
+    { "revokeboardaccess", 3 },
+
+    // AMB End
 };
 
 class CRPCConvertTable

@@ -223,6 +223,12 @@ static const CRPCCommand vRPCCommands[] =
     { "wallet",             "appendrawsendfrom",      &appendrawsendfrom,      false,     false,      true },
     { "wallet",             "verifyblocksignature",   &verifyblocksignature,   false,     false,      true },
     { "wallet",             "listofficialasset",      &listofficialasset,      false,     false,      true },
+    { "wallet",             "createbulletinboard",    &createbulletinboard,    false,     false,      true },
+    { "wallet",             "grantboardaccess",       &grantboardaccess,       false,     false,      true },
+    { "wallet",             "revokeboardaccess",      &revokeboardaccess,      false,     false,      true },
+    { "wallet",             "createboardpost",        &createboardpost,        false,     false,      true },
+    { "wallet",             "createpostcomment",      &createpostcomment,      false,     false,      true },
+    { "wallet",             "getboardforpost",        &getboardforpost,        false,     false,      true },
     
 /* AMB END */
 /* MCHN START */    

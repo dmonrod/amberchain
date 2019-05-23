@@ -3657,4 +3657,367 @@ Value writemultisigdetails(const Array& params, bool fHelp)
     return publish(ext_params, fHelp);
 
 }
+
+/* Bulletin board fxns */ 
+
+// param0 - from-address
+// param1 - encrypted data
+// param2 - is private board
+// param3 - encrypted key for private board
+Value createbulletinboard(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() < 3)
+        throw runtime_error("Help message not found\n");
+
+    if(!haspermission(params[0].get_str(), "bulletinboards.write")){
+        throw runtime_error("Address has no permission to create board\n");
+    }
+
+    Object content;
+    content.push_back(Pair("data",params[1]));
+    std::string key = "publicboard";
+    if(params[2].get_bool()){
+        key = "privateboard";
+        if(params.size() < 4){
+            throw runtime_error("Private board requires encrypted key\n");
+        }
+        content.push_back(Pair("secret-key",params[3]));
+    }
+
+    const Value& json_data = content;
+    const std::string string_data = write_string(json_data, false);
+
+    std::string hex_data = HexStr(string_data.begin(), string_data.end());
+
+    Object raw_data;
+    raw_data.push_back(Pair("for", STREAM_BULLETINBOARDS));
+    raw_data.push_back(Pair("key", key));
+    raw_data.push_back(Pair("data", hex_data));
+
+    Array ext_params;
+
+    Object addresses;
+    Array dataArray;
+    dataArray.push_back(raw_data);
+    ext_params.push_back(params[0]); // from-address
+    ext_params.push_back(addresses); // addresses
+    ext_params.push_back(dataArray); // data array
+
+    return createrawsendfrom(ext_params, fHelp);
+}
+
+std::string getboard(std::string post)
+{
+    Array params;
+    params.push_back(STREAM_BULLETINBOARDS);
+    params.push_back(post);
+    Object result = getstreamitem(params, false).get_obj();
+    std::string postkey = result[1].value_.get_str();
+    std::string type = postkey.substr(0, postkey.find("-"));
+    if(type.compare("post") != 0){
+        throw runtime_error("Transaction ID given is not a post");
+    }
+    postkey.erase(0, postkey.find("-") + 1);
+    return postkey;
+}
+
+std::string getboardcreator(std::string board){
+    Array params;
+    params.push_back(STREAM_BULLETINBOARDS);
+    params.push_back(board);
+    Object result = getstreamitem(params, false).get_obj();
+    return result[0].value_.get_array().front().get_str();
+}
+
+bool isboard(std::string board)
+{
+    Array params;
+    params.push_back(STREAM_BULLETINBOARDS);
+    params.push_back(board);
+    Object result = getstreamitem(params, false).get_obj();
+
+    if (result.size() > 0) {
+        std::string boardkey = result[1].value_.get_str();
+        if ( boardkey.compare("privateboard") == 0 || boardkey.compare("publicboard") == 0) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool isboardcreator(std::string address, std::string board)
+{
+    if(!isboard(board)){
+        throw runtime_error("Transaction ID given is not a board");
+    }
+    std::string firstBoardPublisherString = getboardcreator(board);
+    if ( strcmp(firstBoardPublisherString.c_str(), address.c_str()) == 0) {
+        return true;
+    }
+
+    return false;
+}
+
+bool isprivateboard(std::string board)
+{
+    Array params;
+    params.push_back(STREAM_BULLETINBOARDS);
+    params.push_back(board);
+    Object result = getstreamitem(params, false).get_obj();
+
+    if (result.size() > 0) {
+        std::string boardkey = result[1].value_.get_str();
+        if ( boardkey.compare("privateboard") == 0) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool hasaccesspermission(std::string address, std::string board)
+{
+    // all has access to public unless it has been revoked
+    bool hasAccess = !isprivateboard(board); 
+    if(isboardcreator(address, board)){
+        hasAccess = haspermission(address, "bulletinboards.write");
+    } else {
+        Array streamParams;
+        std::string key = "perm-" + address + "-" + board;
+        streamParams.push_back(STREAM_BULLETINBOARDS);
+        streamParams.push_back(key);
+        streamParams.push_back(false);
+        streamParams.push_back(1);
+
+        Array results = liststreamkeyitems(streamParams, false).get_array();
+        if (results.size() > 0) {
+			BOOST_FOREACH(const Value& board, results) {
+				Object accessObject = board.get_obj();
+                //get data in the stream item
+				std::string hex_data = accessObject[2].value_.get_str(); 
+				std::string json_data = HexToStr(hex_data);
+				Value data;
+				read_string(json_data, data);
+				Object dataObject = data.get_obj();
+                //action(grant/revoke) is the second item
+				std::string boardPermission = dataObject[1].value_.get_str(); 
+				if (boardPermission.compare("grant") == 0) {
+					hasAccess = true;
+				}
+				else {
+					hasAccess = false;
+				}
+			}
+		}	
+
+    }
+
+    return hasAccess;
+}
+
+// param0 - board creator or board admin
+// param1 - board transaction id found in bulletinboards
+// param2 - address to be given the permission
+// param3 - step number
+// param4 - encrypted secret key of the board
+// param5 - board access permission
+Value writeboardaccesspermission(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() != 6)
+        throw runtime_error("Help message not found\n");
+
+	if ( haspermission(params[0].get_str(), "bulletinboards.admin") || 
+        (haspermission(params[0].get_str(), "bulletinboards.write") && isboardcreator(params[0].get_str(), params[1].get_str())))    
+    {
+        Object addresses;
+        Array permDataParam;
+
+        std::string key;
+        Object keyData;
+        std::string keyStrData;
+        std::string keyHexData;
+        Object rawData;
+        switch(params[3].get_int()){
+            case 1:
+                key = "access-" + params[1].get_str();
+                //data preparation for when key is the board txid
+                keyData.push_back(Pair("address", params[2]));
+                keyData.push_back(Pair("secret-key",params[4]));
+                keyData.push_back(Pair("action",params[5]));
+            break;
+            case 2:
+                //data preparation for when key is both board txid and address to be given permission
+                key = "perm-" + params[2].get_str() + "-" + params[1].get_str();
+                keyData.push_back(Pair("secret-key",params[4]));
+                keyData.push_back(Pair("action",params[5]));
+            break;
+            case 3:
+                //data preparation for when key is address to be given permission
+                key = "perm-" + params[2].get_str();
+                keyData.push_back(Pair("board", params[1]));
+            break;
+            default:
+                throw runtime_error("Step number not recognized");
+        }
+
+        const Value& keyJsonData = keyData;
+        keyStrData = write_string(keyJsonData, false);
+        keyHexData = HexStr(keyStrData.begin(), keyStrData.end());
+        rawData.push_back(Pair("for", STREAM_BULLETINBOARDS)); // board creator or board admin
+        rawData.push_back(Pair("key", key)); // stream for board info
+        rawData.push_back(Pair("data", keyHexData)); // "<address>-<board>"
+        permDataParam.push_back(rawData);
+        Array permRawParams;
+        permRawParams.push_back(params[0]); // board creator or board admin
+        permRawParams.push_back(addresses); // stream for board info
+        permRawParams.push_back(permDataParam); // board txid
+        return createrawsendfrom(permRawParams, fHelp).get_str();
+    }
+    else
+    {
+        throw runtime_error("Unauthorized address\n");
+    }
+}
+
+// param0 - board creator or board admin
+// param1 - board transaction id found in bulletinboards
+// param2 - address to be given the permission
+// param3 - step number
+// param4 - encrypted secret key of the board
+Value grantboardaccess(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() != 5)
+        throw runtime_error("Help message not found\n");
+
+    Array ext_params;
+    BOOST_FOREACH(const Value& value, params)
+    {
+        ext_params.push_back(value);
+    }
+    ext_params.push_back("grant");
+
+    return writeboardaccesspermission(ext_params, fHelp);
+}
+
+// param0 - board creator or board admin
+// param1 - board transaction id found in bulletinboards
+// param2 - address to be given the permission
+// param3 - step number
+Value revokeboardaccess(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() != 4)
+        throw runtime_error("Help message not found\n");
+
+    Array ext_params;
+    BOOST_FOREACH(const Value& value, params)
+    {
+        ext_params.push_back(value);
+    }
+    ext_params.push_back(""); // secret-key which will be blank for revoke
+    ext_params.push_back("revoke");
+
+    return writeboardaccesspermission(ext_params, fHelp);
+}
+
+
+// param0 - address of post writer
+// param1 - txid of board to be written into
+// param2 - data to be written into the post 
+Value createboardpost(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() != 3)
+        throw runtime_error("Help message not found\n");
+
+    if (haspermission(params[0].get_str(), "bulletinboards.write") && isboardcreator(params[0].get_str(), params[1].get_str())){    
+        std::string datakey = "data";
+        if(isprivateboard(params[1].get_str())){
+            datakey = "encdata";
+        }
+
+        Object content;
+        content.push_back(Pair(datakey,params[2]));
+
+        const Value& json_data = content;
+        const std::string string_data = write_string(json_data, false);
+        std::string hex_data = HexStr(string_data.begin(), string_data.end());
+
+
+        const std::string key = "post-" + params[1].get_str();
+        Object raw_data;
+        raw_data.push_back(Pair("for", STREAM_BULLETINBOARDS));
+        raw_data.push_back(Pair("key", key));
+        raw_data.push_back(Pair("data", hex_data));
+
+
+        Array dataArray;
+        dataArray.push_back(raw_data);
+        Object addresses;
+        Array ext_params;
+        ext_params.push_back(params[0]); // from-address
+        ext_params.push_back(addresses); // addresses
+        ext_params.push_back(dataArray); // data array
+
+        return createrawsendfrom(ext_params, fHelp);
+    } else {
+        throw runtime_error("Address has no permission to write post\n");
+    }
+}
+
+// param0 - address of comment writer
+// param1 - txid of post to be written into
+// param2 - data to be written into the comment 
+Value createpostcomment(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() != 3)
+        throw runtime_error("Help message not found\n");
+    
+    std::string board = getboard(params[1].get_str());
+    std::string creator = getboardcreator(board);
+    if(!hasaccesspermission(creator, board)){
+        throw runtime_error("Board is locked\n");
+    }    
+        
+    std::string writer = params[0].get_str();
+    if(hasaccesspermission(writer, board)){
+        Object addresses;
+        Array permDataParam;
+
+        std::string key = "comment-" + params[1].get_str();
+        std::string datakey = "data";
+        if(isprivateboard(board)){
+            datakey = "encdata";
+        }
+        Object keyData;
+        keyData.push_back(Pair(datakey, params[2]));
+
+        const Value& keyJsonData = keyData;
+        std::string keyStrData = write_string(keyJsonData, false);
+        std::string keyHexData = HexStr(keyStrData.begin(), keyStrData.end());
+        
+        Object rawData;
+        rawData.push_back(Pair("for", STREAM_BULLETINBOARDCOMMENTS)); 
+        rawData.push_back(Pair("key", key)); 
+        rawData.push_back(Pair("data", keyHexData)); 
+        permDataParam.push_back(rawData);
+        Array permRawParams;
+        permRawParams.push_back(params[0]); // board creator or board admin
+        permRawParams.push_back(addresses); // stream for board info
+        permRawParams.push_back(permDataParam); // board txid
+        return createrawsendfrom(permRawParams, fHelp).get_str();
+
+    } else {
+        throw runtime_error("Address has no access to board\n");
+    };
+}
+
+// param0 - post txid
+Value getboardforpost(const Array& params, bool fHelp){
+    if (fHelp || params.size() != 1)
+        throw runtime_error("Help message not found\n");
+
+    return getboard(params[0].get_str());
+}
+
+/* End bulletin board fxns */ 
 /* AMB END */

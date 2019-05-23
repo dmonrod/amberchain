@@ -31,6 +31,8 @@
 #define STREAM_PROCESSISSUEBADGEREQUESTS    "processissuebadgerequests"
 #define STREAM_PURCHASESTATUS               "purchasestatus"
 #define STREAM_MULTISIGS                    "multisigs"
+#define STREAM_BULLETINBOARDS               "bulletinboards"
+#define STREAM_BULLETINBOARDCOMMENTS        "bulletinboardcomments"
 #define STREAM_OFFICIALASSETS               "officialassets"
 #define KEY_TRANSACTIONFEE                  "min-relay-tx-fee"
 #define KEY_ADMINPUBLICKEY                  "admin-public-key"
