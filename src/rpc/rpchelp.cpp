@@ -4213,6 +4213,18 @@ void mc_InitRPCHelpMap17()
         "\nExample:\n"
         + HelpExampleCli("verifyblocksignature", "1AN7chsRuUyEtQGgZEDJs3eNBrAapzY2Ab MEUCIQCJmaZFR+cIFwQTRdo5mQtd4FugOtcxFkdqhtnAD3u/NgIgbLB5PiSwDbYuiAT6ShNWYsn6yZCGifty9qXrqmu+QCY= 97a137570e1dbcc01ab49b6ffec18442be6e67144f181824110e2ad96ecb92f1")
     ));
+    mapHelpStrings.insert(std::make_pair("listofficialasset",
+        "listofficialasset\n"
+        "\nLists a new official asset to Amberchain\n"
+        "\nArguments:\n"
+        "1. \"from-address\"                (string, required) Address of the asset creator\n"
+        "2. \"asset-name\"                  (string, required) Name of the new asset\n"
+        "3. \"quantity\"                    (numeric, required) Quantity of the asset\n"
+        "4. \"onwer-address\"               (string, required) Owner of the asset\n"
+        "5. \"asset-data\"                  (object, optional) JSON object containing details of the asset\n"
+        "\nExample:\n"
+        + HelpExampleCli("listofficialasset", "1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd asset1 1000 1M72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd {'fee':'20 units', 'maturity-date': '01-2-12'}")
+    ));
 }
 
 void mc_InitRPCLogParamCountMap()
